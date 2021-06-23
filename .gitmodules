@@ -1,0 +1,9 @@
+[submodule "ClassExercises/Week1/Week1_AudioReverseGame"]
+	path = ClassExercises/Week1/Week1_AudioReverseGame
+	url = https://github.com/Ursinus-CS472A-S2021/Week1_AudioReverseGame.git
+[submodule "ClassExercises/Week1/Week1_Friday"]
+	path = ClassExercises/Week1/Week1_Friday
+	url = https://github.com/Ursinus-CS472A-S2021/Week1_Friday.git
+[submodule "ClassExercises/Week2/Week2_Harmonicity/Week2_Harmonicity"]
+	path = ClassExercises/Week2/Week2_Harmonicity/Week2_Harmonicity
+	url = https://github.com/Ursinus-CS472A-S2021/Week2_Harmonicity.git
