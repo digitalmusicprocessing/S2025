@@ -1,0 +1,660 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 472A: Digital Music Processing, Spring 2021</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Ursinus CS 472A: Digital Music Processing, Spring 2021</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Assignment 5: Audio Version Identification (35 Points)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
+                                        <h3>Due Thursday 4/29/2021</h3>
+									</header>
+
+									
+
+
+									<div id="page-content">
+										<ul>
+											<li><a href = "#overview">Overview/Logistics</a>
+												<ul>
+													<li><a href = "#background">Background</a></li>
+													<li><a href = "#objectives">Learning Objectives</a></li>
+													<li><a href = "#submit">What To Submit</a></li>
+												</ul>
+											</li>
+											<li><a href = "#programming">Programming Tasks</a>
+												<ul>
+													<li><a href = "#covers80">Covers 80 Dataset</a></li>
+													<li><a href = "#chroma">Step 0: Chroma Features</a></li>
+													<li><a href = "#oti">Step 1: Optimal Transposition Index (5 Points)</a></li>
+													<li><a href = "#crosssim">Step 2: Diagonally-Enhanced Cross-Similarity (10 Points)</a></li>
+													<li><a href = "#binarycsm">Step 3: Binary Similarity / Cross-Recurrence Plots (10 Points)</a></li>
+													<li><a href = "#qmax">Step 4: QMax (10 Points)</a></li>
+													<li><a href = "#retrieval">Step 5: Version Retrieval</a></li>
+												</ul>
+											</li>
+											
+										</ul>
+
+										<h2><a name = "overview">Overview / Logistics</a></h2>
+
+										<img src = "MonaLisa.png" width=1000>
+										<p>
+											<i>Picture courtesy of <a href = "https://joanserra.weebly.com/">Joan Serrà</a> and <a href = "https://github.com/furkanyesiler">Furkan Yesiler</a></i>
+										</p>
+
+										<h3><a name = "background">Background</a></h3>
+										<p>
+											Audio version identification is a challenging problem compared to audio fingerprinting (the "Shazam algorithm").  Unlike the exact recordings that audio fingerprinting addresses, versions can undergo many transformations.  For some examples, refer to <a href = "../../ClassExercises/Week13/version_examples">this page</a> (cataloged by <a href = "https://rachelbittner.weebly.com/">Rachel Bittner</a> from Spotify), as well as some examples I put together <a href = "http://www.covers1000.net/demo.html">here</a>.  In fact, it's not even clear where to draw the line on what constitutes a version, and research in this area is ongoing.  For more info on the research area as a whole, you can refer to some <a href = "https://docs.google.com/presentation/d/17GDjTE9GV0cWxpYlsiXLvgPkVAg70Ho4RwPUyyL-j0U/edit?usp=sharing">slides</a> I co-presented on this topic recently.  
+										</p>
+										<p>										
+											To keep things constrained enough in this assignment, we will be focusing on systems that assume that the notes are preserved between versions, at least in a <i>relative</i> sense, since the key may change<a href = "footnote"><SUP>*</SUP></a>.  As such, we will be using <a href = "../../ClassExercises/Week10/Week10_Chroma/">chroma features</a> to summarize the notes.  These features automatically deal with any changes in instrumentation in genre, since a 440hz A is the same on a guitar as it is on a flute, and it's the same as played by Slipknot and as sung by Miley Cyrus.  But there are still plenty of challenges to address, namely:
+											<ul>
+												<li>
+													As we mentioned, the key may have changed, so we need to do something beyond regular chroma to account for this.
+												</li>
+												<li>
+													The tempo and timing may be different between versions.
+												</li>
+												<li>
+													Some notes may be missing or obscured between different versions in random places.
+												</li>
+												<li>
+													There may be added and deleted sections between versions.  For instance, live versions may have an intro/outro or some pause hyping up the crowd in the middle.
+												</li>
+											</ul>
+											In this assignment, you will implement a vanilla version of a highly successful system by <a href = "https://joanserra.weebly.com/">Joan Serrà</a> known as "qmax," which was designed to address all of the aforementioned issues.  <a href = "https://iopscience.iop.org/article/10.1088/1367-2630/11/9/093017/pdf">Click here</a> to view the original paper on this topic, hough it's mainly for your reference, since I will explain everything you need below and walk you through it step by step in the programming tasks.
+
+											
+										</p>
+
+										<p>
+											Finally, it's worth mentioning that the web site <a href = "https://secondhandsongs.com/">secondhandsongs.com</a> is an amazing community effort to catalog every set of song versions under the sun.  There is a similar site, <a href = "https://www.whosampled.com/">whosample.com</a>, which is dedicated to cataloging audio samples, though this is a slightly different problem than the versions we're considering here.
+										</p>
+
+										<a name = "footnote">*</a> <i>NOTE: A large part of my personal research has been tackling examples where notes don't form the dominant expression, but 95% of research out there assumes this.  I'm happy to talk more about my work if you're curious.  Here are two papers I have on this topic: <a href = "https://arxiv.org/pdf/1507.05143.pdf">paper1</a>, <a href = "https://arxiv.org/pdf/1707.04680.pdf">paper2</a></i>
+										
+
+                                        <p>
+                                            <h3><a name = "objectives">Learning Objectives</a></h3>
+                                            <ul>
+												<li>Practice numpy arrays, methods, and for loops in the service of musical applications</li>
+												<li>Use chroma-based features to match different versions of songs, even under changes in vocals, instrumentation, and timing</li>
+												<li>Build features which are invariant to transposition</li>
+												<li>Implement cross-similarity measures which are invariant to tempo and which can handle added/deleted sections</li>
+                                            </ul>
+										</p>
+										
+										<h3><a name = "submit">What To Submit</a></h3>
+
+										<p>                                       
+                                            When you are finished, submit your python filed <code>versionid.py</code> to Canvas.  <b>Please also indicate the names of any buddies you worked with.</b>
+										</p>
+
+
+										<HR>
+											<h2><a name = "programming">Programming Tasks</a></h2>
+											<p>
+												<a href = "https://github.com/Ursinus-CS472A-S2021/HW5_VersionID/archive/refs/heads/main.zip">Click here</a> to download the starter code for this assignment.  You will be implementing a pipeline described in <a href = "https://iopscience.iop.org/article/10.1088/1367-2630/11/9/093017/pdf">this paper</a>.  Interestingly, this pipeline is quite similar to the pipeline we followed to align audio clips before using <a href = "../../ClassExercises/Week9/Week9_DTWBacktrace/index.html">dynamic time warping</a>.  The crucial difference is that instead of comparing MFCC sequences, we're comparing chroma sequences, and instead of doing a global alignment of the entire clips, we're doing what's known as a <a href = "#qmax">local alignment</a>, since only parts of each version may match.  
+											</p>
+											<p>
+												We will first discuss steps that are taken to match two different versions of the same song, and then we will conclude by testing to make sure we haven't introduced too many false positive matches in the process.
+											</p>
+	
+											<p>
+												Below are the imports you will need to test your code in jupyter
+											</p>
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												%load_ext autoreload
+												%autoreload 2
+												import numpy as np
+												import matplotlib.pyplot as plt
+												import IPython.display as ipd
+												import librosa
+												import librosa.display
+												from versionid import *
+											</script>
+
+											<p>
+												In this assignment, some of the steps take a long time, so you should <b>definitely</b> take advantage of autoreload.  In particular, once you are sure certain parts are working, run their cells and then don't run them again.  Because of autoreload, methods that you modify after this point will be reloaded into jupyter before you run them.
+											</p>
+
+											<h3><a name = "covers80">Covers80 Dataset</a></h3>
+											<p>
+												We will be using tunes from the <a href = "https://labrosa.ee.columbia.edu/projects/coversongs/covers80">covers80</a> dataset in this assignment.  This dataset consists of 80 pairs of versions of mostly '80s pop music.  The text files <code>list1.list</code> and <code>list2.list</code> hold a parallel set of paths to each pair of tunes; that is, line <b>i</b> in list1 corresponds to another version of the tune on line <b>i</b> of list2.  In this assignment, we'll do a simplified rendition of "version retrieval" where we simply take a tune out of list1 and verify that it's more similar to its version in list2 than any other tune in list2.  This will give us a rough idea that the system is working.
+											</p>
+											<p>
+												<a href = "https://drive.google.com/file/d/1aNtZCpR3W_RKzAtJy42TL54b1OKP6agS/view?usp=sharing">Click here</a> to download a version of the dataset that I created with all of the files in .wav format so they're easy to load.  Be warned; you will need at least 1.5GB of free space on your hard drive.
+											</p>
+
+											<HR>
+											<h3><a name = "chroma">Step 0: Chroma Features</a></h3>
+											<p>
+												We will be starting with a librosa implementation of <a href = "../../ClassExercises/Week10/Week10_Chroma/">chroma</a> as our note-based features to match between versions.  This incarnation of chroma is known as <a href = "https://librosa.org/doc/main/generated/librosa.feature.chroma_cqt.html">chroma_cqt</a>, and it does a better job at dealing with lower frequency notes than the default STFT-based version.  Additionally, as a way of dealing with noise and other transients, and as a way of downsampling the features so future steps are more efficient, we summarize large chunks of chroma windows by taking the median across all of the features in these windows.  In the covers80 audio, we're at a sample rate of 16000, so if we use a hop length of 256 and a downsampling factor of 40, then each chroma feature summarizes roughly 40*256/16000 = 0.64 seconds of audio.  For example, running the code below
+											</p>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												y1, sr = load_wavfile("covers80_audio/Abracadabra/steve_miller_band+Steve_Miller_Band_Live_+09-Abracadabra.wav")
+												y2, sr = load_wavfile("covers80_audio/Abracadabra/sugar_ray+14_59+11-Abracadabra.wav")
+												downsample_fac = 40
+												hop_length = 256
+												C1 = librosa.feature.chroma_cqt(y=y1, sr=sr, hop_length=hop_length)
+												C1 = librosa.util.sync(C1, np.arange(0, C1.shape[1], downsample_fac), aggregate=np.median)
+												C2 = librosa.feature.chroma_cqt(y=y2, sr=sr, hop_length=hop_length)
+												C2 = librosa.util.sync(C2, np.arange(0, C2.shape[1], downsample_fac), aggregate=np.median)
+												plt.subplot(211)
+												librosa.display.specshow(C1, y_axis='chroma', x_axis='time', sr=sr, hop_length=hop_length*downsample_fac)
+												plt.title("Steve Miller Band")
+												plt.subplot(212)
+												librosa.display.specshow(C2, y_axis='chroma', x_axis='time', sr=sr, hop_length=hop_length*downsample_fac)
+												plt.title("Sugar Ray")
+												plt.tight_layout()
+											</script>
+
+											<p>
+												Leads to this image
+											</p>
+
+											<p>
+												<img src = "Chroma.svg" width=1000>
+											</p>
+
+
+											<p>
+												You'll notice that the two tunes make similar note patterns, but that there are slight shifts and other noise.  Also, Sugar Ray has shifted down by a halfstep.  We will start by addressing the key change in the next step.
+											</p>
+
+											<HR>
+											<h3><a name = "oti">Step 1: Optimal Transposition Index (5 Points)</a></h3>
+											<p>
+												Now that we have note-based features which are robust to noise, we can start to figure out how to match them across versions.  The first step is to shift them so that they're in a common key.  One strategy for this is to compute something called a <b>global optimal transposition index (OTI)</b>.  The steps are as follows:
+												<ol>
+													<li>Compute the mean chroma window for each tune.  This can be done quickly with the <code><a href = "https://numpy.org/doc/stable/reference/generated/numpy.mean.html">np.mean</a></code> method, and the code is provided for you.  In particular, since the chromas are arranged so notes are down the rows and windows are across the columns, we average all of the elements in each row.  The command to do this is <code>np.mean(X, 1)</code>, where the <b>1</b> indicates that we want to average along the dimension at index 1, which is the columns.
+													</li>
+													<li>
+														<p>
+															Circularly shift the first global chroma, <b>gC1</b> vector 12 times.  Each time, compute the Euclidean distance between the shifted <b>gC1</b> and the second global chroma vector <b>gC2</b>.  Report the value that gave rise to the minimum index.  The <code><a href = "https://numpy.org/doc/stable/reference/generated/numpy.roll.html">np.roll</a></code> method will come in handy here.  For instance, if you write 
+															<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+																np.roll([0, 1, 2, 3, 4, 5], 2)
+															</script>
+
+															You will obtain the array <code>[4, 5, 0, 1, 2, 3]</code>.
+														</p>
+
+													</li>
+												</ol>
+											</p>
+
+											<p>
+												<b><u>Fill in the method <code>get_oti</code> to do this</u></b>.  Below are some examples of cover versions and their global OTIs.
+											</p>
+
+											<h3>"Addicted To Love"</h4>
+												<p>
+													Tina Turner's version of "Addicted To Love" has been shifted up in pitch by two halfsteps, as can be seen by checking global chroma agreement over all transpositions.
+												</p>
+											<iframe src="AddictedToLoveOTI.html" width="1000" height="600"></iframe>
+
+											
+											<h3>
+												"Toys in The Attic"
+											</h3>
+											<p>
+												By contrast, the second version has been shifted <b>down</b> by two halfsteps in the example below.  Since we're circularly shifting, this is equivalent to shifting up by 10 steps (just like with clock hands, going back 2 hours is like going ahead 10 hours), which is why the peak occurs at 10.
+											</p>
+											<iframe src="ToysInTheAttic.html" width="1000" height="600"></iframe>
+											<p></p>
+
+
+											<HR>
+											<h3><a name = "crosssim">Step 2: Diagonally-Enhanced Cross-Similarity (10 Points)</a></h3>
+
+											<p>
+												Once we know how to circularly shift the first chromagram to best align with the second one, we can compute the <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">cross-similarity matrix</a> between the two sequences.  One drawback of the raw CSMs, though, is that each pair of chroma windows that we compare takes up a very small time extent.  In other words, a single similarity pixel in the CSM can usually at most pick up on a single note that matched between the two.  However, we get more information if we consider matching a whole <b>block</b> of notes <i>in sequence</i>.  One way to do this would be to replace each chroma window with a stack of chroma windows that follow it, and then compute the CSMs between these stacked windows.  In fact, librosa has a method <code><a href = "https://librosa.org/doc/main/generated/librosa.feature.stack_memory.html">stack_memory</a></code> that does just this sort of preprocessing.  However, another way to do this that's more memory efficient is to compute the CSM as normal on the original chromagrams, we can <b>enhance the diagonals</b> of the CSMs.  In particular, given a block length <b>b</b>, we replace every element <b>CSM[i, j]</b> with 
+											</p>
+
+											<h3>
+												\[ D_b[i, j] = \frac{1}{b} \sum_{k = 0}^{b-1} CSM[i+k, j+k] \]
+											</h3>
+
+											<p>
+												Note that the resulting matrix, <b>D<SUB>b</SUB></b>, will be reduced in size by <b>b-1</b> across both dimensions, since we'd run out of space of future elements on the diagonal to incorporate after that point.
+											</p>
+											<p>
+												<b><u>Fill in the method <code>get_csm_enhanced</code> to do this</u></b>.  You can use the provided <code>get_csm_oti</code> method to help you.  Below are a few examples of CSMs and their diagonally enhanced counterparts.
+											</p>
+
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												y1, sr = load_wavfile("covers80_audio/We_Can_Work_It_Out/beatles+1+13-We_Can_Work_It_Out.wav")
+												y2, sr = load_wavfile("covers80_audio/We_Can_Work_It_Out/tesla+Five_Man_Acoustical_Jam+04-We_Can_Work_It_Out.wav")
+												downsample_fac = 40
+												hop_length = 256
+												C1 = librosa.feature.chroma_cqt(y=y1, sr=sr, hop_length=hop_length)
+												C1 = librosa.util.sync(C1, np.arange(0, C1.shape[1], downsample_fac), aggregate=np.median)
+												C2 = librosa.feature.chroma_cqt(y=y2, sr=sr, hop_length=hop_length)
+												C2 = librosa.util.sync(C2, np.arange(0, C2.shape[1], downsample_fac), aggregate=np.median)
+												win = 20
+												CSMD = get_csm_enhanced(C1, C2, win)
+												plt.imshow(CSMD, cmap='magma_r')
+											</script>
+
+
+											<img src = "WeCanWorkItOut.svg">
+
+
+											<p>
+												The need for a diagonal is even more apparent in the example below
+											</p>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												y1, sr = load_wavfile("covers80_audio/Abracadabra/steve_miller_band+Steve_Miller_Band_Live_+09-Abracadabra.wav")
+												y2, sr = load_wavfile("covers80_audio/Abracadabra/sugar_ray+14_59+11-Abracadabra.wav")
+											</script>
+
+											<p>
+												<img src = "Abracadabra.gif">
+											</p>
+
+
+											<HR>
+											<h3><a name = "binarycsm">Step 3: Binary Similarity / Cross-Recurrence Plots (10 Points)</a></h3>
+											<p>
+												Once we have a diagonally-enhanced CSM, another step that really helps to clean up noise and to control for loudness discrepancies between the two tunes is to "quantize" the image into a binary image, so that each entry is either a 0 or a 1.  A 1 will indicate that this (diagonally enhanced) pair of time instants are similar between the two, and a 0 will indicate that they are not.  Following Serrà's lead, we'll refer to this as a <b>cross-<a href = "http://www.recurrence-plot.tk/">recurrence plot</a> (CRP)</b>.
+											</p>
+											<p>
+												To compute the CRP, we first fix a number <b>k</b>.  Then, for each element <b>CSM[i, j]</b>, we set the binary version <b>B[i, j]</b> to 1 only if <b>B[i, j]</b> is among the <b>k</b> smallest (most similar) values in row <b>i</b> <i>and</i> <b>B[i, j]</b> is among the <b>k</b> smallest values in column <b>j</b>.
+											</p>
+											<p>												
+												<b><u>Fill in the method <code>binary_csm</code> to do this</u></b>.  To help, note that a quick way to find the <b>k+1<SUP>th</SUP></b> largest element of a 1D array <code>arr</code> in python is to say <code>np.partition(arr, k)[k]</code>.
+											</p>
+
+											<p>
+												Below is the CRP for the Abracadabra example above, using <b>k = 20</b>.  Black pixels indicate 1s and white pixels indicate 0s.  Notice the nice clean diagonal of 1s that pops out towards the middle!  This indicates that many time instants have matched in sequence, which means that a long chunk of audio matches between the two.
+											</p>
+
+											<p>
+												<img src = "Abracadabra.svg">
+											</p>
+
+											<p>
+												<img src = "AbracadabraBinary.gif">
+											</p>
+
+
+											<HR>
+											<h3>
+												<a name = "qmax">Step 4: QMax (10 Points)</a>
+											</h3>
+											<p>
+												We are now nearly finished, but there's one more very important step that we need to do.  We could look in the CRP and count the longest diagonal, which is referred to as <a href = "http://www.recurrence-plot.tk/rqa.php">lmax</a> by some.  However, there are a few issues with this.  First, we notice a few breaks in the longest line in the Abracadabra example, so if we just counted the length of the longest diagonal, we'd be short-changing ourselves by failing to connect a few shorter diagonals into a very long one, simply because we missed matching a few notes.  Furthermore, the tempos may be different between the two versions, so the lines may not have a slope of 1, and they may even curve in some places as the tempos shift over time.  So we need a way to find longer diagonals that's flexible enough to handle these issues.
+											</p>
+
+											<p>
+												We will address this by implementing a flexible diagonal counting scheme known as <b>qmax</b>.  Like dynamic time warping, it's actually written out with a recurrence.  Given a CRP <b>B</b>, we create a matrix <b>Q</b> of the same size.  <b>Q[i, j]</b> can be thought of as holding the length of the longest possible "flexible diagonal" through the CRP that starts somewhere and ends at <b>[i, j]</b>.  Like dynamic time warping, we fill it in incrementally as follows
+
+												<ul>
+													<li><h3>Case 1: <code>B[i, j] = 1</code> </h3>
+														<p>
+															
+															Then this means we have a good match between time location <b>i</b> in the first tune and time location <b>j</b> in the second tune, so we add a 1 to our score, using the following update rule
+														</p>
+														
+														<h3>
+															\[ Q[i, j] =  max \left( \begin{array}{c} Q[i-1, j-1],\\ Q[i-2, j-1],\\ Q[i-1, j-2]) \end{array} \right) + 1 \]
+													   	</h3>
+
+														<p>
+															This considers continuations from 3 other possible paths, as show in the image below:
+														</p>
+
+														<img src = "qmaxpaths.svg">
+
+														<p>
+															Notice that these continuations are a bit different from the left/up/diagonal ones we considered when building <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video1">warping paths</a> in dynamic time warping.  This is because we don't want to allow the path to ever freeze in place; it has to keep moving at at least half or double the tempo between the two tunes.
+														</p>
+													
+													
+													</li>
+
+
+													<li>
+														<h3>Case 2: <code>B[i, j] = 0</code> </h3>
+														<p>
+															In this case, we've had an interruption of the path we've started building, so we want to subtract a penalty.  We do this as follows:
+														</p>
+
+														<h3>
+															\[ Q[i, j] =  max  \left( \begin{array}{c} Q[i-1, j-1] - \gamma(B[i-1, j-1]),\\ Q[i-2, j-1] - \gamma(B[i-2, j-1]),\\ Q[i-1, j-2] - \gamma(B[i-1, j-2]), 0 \end{array} \right) \]
+														</h3>
+
+														where 
+
+														<h3>
+															\[ \gamma(x) = \left\{  \begin{array}{cc} 1 & x = 1 \\ 0.5 & x = 0 \end{array} \right\}  \]
+														</h3>
+
+														<p>
+															Once again, we consider the path coming from three different locations, but this time, we subtract a penalty instead of adding a 1.  We subtract a higher penalty of 1 if we just started making the gap (known as the "gap onset cost"), and we subtract a penalty of 0.5 if the gap had continued from before (known as the "gap continuation cost").  Crucially, we also <b>bottom out at 0</b>; that is, we never let the score go negative.  In other words, we allow the algorithm to reset at a score of 0 if there was no way to make any good path up to this point, and we start over.
+														</p>
+													</li>
+												</ul>
+												At the end of all of this, the maximum value in all of <b>Q</b> (not necessarily in the lower right like DTW) can be thought of as a measure of similarity between two tunes.  The higher this value, the more similar they are, and the lower this value, the less similar they are.
+											</p>
+
+											<p>
+												<b><u>Fill in the method <code>qmax</code> to compute the table <b>Q</b> given a cross-recurrence plot</u></b>.  Below is an example of applying qmax to the CRP for Abracadabra above.  As we can see, we get a flexible diagonal score of 224 in a matrix that's just beyond 300x300, indicating a very long region that matches well!
+											</p>
+
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												# Load in data
+												y1, sr = load_wavfile("covers80_audio/Abracadabra/steve_miller_band+Steve_Miller_Band_Live_+09-Abracadabra.wav")
+												y2, sr = load_wavfile("covers80_audio/Abracadabra/sugar_ray+14_59+11-Abracadabra.wav")
+												# Compute chromas
+												downsample_fac = 40
+												hop_length = 256
+												C1 = librosa.feature.chroma_cqt(y=y1, sr=sr, hop_length=hop_length)
+												C1 = librosa.util.sync(C1, np.arange(0, C1.shape[1], downsample_fac), aggregate=np.median)
+												C2 = librosa.feature.chroma_cqt(y=y2, sr=sr, hop_length=hop_length)
+												C2 = librosa.util.sync(C2, np.arange(0, C2.shape[1], downsample_fac), aggregate=np.median)
+												
+												# Diagonally enhanced CSM
+												CSMD = get_csm_enhanced(C1, C2, b=20)
+												# CRP
+												B = binary_csm(CSMD, k=20)
+												# QMax
+												Q = qmax(B)
+												plt.subplot(121)
+												plt.imshow(B, cmap='gray_r')
+												plt.xlabel("Sugar Ray")
+												plt.ylabel("Steve Miller Band")
+												plt.title("Cross-Recurrence Plot")
+												plt.subplot(122)
+												plt.imshow(Q, cmap='magma_r')
+												plt.xlabel("Sugar Ray")
+												plt.ylabel("Steve Miller Band")
+												plt.title("QMax (Max = {})".format(np.max(Q)))
+												plt.colorbar()
+											</script>
+
+											<p>
+												<img src = "QMax.svg">
+											</p>
+											
+											<HR>
+											<h3><a name = "retrieval">Step 5: Version Retrieval</a></h3>
+											<p>
+												<b>NOTE: </b> You don't actually have to code anything for this step, but you should run this code and check the results to indicate if your pipeline is working properly
+											</p>
+
+											<p>
+												Now that we have all of these steps, it's time to apply them to query a database.  We have to make sure both that our query is similar to a true version, but also that we're avoiding <b>false positives</b> by erroneously awarding high scores to songs which are not true versions of the query.  To get at this, we'll compute qmax between a query song and all of the songs in a database and report the one in the database with the highest similarity score as our guess.  Unfortunately, compared to the Shazam algorithm, this is quite slow, but there is active research going on to address this.  For now, we'll stick to quick a small database with covers80.
+											</p>
+
+											<p>
+												First, load in all of the tunes in covers80 and compute their features.  We'll store the chromagrams from the first set in a list called <code>Cs1</code>, and we'll store the chromagrams from the second set in a list called <code>Cs2</code>.  Be warned; this step will take some time.
+											</p>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												fin = open("covers80_audio/list1.list")
+												songs1 = [l.rstrip() for l in fin.readlines()]
+												fin.close()
+												fin = open("covers80_audio/list2.list")
+												songs2 = [l.rstrip() for l in fin.readlines()]
+												fin.close()
+												downsample_fac = 40
+												hop_length = 256
+												Cs1 = []
+												Cs2 = []
+												for i in range(len(songs1)):
+													print(i, end=' ')
+													y1, sr = load_wavfile("covers80_audio/{}.wav".format(songs1[i]))
+													y2, sr = load_wavfile("covers80_audio/{}.wav".format(songs2[i]))
+													C1 = librosa.feature.chroma_cqt(y=y1, sr=sr, hop_length=hop_length)
+													C1 = librosa.util.sync(C1, np.arange(0, C1.shape[1], downsample_fac), aggregate=np.median)
+													C2 = librosa.feature.chroma_cqt(y=y2, sr=sr, hop_length=hop_length)
+													C2 = librosa.util.sync(C2, np.arange(0, C2.shape[1], downsample_fac), aggregate=np.median)
+													Cs1.append(C1)
+													Cs2.append(C2)
+											</script>
+
+											<p>
+												Next, pick a particular song out of the first list, and compare it to all songs in the second list.  Report the song it's the most similar to.  For instance, if we pick the song at index 1, that's Abracadabra.  Run the code below to see that this works out quite well, with the similarity peaking well beyond the other database songs at the correct version.  (This will take a minute)
+											</p>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												idx = 1
+												print("Query:", songs1[idx])
+												similarities = np.zeros(len(songs2))
+												for i in range(len(songs2)):
+													print(i, end=' ')
+													CSMD = get_csm_enhanced(Cs1[idx], Cs2[i], b=20)
+													B = binary_csm(CSMD, k=20)
+													Q = qmax(B)
+													similarities[i] = np.max(Q)
+												plt.figure(figsize=(10, 4))
+												plt.plot(similarities)
+												j = np.argmax(similarities)
+												plt.xlabel("Query Song Index")
+												plt.ylabel("qmax")
+												plt.title("Query: {}\nMost Similar: {} (score = {})".format(songs1[idx], songs2[j], similarities[j]))
+											</script>
+
+											<img src = "Query1.svg">
+
+											<p>
+												Below are the results when we set the index to be 2 and test "Addicted To Love," which also works out quite well
+											</p>
+
+											<img src = "Query2.svg">
+											
+											<p>
+												However, this doesn't work out equally well for all tunes.  Some of our tunes break the model, such as "Tricky" by Run D.M.C (index 32), which doesn't carry a tune with notes.  I have addressed examples like these in <a href = "http://www.covers1000.net/demo.html">some of my research</a>.
+											</p>
+											<img src = "Query32.svg">
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../index.html#overview">Overview</a></li>
+												<li><a href = "../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../index.html#homework">Homework</a></li>
+												<li><a href = "../../index.html#grading">Grading</a></li>
+												<li><a href = "../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../index.html#participation">Participation</a></li>
+												<li><a href = "../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../Software/index.html">Software</a></li>
+										<li><a href = "../../Schedule/index.html">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+									
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Vocoders And Phase Retrieval</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW3_Vocoders/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
+												<ul>
+													<li>
+														<a href = "../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module0/Part1">Module 0: Warmup</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../Modules/Module8_DiscoveringFourier">Module 8: Discovering Fourier</a></li>
+												<li><a href = "../../Modules/Module8b_ImplementingDFT">Module 8b: Implementing The Discrete Fourier Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module10/Video0">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module11/Video0">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+													<ul>
+														<li><a href = "../../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
+													</ul>
+												</li>
+												<li><a href = "../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
+												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
