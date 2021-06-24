@@ -1,0 +1,24 @@
+* Comb Filter Vocoder (9.5/10)
+Good overall!  I did want you to cut down the very last window and put it in. You can do that with this little hack
+y[idx:idx+len(convole)] += convole[0:len(y[idx:idx+len(convole)])]
+this works because if you go out of bounds at the end of a numpy slice, it simply cuts it down.  So you can look at the length of that
+
+
+* Inverse STFT (8/8)
+Good!
+
+* STFT-Based Vocoder (7/7)
+Good!
+
+
+* Griffin-Lim (7/8)
+Super, super close on this.  You just need to do an assignment to S at the end:
+S = SAbs*np.exp(np.complex(0, 1)*phase)
+
+Should be 
+S = SAbs * np.exp(np.complex(0, 1)*P) 
+We want to make a complex exponential out of the phases, so we need to raise e^(i*phases)
+
+
+Musical Statement (4/4)
+Good stuff

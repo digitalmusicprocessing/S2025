@@ -1,0 +1,836 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 472A: Digital Music Processing, Spring 2021</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Ursinus CS 472A: Digital Music Processing, Spring 2021</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Assignment 3: Vocoders And Phase Retrieval (37 Points)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
+                                        <h3>Due Wednesday 3/10/2021</h3>
+										<h3><a href = "statements.html">Click here</a> to listen to musical statements!</h3>
+									</header>
+
+									<div id="page-content">
+
+										<ul>
+											<li><a href = "#overview">Overview/Logistics</a>
+												<ul>
+													<li><a href = "#objectives">Learning Objectives</a></li>
+													<li><a href = "#submit">What To Submit</a></li>
+												</ul>
+											</li>
+											<li><a href = "#programming">Programming Tasks</a>
+												<ul>
+													<li>
+														<a href = "#comb">Part 1: Comb Filter Vocoder (10 Points)</a>
+													</li>
+													<li>
+														<a href = "#part2">Part 2: STFT-Based Vocoder</a>
+														<ul>
+															<li><a href = "#istft">Inverse STFT (8 Points)</a></li>
+															<li><a href = "#stftvocoder">STFT-Based Vocoder (7 Points)</a></li>
+														</ul>
+													</li>
+													<li>
+														<a href = "#part3">Part 3: Phase Retrieval</a>
+														<ul>
+															<li><a href = "#griffinlim">The Griffin-Lim Algorithm (8 Points)</a></li>
+															<li><a href = "#soundimages">Phase Retrieval Application 1: Sound Images (Optional)</a></li>
+															<li><a href = "#pitchshift">Phase Retrieval Application 2: Pitch Shifting (Optional)</a></li>
+														</ul>
+													</li>
+													
+													
+													<li>
+														<a href = "#musical">Part 4: Musical Statement (4 Points)</a>
+													</li>
+													<li>
+														<a href = "#bored">For the bored...</a>
+													</li>
+												</ul>
+											</li>
+											
+										</ul>
+
+										<h2><a name = "overview">Overview / Logistics</a></h2>
+
+										<p>
+											Can't sing?  No problem.  In this assignment, you will implement several algorithms to create "singing instruments," which is an application of something known as a <b>vocoder</b>.  Students will also implement a procedure known as "phase retrieval" to estimate phase from amplitude-only information.  Both of these tasks will be a great opportunity to practice Short-Time Fourier Transform concepts in the service of a super fun application.  More background information and directions will be interspersed in the <a href = "#programming">programming task descriptions</a>.
+										</p>
+										
+
+                                        <p>
+                                            <h3><a name = "objectives">Learning Objectives</a></h3>
+                                            <ul>
+												<li>Practice numpy arrays, methods, and for loops in the service of musical applications</li>
+												<li>Extract and manipulate amplitude and phase from Short-Time Fourier Transform coefficients</li>
+												<li>Line up audio samples in arrays properly using slices</li>
+												<li>Convert seamlessly between time and frequency representations of audio</li>
+                                            </ul>
+										</p>
+										
+										<h3><a name = "submit">What To Submit</a></h3>
+
+										<p>                                       
+                                            When you are finished, please submit your python file <code>vocoder.py</code> to canvas, as well as an audio file for your musical statement and all of the txt files and audio files that are needed to run your code used to create that statement.  Please also submit the code or notebook you used to make the musical statement.  Finally, please submit answers to the following questions on Canvas
+										
+										<ol>
+											<li>
+												A title for your musical statement
+											</li>
+											<li>
+												If you want to submit your musical statement to the music contest, and if so, what name or pseudonym you would like to use in the musical gallery on our class web site
+											</li>
+											<li>
+												Approximately how many hours it took you to finish this assignment (<i>I will not judge you for this at all...I am simply using it to gauge if the assignments are too easy or hard</i>)
+											</li>
+											<li>
+												Your overall impression of the assignment. Did you love it, hate it, or were you neutral? One word answers are fine, but if you have any suggestions for the future let me know.
+											</li>
+											<li>
+												Any other concerns that you have. For instance, if you have a bug that you were unable to solve but you made progress, write that here. The more you articulate the problem the more partial credit you will receive (fine to leave this blank)
+											</li>
+										</ol>
+
+
+										
+                                        
+										<HR>
+										<h2><a name = "programming">Programming Tasks</a></h2>
+										<p>
+											<a href = "https://github.com/Ursinus-CS472A-S2021/HW3_Vocoders/archive/main.zip">Click here</a> to download the starter code for this assignment.  In all of the tasks below, you will be editing methods in the <code>vocoder.py</code> file.  You should also copy your <code>instruments.py</code> file from <a href = "../HW2_DigitalInstruments/">homework 2</a> into this directory, as it will be used to generate instruments in part 2 that will be shaped by voice.
+										</p>
+
+										<p>
+											<b>Tip:</b> As a general tip for all of the tasks, you can save yourself <i>a lot</i> of code by using element-wise operations in python.  For instance, if <b>S</b> is an <b>M x N</b> matrix holding the complex STFT of some signal, you can compute the amplitude of every single sinusoid in every single window simply by saying
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											amps = np.abs(S)
+										</script>
+
+										<p>
+											Similarly, you can compute all of the phases by saying 
+										</p>
+										
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											phases = np.arctan2(np.imag(S), np.real(S))
+										</script>
+
+										<p>
+											Don't forget about your element-wise multiplication operations either!
+										</p>
+
+										<p>
+											Below are the imports you will need in jupyter
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											%load_ext autoreload
+											%autoreload 2
+											import numpy as np
+											import matplotlib.pyplot as plt
+											import librosa
+											from scipy.signal import fftconvolve
+											from scipy.ndimage.filters import maximum_filter1d
+											from scipy.interpolate import interp2d
+											import IPython.display as ipd
+											from vocoder import *
+											from instruments import make_tune, fm_bell_note
+										</script>
+
+										<h2><a name = "comb">Part 1: Comb Filter Vocoder (10 Points)</a></h2>
+										<p>
+											We saw in a <a href = "../../ClassExercises/Week4/Week4_CombFilters/solutions.html">class exercise</a> that it is possible to make a pitched "robot sound" by applying <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">convolution</a> to a sound with a comb filter.  In order to control the pitch, we noted that the spacing between impulses on the comb needs to be equal to the period, in samples, of the base frequency of the note we seek.  You will use this observation to make an entire tune of such notes by applying different comb filters to different slices of audio, with one slice for each note.  Fill in the method <code>comb_tune</code> to accomplish this.  In particular, for each note, you should create a comb filter with <code>num_pulses</code> "teeth" with a spacing appropriate for that note.  You should then convole that comb with the chunk of audio, referred to as <code>xi</code> in the code, using <code>fftconvolve</code>.  
+										</p>
+
+										<p>
+											One thing to watch out for is if you perform convolution between two arrays of length <b>M</b> and <b>N</b>, the result will actually be of length <b>M + N-1</b>, because the echoes need some time to die out (you can verify the length of the convolution using <code>len()</code>).  So you will have to add the audio samples into the output <code>y</code>, and you will also have to be careful not to go out of bounds on the last window.  The picture below shows this overlap.
+										</p>
+
+										<p>
+											<img src = "CombConvolution.svg" width = 300>
+										</p>
+
+										<p>
+											Here are a few examples of results you should get if this is working properly
+										</p>
+
+										<h3>Happy Birthday Dear Christopher</h3>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											y, sr = comb_tune("Tunes/birthday.txt", "birthday.wav", 0.125, 20)
+											ipd.Audio(y, rate=sr)
+										</script>
+										<h4>Voice</h4>
+										<p>
+											<audio controls>
+												<source src="HW3_Vocoders/birthday.wav" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+										<h4>Result</h4>
+										<p>
+											<audio controls>
+												<source src="Examples/BirthdayComb.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<h3>Daft Punk <a href = "https://pitchfork.com/news/daft-punk-call-it-quits/">Tribute</a></h3>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											y, sr = comb_tune("Tunes/daft.txt", "daft.wav", 0.25, 20)
+											ipd.Audio(y, rate=sr)
+										</script>
+										<h4>Voice</h4>
+										<p>
+											<audio controls>
+												<source src="HW3_Vocoders/daft.wav" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+										<h4>Result</h4>
+										<p>
+											<audio controls>
+												<source src="Examples/DaftComb.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<h2><a name = "part2">Part 2: STFT-Based Vocoder</a></h2>
+
+										<h3><a name = "istft">Inverse STFT (8 Points)</a></h3>
+										<p>
+											It is possible to invert the STFT by following what's known as a "shift-overlapp-add" (SOLA) procedure.  In particular, we loop through each window in the STFT, take its inverse DFT, shift the samples to the appropriate position, and add them to the values that are already there.  For example, if we have a <b>window length</b> of 1024 samples and a <b>hop length</b> of 512 samples,
+											<ul>
+												<li>
+													The first inverted window should be added to the output at slice <b>0:1024</b></li>
+												<li>
+													The second inverted window should be added from <b>512:1024+512</b>
+												</li>
+												<li>
+													The third inverted window should be added from <b>512*2:1024+512*2</b>
+												</li>
+												<li>
+													... etc
+												</li>
+											</ul>
+										</p>
+
+										<p>
+											We do have to be mindful of the fact that we multiplied the audio by a window before we took the STFT.  However, in the case of a <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module11/Video1">Hann window</a>, everything works out nicely when the ratio between the window length and the hop length is a power of 2, and the overlapping regions sum to a constant number.  In particular, if the ratio is <b>Q = w/h</b>, then the windows will sum to a constant <b>Q/2</b>.  For instance, when the window length is 1024 samples and the hop length is 512 samples, the windows add together as follows (where each individual window is depicted with a different color, and you notice that the windows add together where they overlap):
+										</p>
+
+										<img src = "Examples/ISTFTHann2.svg">
+
+										<p>
+											When the window length is 1024 samples and the hop length is 256 samples, the windows add together as follows
+										</p>
+
+										<img src = "Examples/ISTFTHann4.svg">
+
+										<p>
+											Therefore, you can simply divide the shifted and overlapped inverse STFT by <b>Q/2</b> to recover the original audio.
+										</p>
+
+										<p>
+											To complete this task, fill in the method <code>istft</code> to return audio samples corresponding to a complex STFT.  To invert the fourier transform in each window, you can use <code>np.real(<a href = "https://numpy.org/doc/stable/reference/generated/numpy.fft.ifft.html">np.fft.ifft</a>())</code>. (The np.real is there because it's possible to have very small imaginary components upon inversion that mean nothing).  To test this, perform and STFT and see if you can recover the original audio by performing your inverse STFT.  For example, the run the following code
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											x, sr = librosa.load("mj.wav", sr=sr)
+											w = 1024
+											h = 256
+											S = stft(x, w, h, hann_window)
+											y = istft(S, w, h, hann_window)
+											ipd.Audio(y, rate=sr)
+										</script>
+										<p>
+											Which should produce the following audio if everything is working properly:
+										</p>
+										<p>
+											<audio controls>
+												<source src="HW3_Vocoders/mj.wav" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<h3><a name = "stftvocoder">STFT-Based Vocoder (7 Points)</a></h3>
+										<p>
+											Once you have the inverse STFT working, there's actually a very simple procedure we can use to make a vocoder shaped around any instrument sound.  Let's say we have instrument audio <b>I</b> and voice audio <b>V</b>.  We're going to use the voice audio to shape the instrument audio by mixing together their STFTs.  In particular, simply multiply each element in <b>STFT(I)</b> by the corresponding <u>amplitude</u> in <b>STFT(V)</b>, and then take the inverse STFT.
+										</p>
+										<p>
+											We do have to be careful if we use the synthetic instruments from <a href = "../HW2_KarplusAndFM">assignment 2</a> for the instrument sound, as the base frequency and its integer harmonics don't occur densely enough to support the spectrum of the voice in a way that is intelligible.  To mitigate this, we have to apply some nonlinear distortion to the instrument sound to expand its frequency content so that it has enough to support the voice.  We can do this by passing our instrument audio samples through <code>np.sign</code>, which is akin to turning an electronic amplifier way up (this is the way we get that gritty, harmonically rich electric guitar sound in rock music).
+										</p>
+										<p>
+											To complete this task, fill in the method <code>spectrogram_vocoder</code>.  Below is an example using the voice to shape an FM brass sound with this method
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w = 2048
+											h = 64
+											tune = make_tune("Tunes/daft.txt", 0.25, 44100, fm_brass_note)
+											tune = np.sign(tune) # Apply nonlinear distortion to expand frequency content
+											voice, sr = librosa.load("daft.wav", sr=sr)
+											y = specgram_vocoder(tune, voice, sr, w, h, hann_window)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<h4>Tune</h4>
+										<p>
+											<audio controls>
+												<source src="Examples/Brass.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+										<h4>Voice</h4>
+										<p>
+											<audio controls>
+												<source src="HW3_Vocoders/daft.wav" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+										<h4>Result</h4>
+										<p>
+											<audio controls>
+												<source src="Examples/DaftBrass.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<p>
+											<img src = "Examples/STFTVocoder_DaftBrass.svg">
+										</p>
+
+										<p>
+											Below is an example using the voice to shape an FM bell sound
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w = 2048
+											h = 64
+											tune = make_tune("Tunes/daft.txt", 0.25, 44100, fm_bell_note)
+											tune = np.sign(tune) # Apply nonlinear distortion to expand frequency content
+											voice, sr = librosa.load("daft.wav", sr=sr)
+											y = specgram_vocoder(tune, voice, sr, w, h, hann_window)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<h4>Tune</h4>
+										<p>
+											<audio controls>
+												<source src="Examples/Bell.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+										<h4>Voice</h4>
+										<p>
+											<audio controls>
+												<source src="HW3_Vocoders/daft.wav" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+										<h4>Result</h4>										
+										<p>
+											<audio controls>
+												<source src="Examples/DaftBell.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<p>
+											<img src = "Examples/STFTVocoder_DaftBell.svg">
+										</p>
+
+
+										<h2><a name = "part3">Part 3: Phase Retrieval</a></h2>
+
+										<p>
+											In this section, you will use a fundamental algorithm for <i>phase retrieval</i>, which is the process of estimating the phase from a magnitude only STFT.  This is useful not only in applications when we're only given the amplitudes of our sinusoids, but also in applications where we want to warp sound in a way that would mess up the phase.  For example, if we want to play audio at a faster rate without changing the pitch, the phases need to be adjusted.  Conversely, if we want to move things up in frequency without changing the speed of the audio, we also have to adjust the phase.  A quick and dirty way of doing both of these is to simply throw away the phase, warp the magnitude only STFT images, and then recover phase in the new images.
+										</p>
+
+										<h2><a name = "griffinlim">The Griffin-Lim Algorithm (8 Points)</a></h2>
+
+										<p>
+											The earliest algorithm for phase retrieval was devised by Daniel Griffin and Jae Lim in 1984, in the <a href = "https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.331.7151&rep=rep1&type=pdf">following paper</a>.  The idea is to perform an iterative procedure where the amplitudes are fixed but where the phases are slowly adjusted.  Let's say we start with a magnitude-only spectrogram <b>SAbs</b>.  Then the iterations of Griffin-Lim are as follows:
+										</p>
+
+										<ol>
+											<li>Let <b>S = SAbs</b></li>
+											<li>Let <b>A = stft(istft(S))</b></li>
+											<li>Compute the phase of everything in <b>A</b></li>
+											<li>Let <b>S</b> have the amplitudes of <b>SAbs</b> but the phases of <b>A</b>.  As a hint for this, if you have a matrix <b>P</b> with all of the phases of <b>A</b> expressed in radians, you can turn this into a matrix of complex exponentials <b>e<SUP>iP</SUP></b> with 
+											<P>
+												<code>np.exp(np.complex(0, 1)*P)</code>
+											</P>
+											which applies <b>e<SUP>iP</SUP></b> element-wise on every element in <b>P</b>. Now, the phases are expressed as complex numbers which can simply be multiplied by the amplitudes in <b>SAbs</b>.  In fact, if you say 
+
+											<p>
+												np.abs(np.exp(np.complex(0, 1)*P))
+											</p>
+
+											you will notice this gives you a matrix of all 1s.  This is because the magnitude of any complex number <b>e<SUP>i &theta; </SUP></b> is 1.  In other words, these numbers do not change the amplitude, only the phase.  This is exactly what we want.
+											
+											</li>
+											<li>Repeat steps 2-4 for some specified number of iterations</li>
+											<li>Perform one final istft on <b>S</b>, and return the resulting audio</li>
+										</ol>
+
+										<p>
+											Fill in the <code>griffin_lim</code> method to implement this algorithm.  A simple sanity check you can do to make sure it's working properly is to perform an STFT, throw out all of the phase information, and try to go back.  For example, try the following code:
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w =  2048
+											h = 128
+											win_fn = hann_window
+											x, sr = librosa.load("mj.wav", sr=sr)
+											S = stft(x, w, h, win_fn)
+											SAbs = np.abs(S) # Throw away all phase information
+											y = griffin_lim(SAbs, w, h, win_fn, 10)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											The result should sound like this if things are working properly
+										</p>
+
+										<h4>Original Audio</h4>
+										<p>
+											<audio controls>
+												<source src="HW3_Vocoders/mj.wav" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<h4>Phase Retrieval Result</h4>
+
+										<p>
+											<audio controls>
+												<source src="Examples/MJGriffinLim.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<p>
+											This is definitely not perfect!  Audio experts would say that this sounds a little bit "phase-y," meaning that the phases aren't totally correct (it almost has a metallic sound).  However, it's quite a good estimate considering how we threw away all of the phase information and started from nothing.
+										</p>
+
+										<p>
+											For a slightly more interesting algorithm that runs with Griffin Lim as a subroutine, there is also code provided for you in <code>time_shift</code> that computes the magnitude spectrogram and stretches or compresses it along the time axis, followed by phase retrieval, to change the timing without changing the pitch.  If your phase retrieval code works properly, here is what you should get when stretching out the time by 1.5x
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w =  2048
+											h = 128
+											win_fn = hann_window
+											voice, sr = librosa.load("mj.wav", sr=sr)
+											y = time_shift(voice, 1.5, w, h, win_fn, 10)
+											ipd.Audio(y, rate=int(sr))
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Examples/MJ_1.5Time.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<p>
+											Here is an example compressing the time to 3/5 of what it was
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w =  2048
+											h = 128
+											win_fn = hann_window
+											voice, sr = librosa.load("mj.wav", sr=sr)
+											y = time_shift(voice, 0.6, w, h, win_fn, 10)
+											ipd.Audio(y, rate=int(sr))
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Examples/MJ_0.6Time.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										
+										<HR>
+										<h2><a name = "soundimages">Phase Retrieval Application 1: Sound Images (Optional)</a></h2>
+										<p>
+											One interesting "synesthetic" application that phase retrieval unlocks is that we can turn images into audio by taking any grayscale image and considering it a magnitude only specification of an STFT.  If we apply phase retrieval, we can then fill in the phases for a sound whose absolute value STFT would match the specified image.
+										</p>
+
+										<h3>Example 1: 1-Pixel Trajectory</h3>
+										<p>
+											Let's suppose we have the following image, in which a single pixel is lit up and moves around the frequency axis over time.
+										</p>
+
+										<img src = "HW3_Vocoders/Trajectory.png">
+
+										<p>
+											This is a slightly easier way to specify frequencies over time than what we did before with <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module4/Video1">chirps</a>, but we have to invert it back to the time domain to hear it.  If we create the following complex magnitude spectrogram with a window length of 2048 that has zero phase everywhere
+										</p>
+
+										<img src = "Examples/TrajectorySpec.png">
+										<p>
+											And then invert it with phase retrieval, we get the following audio
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w = 2048
+											h = 512
+											y = im2sound("Trajectory.png", w, h, hann_window, 10)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Examples/Trajectory.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<h3>Example 2: DOOM</h3>
+										<p>
+											Let's suppose we have the following image:
+										</p>
+
+										<img src = "HW3_Vocoders/Doom.png">
+
+										<p>
+											If we create the following complex magnitude spectrogram with a window length of 2048, being careful to mirror the frequencies appropriately:
+										</p>
+
+										<img src = "Examples/DoomSpec.png">
+										<p>
+											And then invert it with phase retrieval, we get the following audio
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w = 2048
+											h = 512
+											y = im2sound("Doom.png", w, h, hann_window, 10)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Examples/Doom.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+
+										<h3>Example 3: CS 472</h3>
+										<p>
+											Let's suppose we have the following image:
+										</p>
+
+										<img src = "HW3_Vocoders/CS472.png">
+
+										<p>
+											If we create the following complex magnitude spectrogram with a window length of 2048
+										</p>
+
+										<img src = "Examples/CS472Spec.png">
+										<p>
+											And then invert it with phase retrieval, we get the following audio
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w = 2048
+											h = 512
+											y = im2sound("CS472.png", w, h, hann_window, 10)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Examples/CS472.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+
+										<HR>
+											<h2><a name = "pitchshift">Phase Retrieval Application 2: Pitch Shifting (Optional)</a></h2>
+	
+											<p>
+												For those who want a challenge, you can try to implement pitch shifting by nonlinearly warping the frequency axis, resampling, and performing phase retrieval (though this will be ungraded).  Have a look a the <code>time_shift</code> method to see how to do the warp, and fill in the <code>pitch_shift</code> method.  Here is an example shifting down in pitch by 4 halfsteps.  Notice how the frequencies get compressed.
+											</p>
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												sr = 44100
+												w =  8192
+												h = 128
+												win_fn = hann_window
+												voice, sr = librosa.load("mj.wav", sr=sr)
+												y = pitch_shift(voice, -4, w, h, win_fn, 10)
+												ipd.Audio(y, rate=int(sr))
+											</script>
+	
+											<p>
+												<audio controls>
+													<source src="Examples/MJ_8192_128_-4.mp3" type="audio/mpeg">
+												  Your browser does not support the audio element.
+												</audio> 
+											</p>
+	
+											<img src = "Examples/MJ_8192_128_-4.svg" width=1000>
+											
+	
+											<p>
+												Here is an example shifting up in pitch by 4 halfsteps.  Notice how the frequencies get stretched out.
+											</p>
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												sr = 44100
+												w =  8192
+												h = 128
+												win_fn = hann_window
+												voice, sr = librosa.load("mj.wav", sr=sr)
+												y = pitch_shift(voice, 4, w, h, win_fn, 10)
+												ipd.Audio(y, rate=int(sr))
+											</script>
+	
+											<p>
+												<audio controls>
+													<source src="Examples/MJ_8192_128_4.mp3" type="audio/mpeg">
+												  Your browser does not support the audio element.
+												</audio> 
+											</p>
+	
+											<img src = "Examples/MJ_8192_128_4.svg" width=1000>
+
+										<h2><a name = "musical">Musical Statement (4 Points)</a></h2>
+										<p>
+											You just made some really wacky compositional tools, so use them!  As usual, a submission is required, but you may also choose to submit your entry to a contest, where the winner will earn 2 extra credit points.
+										</p>
+										<p>
+											If you're going to use the vocoders, you have to get the timing between the voice and the notes to line up very well.  I'd recommend you use a <a href = "https://www.google.com/search?q=metronome">metronome</a> to keep time as you're recording.  Also, you are certainly not limited to the synthetic instruments we made in homework 2!  If you play your own instrument, you can record that (you may need to distort it).  If you don't play an instrument, you can find tunes on youtube or other places online.
+										</p>
+
+										<h2><a name = "bored">For the bored...</a></h2>
+										<p>
+											See if you can apply a warp that changes over time and then apply phase retrieval.  For example, what if you try to add vibrato to your STFT?
+										</p>
+
+
+
+
+
+                                    
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../index.html#overview">Overview</a></li>
+												<li><a href = "../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../index.html#homework">Homework</a></li>
+												<li><a href = "../../index.html#grading">Grading</a></li>
+												<li><a href = "../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../index.html#participation">Participation</a></li>
+												<li><a href = "../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../Software/index.html">Software</a></li>
+										<li><a href = "../../Schedule/index.html">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+									
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Vocoders And Phase Retrieval</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW3_Vocoders/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
+												<ul>
+													<li>
+														<a href = "../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module0/Part1">Module 0: Warmup</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../Modules/Module8_DiscoveringFourier">Module 8: Discovering Fourier</a></li>
+												<li><a href = "../../Modules/Module8b_ImplementingDFT">Module 8b: Implementing The Discrete Fourier Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module10/Video0">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module11/Video0">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+													<ul>
+														<li><a href = "../../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
+													</ul>
+												</li>
+												<li><a href = "../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
+												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
