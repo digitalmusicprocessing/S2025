@@ -1,0 +1,709 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 472A: Digital Music Processing, Spring 2021</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Ursinus CS 472A: Digital Music Processing, Spring 2021</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Assignment 1: Risset Beats (30 Points)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
+                                        <h3>Due Friday 2/5/2021</h3>
+										<h3><a href = "statements.html">Click here</a> to listen to musical statements!</h3>
+									</header>
+
+									<div id="page-content">
+
+										<ul>
+											<li><a href = "#overview">Overview/Logistics</a>
+												<ul>
+													<li><a href = "#objectives">Learning Objectives</a></li>
+													<li><a href = "#submit">What To Submit</a></li>
+												</ul>
+											</li>
+											<li><a href = "#background">Background</a></li>
+											<li><a href = "#programming">Programming Tasks</a>
+												<ul>
+													<li><a href = "#naive">Part 1: A Naive Implementation (10 Points)</a></li>
+													<li><a href = "#faster">Part 2: A Faster Implementation with Phase Aggregation Tricks (15 Points)</a></li>
+													<li><a href = "#musical">Part 3: Musical Statement (5 Points)</a></li>
+													<li><a href = "#bored">For the bored...</a></li>
+												</ul>
+											</li>
+										</ul>
+
+										<h2><a name = "overview">Overview / Logistics</a></h2>
+
+										<p>
+											The purpose of this assignment is to apply your knowledge of sinusoids in numpy to create a musical note sequence synthesizer with a very unique <a href = "https://en.wikipedia.org/wiki/Timbre">timbre</a> based on something called a <b>Risset beat</b>, as invented by the French composer <a href = "https://en.wikipedia.org/wiki/Jean-Claude_Risset">Jean-Claude Risset</a>.  A Risset beat is a series of beat frequencies that all line up at the same time to make a pitch that stands out.  The background below describes the math in more detail.  By the end of this assignment, you will be able to write down a function that's just a sum of sines and cosines which plays an entire tune, which repeats itself infinitely! (Though we will only sample one repetition of it)
+											
+										<p>
+											<a href = "https://github.com/Ursinus-CS472A-S2021/HW1_RissetBeats/archive/main.zip">Click here</a> to download the starter code for this assignment, which also includes some tunes in .txt files that you can use to test your code.  You will be editing the file <code>risset.py</code> and running methods from this file in jupyter so you can listen to audio.
+										</p>
+										
+
+                                        <p>
+                                            <h3><a name = "objectives">Learning Objectives</a></h3>
+                                            <ul>
+												<li>Practice numpy arrays, methods, and for loops in the service of musical applications</li>
+												<li>Learn the mathematical and programmatic aspects of timing and interference patterns</li>
+												<li>Use trig identities to speed up code</li>
+                                            </ul>
+										</p>
+										
+										<h3><a name = "submit">What To Submit</a></h3>
+
+										<p>                                       
+                                            When you are finished, please submit your python file <code>risset.py</code> to canvas, as well as an audio file for your musical statement and the txt file with the notes that make it up.  Please also submit answers to the following questions on Canvas
+										
+										<ol>
+											<li>
+												A title for your musical statement
+											</li>
+											<li>
+												If you want to submit your musical statement to the music contest, and if so, what name or pseudonym you would like to use in the musical gallery on our class web site
+											</li>
+											<li>
+												Approximately how many hours it took you to finish this assignment (<i>I will not judge you for this at all...I am simply using it to gauge if the assignments are too easy or hard</i>)
+											</li>
+											<li>
+												Your overall impression of the assignment. Did you love it, hate it, or were you neutral? One word answers are fine, but if you have any suggestions for the future let me know.
+											</li>
+											<li>
+												Any other concerns that you have. For instance, if you have a bug that you were unable to solve but you made progress, write that here. The more you articulate the problem the more partial credit you will receive (fine to leave this blank)
+											</li>
+										</ol>
+
+										<h2><a name = "background">Background</a></h2>
+										<p>
+											As we saw in our <a href = "../../ClassExercises/Week2/Week2_BeatPhase">class exercise</a>, it is possible to control where the peaks of beat frequencies occur by shifting their component cosines in time.  We can also make sure a beat occurs only once over an interval of time by choosing the right beat frequency.  For example, let's say that we have 5 seconds of audio (called <code>tune_length</code> in the code), and we want to make a beat with a 330hz frequency that occurs at halfway through at 2.5 seconds.  For it to occur only once, we'll want the period <code>T</code> of the beat to be 5 seconds, which means the beat frequency <code>f</code> should be <b>0.2hz</b> (recall that <code>f = 1/T</code>).  So choosing 329.8hz or 330.2 hz would be an appropriate choice.  A function that makes this happens is this
+										</p>
+
+										<h3>
+											\[ y(t) = \cos(2 \pi * 330 (t - 2.5)) + \cos(2 \pi * 330.2 (t - 2.5)) \]
+										</h3>
+
+										<p>
+											Below is the audio we get from this
+										</p>
+
+										<table>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/330beat1.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td><img src = "Examples/330beat1.png"></td>
+											</tr>
+										</table>
+										<p>
+											One thing that's a little unfortunate about this from a music making perspective is that the onset is very gradual.  It would be even worse if we were making a much longer tune.  To make the note stand out more over a shorter period of time, we can create more beats nearby.  For example, if we put together 329.6hz, 329.8hz, 330hz, 330.2hz, and 330.4 hz, we get the following:
+										</p>
+
+										<h3>
+											\[ y(t) = \sum_{f = 329.6, 329.8, 330, 330.2, 330.4} \cos(2 \pi f (t - 2.5)) \] 
+										</h3>
+										
+										<table>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/330beat2.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td><img src = "Examples/330beat2.png"></td>
+											</tr>
+										</table>
+										
+
+										<p>
+											This definitely seems to stand out more against the background, but why does this happen?  To see this, we note that there are now beats all over the place!  In fact, we will have <b>N*(N-1)/2</b> beats for N frequencies.  In this example, we have 4 beats at 0.2hz, but also 3 beats at double that frequency, 2 beats at triple that frequency, and one beat at quadruple that frequency, for a total of 10 beats:
+											
+										<table>
+											<tr><td>Beats at 0.2hz (Period 5)</td><td>329.6, 329.8</td><td>329.8, 340</td><td>340, 340.2</td><td>340.2, 340.4</td></tr>
+											<tr><td>Beats at 0.4hz (Period 5/2)</td><td>329.6, 340</td><td>329.8, 340.2</td><td>340, 340.4</td></tr>
+											<tr><td>Beats at 0.6hz (Period 5/3)</td><td>329.6, 340.2</td><td>329.8, 330.4</td></tr>
+											<tr><td>Beats at 0.8hz (Period 5/4)</td><td>329.6, 340.4</td></tr>
+										</table>
+										</p>
+
+										<p>
+											These higher frequency "harmonic beats" will reach peaks in more places than the base beat, but they do all reach peaks at the chosen time offset, where they work constructively together to make a much stronger onsets.  In other places, they make these "side lobes."  But we can cut down on these if we use more frequencies.  For example, if we take 21 frequencies in intervals of 0.2 between 328hz and 332 hz, we get the following
+										</p>
+
+										<h3>
+											\[ y(t) = \sum_{f = 328, 328.2, ..., 331.8, 332} \cos(2 \pi f (t - 2.5)) \] 
+										</h3>
+
+										<table>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/330beat3.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td><img src = "Examples/330beat3.png"></td>
+											</tr>
+										</table>
+
+										<p>
+											Now we're getting somewhere!  This note is highly localized to 2.5 seconds in time now.  If we took this a step further, we could also put two notes together in this fashion.  Let's say, for example, that we wanted to put a note that's 287hz (a D) right before this note at t = 1.  We could then simply add these two together
+										</p>
+
+										<h3>
+											\[ y(t) = \sum_{f = 328, 328.2, ..., 331.8, 332} \cos(2 \pi f (t - 2.5)) + \sum_{f = 285, 285.2, ..., 288.8, 289} \cos(2 \pi f (t - 1)) \]
+										</h3>
+
+										<table>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/2beats.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td><img src = "Examples/2beats.png"></td>
+											</tr>
+										</table>
+
+										<p>
+											As you can imagine, it's possible to make an entire composition this way, and the code to do so will be particularly short with the help of loops.  So that's what we'll be doing in this assignment!
+										</p>
+
+										
+                                        
+										<HR>
+										<h2><a name = "programming">Programming Tasks</a></h2>
+										<p>
+											Your task in this assignment will be to create a program that takes a list of notes and their onset times, and to create a Risset beat for that note at each time.  The note should only occur once at its specified time, so you will have to carefully tune the beat frequency to ensure this based on the specified length of the tune.  You will also have to change its phase to control when its onset occurs.
+										</p>
+
+										<p>
+											Some example tunes have been provided for you as .txt files.  Each line in the text file contains a note number, followed by a space, followed by the duration of the note in sixteenth note intervals (e.g. a quarter note concert A would be <b>0 4</b>).  For example, the file <code>Tunes/birthday.txt</code> contains the following
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												-7 3
+												-7 1
+												-5 4
+												-7 4
+												-2 4
+												-3 8
+												-7 3
+												-7 1
+												-5 4
+												-7 4
+												-0 4
+												-2 8
+												-7 3
+												-7 1
+												5 4
+												2 4
+												-2 4
+												-3 4
+												-5 4
+												3 3
+												3 1
+												2 4
+												-2 4
+												0 4
+												-2 8</script>
+											
+											There is a helper method <code>load_tune</code> in <code>risset.py</code> to load these text files and convert the onset times into times in seconds.  <code>load_tune</code> takes two parameters: a path to the filename holding the tune, and the length of the tune in seconds.  The method returns two <i>parallel arrays</i>, <code>ps</code> and <code>times</code>, which contain the note numbers and onset times in seconds of each note, respectively.  To loop through each pair of note and onset time together, you can use <code>zip</code>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												for p, time in zip(ps, times):
+											 		...</script>
+
+
+										</p>
+										<p>
+											I have already setup calls to this method in <code>do_risset_slow</code> and <code>do_risset_fast</code>.  Here's an example of how you might call this code from a Jupyter notebook, assuming that the jupyter notebook is in the same directory as the starter code
+										</p>
+
+										<iframe src="ArpeggioExample.html" width="900" height="500"></iframe>
+
+										<p>
+											Thanks to the wonders of python and numpy, you will not have to write much code to accomplish these tasks, but you will have to think carefully about the code that you do write.  A good place to start would be to see if you can replicate the examples of single notes in the background, and then figure out how to extend that in a loop.  Use your ears to help you as you're debugging.  I have tried to provide as many examples as I can so you can check as you're incrementally developing.
+										</p>
+										
+										<h3>
+											<a name = "naive">Part 1: A Naive Implementation (10 Points)</a>
+										</h3>
+
+										<p>
+											Fill in the method <code>do_risset_slow</code> to implement Risset beats from the definition above.  You should use two nested loops: the outer loop should loop through the notes in a tune, and the inner loop should add an appropriate amount of frequencies spaced evenly around the corresponding note's frequency and at the right phase offset so that they occur at the right time.  
+										</p>
+
+										<P>
+											To make this concrete, let's recall the example from above
+										</P>
+
+										<h3>
+											\[ y(t) = \sum_{f = 328, 328.2, ..., 331.8, 332} \cos(2 \pi f (t - 2.5)) + \sum_{f = 285, 285.2, ..., 288.8, 289} \cos(2 \pi f (t - 1)) \]
+										</h3>
+
+										<p>
+											This can can be written as a two nested loops.  The loop on the outside goes through the center frequencies of <b>330</b> and <b>287</b>.  But for each of these, we also need to add a bunch of other frequencies together.  So the inner loop can do that for both <b>330</b> and <b>287</b>.
+										</p>
+
+										<img src = "LoopStructure.svg" width = 700 height = 150>
+
+										<p>
+											Below are a few examples with more than two notes showing you what you should hear if this is working properly
+										</p>
+
+										<table>
+											<tr>
+												<td><h4>2.5 Second Arpeggio, 25 freqs per note</h4></td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 2.5
+													freqs_per_note = 25
+													sr = 8000
+													x = do_risset_slow("Tunes/arpeggio.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/arpeggio2.5_25.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
+										<table>
+											<tr>
+												<td><h4>10 Second Arpeggio, 25 freqs per note</h4></td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 10
+													freqs_per_note = 25
+													sr = 8000
+													x = do_risset_slow("Tunes/arpeggio.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/arpeggio10_25.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
+										<table>
+											<tr>
+												<td><h4>10 Second Arpeggio, 100 freqs per note</h4>Notice how this one has stronger onsets than the other one with more frequencies</td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 10
+													freqs_per_note = 25
+													sr = 8000
+													x = do_risset_slow("Tunes/arpeggio.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/arpeggio10_100.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
+										<table>
+											<tr>
+												<td><h4>Birthday 10 Seconds, 100 Freqs</h4></td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 10
+													freqs_per_note = 100
+													sr = 8000
+													x = do_risset_slow("Tunes/birthday.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/birthday_10_100.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
+
+										<HR>
+										<h3><a name = "faster">Part 2: A Faster Implementation with Phase Aggregation Tricks (15 Points)</a></h3>
+
+										<p>
+											The above code certainly works, but it doesn't scale particularly well.  Let's say we stretched the audio out over 70 seconds and we used 500 frequencies per note to keep the onsets strong.  On my machine, this takes about 4 seconds per note.  But for any reasonable tune, this can be unbearably slow.   There's an example with an <a href = "Tunes/wanna.txt">excerpt</a> from Michael Jackson's <a href = "https://www.youtube.com/watch?v=1XMvPTFzgVU">Wanna Be Startin Something</a> that has almost 200 notes in it, so it would take almost 15 minutes to generate a mere 70 second clip!  This would make it difficult to debug and tweak.  
+										</p>
+
+										<p>
+											Luckily, there is a mathematical trick to play so that we only need a sine and a cosine for each unique note that's played, regardless of how many times it's played.  For this, we must turn to a trig identity:
+										</p>
+
+										<h3>
+											\[ \cos(A+B) = \cos(A)\cos(B) - \sin(A)\sin(B) \]
+										</h3>
+
+										What this means is that if we have a sinusoid
+										<h3>
+											\[ y(t) = \cos(2 \pi f t - \phi) \]
+										</h3>
+
+										then, using the fact that cosine is an even function and sine is an odd function, we can write it equivalently as 
+
+										<h3>
+											\[ y(t) = \cos(\phi) \cos(2 \pi f t) + \sin(\phi) \sin(2 \pi f t) \]
+										</h3>
+
+										Let's now imagine that we had a bunch of the same sinusoid at different phases added together
+
+										<h3>
+											\[ y(t) = \sum_{i = 1}^N \cos(2 \pi f t + \phi_i) \]
+										</h3>
+
+										In the naive scheme, we would need to add together N cosines.  But with the above trick, we can reduce it to just a single sine and cosine as follows:
+
+										<h3>
+											\[ y(t) = \left( \sum_{i = 1}^N \cos(\phi_i) \right) \cos(2 \pi f t) + \left( \sum_{i = 1}^N \sin(\phi_i) \right) \sin(2 \pi f t)\]
+										</h3>
+
+										<p>
+											In other words, sum up the cosine of all of the phases and use that as the amplitude of a pure cosine wave at the chosen frequency, and sum up the sines of all of the phases and use them as the amplitude of a pure sine wave.  <a href = "PhaseAggregation.html">Click here</a> for some notes of an example
+										</p>
+
+
+										<p>
+											Implement the above ideas to speed things up in the method <code>do_risset_fast</code>.  Don't forget that you still need to add in all of the frequencies for each note to make a beat!  It's just that each one of these frequencies will be repeated each time you repeat the note, so you'll save by only having to have a sine and a cosine for each one.
+										</p>
+
+										<p>
+											You should test this technique on happy birthday first to make sure you get the same sound (since this has repeated notes).  But this also unlocks the Michael Jackson example, where you'll hear something like this
+										</p>
+
+										<table>
+											<tr>
+												<td><h4>Michael Jackson's "Wanna Be Startin Somethin," 70 Seconds, 500 Freqs Per Note</h4></td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 70
+													freqs_per_note = 500
+													sr = 8000
+													x = do_risset_fast("Tunes/wanna.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/wanna_70_500.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
+										<h5><a name = "dictionary">Python Dictionaries</a></h5>
+										<p>
+											One way (not the only way) to tackle this in code is by using a <a href = "https://www.w3schools.com/python/python_dictionaries.asp">dictionary</a> in python, which is like an array where the indices, or "keys," are arbitrary types, not numbers in a list index sequence.  For example, here's a map where the keys are frequencies and the values hold the amplitudes of the frequencies
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sin_amps = {}
+											# The first time we see a frequency, we need to add it to the dictionary
+											# with an amplitude of 0
+											if 330 not in sin_amps:
+												sin_amps[330] = 0
+											sin_amps[300] += blah # Whatever sin(phi) was for this note
+										
+											#... (Loop through and add more frequencies)
+
+
+											for f in sin_amps: #Loop through all frequencies
+												sinAmp = sin_amps[f] # Pull out amplitude of each frequency
+										</script>
+
+
+
+										<HR>
+										<h3><a name = "musical">Part 3: Musical Statement (5 Points)</a></h3>
+										<p>
+											You just made a basic digital synthesizer, now put it to use!  Make your own tune and synthesize it with one of your methods.  This can be whatever you want, but it should have at least 5 notes in it (and hopefully many more!).  If you're struggling with ideas, you can try some of the chords listed at <a href = "https://en.wikipedia.org/wiki/List_of_chords">this link</a>.
+											
+										</p>
+										
+										<p>You are required to submit something as part of your assignment, but you may also optionally choose to submit your entry to a "music contest" that we'll hold as a class.  <b>The winner of the music contest will receive 2 points of extra credit on the assignment.</b>
+										</p>
+
+										<p>
+											To download and submit your audio, right click on the audio widget in Jupyter and click "Save Audio As"
+										</p>
+
+
+
+
+
+
+										<h3><a name = "bored">For the bored...</a></h3>
+										<p>
+											Here are a few things you can try if you want to take this further, and which may enhance your musical statement (though you are certainly not limited to these!)
+										</p>
+										<ul>
+											<li>
+												We've been using the same number of sinusoids for each note, but you can change the attack by using more or fewer sinusoids per note.  Add this feature and augment the text files with the tunes by specifying how many frequencies you want per note, in addition to the note number and its onset time.</li>
+											<li>
+												The notes occur in sequence right now, but you may also want to add chords where more than one note can play at once.
+											</li>
+											<li>
+												What happens if you use some other periodic function, like a square or sawtooth wave, instead of a sinusoid?
+											</li>
+										</ul>
+										
+										
+
+
+
+
+
+
+                                    
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../index.html#overview">Overview</a></li>
+												<li><a href = "../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../index.html#homework">Homework</a></li>
+												<li><a href = "../../index.html#grading">Grading</a></li>
+												<li><a href = "../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../index.html#participation">Participation</a></li>
+												<li><a href = "../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../Software/index.html">Software</a></li>
+										<li><a href = "../../Schedule/index.html">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+									
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Vocoders And Phase Retrieval</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW3_Vocoders/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
+												<ul>
+													<li>
+														<a href = "../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module0/Part1">Module 0: Warmup</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../Modules/Module8_DiscoveringFourier">Module 8: Discovering Fourier</a></li>
+												<li><a href = "../../Modules/Module8b_ImplementingDFT">Module 8b: Implementing The Discrete Fourier Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module10/Video0">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module11/Video0">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+													<ul>
+														<li><a href = "../../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
+													</ul>
+												</li>
+												<li><a href = "../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
+												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>

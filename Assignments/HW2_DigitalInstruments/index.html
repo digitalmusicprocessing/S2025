@@ -1,0 +1,831 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 472A: Digital Music Processing, Spring 2021</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Ursinus CS 472A: Digital Music Processing, Spring 2021</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Assignment 2: Digital Instruments (46 Points)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
+                                        <h3>Due Sunday 2/21/2021</h3>
+										<h3><a href = "statements.html">Click here</a> to listen to musical statements!</h3>
+									</header>
+
+									<div id="page-content">
+
+										<ul>
+											<li><a href = "#overview">Overview/Logistics</a>
+												<ul>
+													<li><a href = "#objectives">Learning Objectives</a></li>
+													<li><a href = "#submit">What To Submit</a></li>
+												</ul>
+											</li>
+											<li><a href = "#karplusbg">Background: Karplus Strong</a></li>
+											<li><a href = "#fmbg">Background: FM Synthesis</a></li>
+											<li><a href = "#programming">Programming Tasks</a>
+												<ul>
+													<li>
+														<a href = "#karplus">Part 1: Karplus-Strong (7 Points)</a>
+													</li>
+													<li>
+														<a href = "#tunemaking">Part 2: Tune Making (8 Points)</a>
+													</li>
+													<li>
+														<a href = "#fmcode">Part 3: FM Synthesis Framework (5 Points)</a>
+													</li>
+													<li><a href = "#fmzoo">Part 4: FM Synthesis Instrument Zoo (23 Points)</a>
+														<ul>
+															<li>
+																<a href = "#bell">Bell Notes (3 Points)</a>
+															</li>
+															<li>
+																<a href = "#brass">Brass Notes (5 Points)</a>
+															</li>
+															<li>
+																<a href = "drumlike">Drum-Like Sound (5 Points)</a>
+															</li>
+															<li>
+																<a href = "#wooddrum">Wood Drum Sound (5 Points)</a>
+															</li>
+															<li>
+																<a href = "#dirtybass">Dirty Bass Sound (5 Points)</a>
+															</li>
+														</ul>
+													</li>
+													<li>
+														<a href = "#musical">Part 5:Musical Statement (3 Points)</a>
+													</li>
+													<li>
+														<a href = "#bored">For the bored...</a>
+													</li>
+												</ul>
+											</li>
+											
+										</ul>
+
+										<h2><a name = "overview">Overview / Logistics</a></h2>
+
+										<p>
+											This assignment will serve as the finale of our unit on time domain audio processing.  Students will create methods to synthesize digital waveforms for a slew of different instrument sounds, and they will piece them together to make musical tunes.  We will make the code extremely functional so that it's easy to plug in different modules together; in other words, we will have many parameters as functions which themselves generate notes and parts of notes.
+										</p>
+											
+											
+										<p>
+											<a href = "https://github.com/Ursinus-CS472A-S2021/HW2_DigitalInstruments/archive/main.zip">Click here</a> to download the starter code for this assignment, which also includes some tunes in .txt files that you can use to test your code.  You will be editing the file <code>instruments.py</code> and running methods from this file in jupyter so you can listen to audio.
+										</p>
+										
+
+                                        <p>
+                                            <h3><a name = "objectives">Learning Objectives</a></h3>
+                                            <ul>
+												<li>Learn how to make a variety of sounds with FM synthesis</li>
+												<li>Practice numpy arrays, methods, and for loops in the service of musical applications</li>
+												<li>Learn the mathematical and programmatic aspects of timing, envelopes</li>
+												<li>Learn how to use methods as parameters in python to write concise, reusable code</li>
+                                            </ul>
+										</p>
+										
+										<h3><a name = "submit">What To Submit</a></h3>
+
+										<p>                                       
+                                            When you are finished, please submit your python file <code>instruments.py</code> to canvas, as well as an audio file for your musical statement and all of the txt files for the instrument tracks that make it up.  Please also submit the code or notebook you used to make the musical statement.  Finally, please submit answers to the following questions on Canvas
+										
+										<ol>
+											<li>
+												A title for your musical statement
+											</li>
+											<li>
+												If you want to submit your musical statement to the music contest, and if so, what name or pseudonym you would like to use in the musical gallery on our class web site
+											</li>
+											<li>
+												Approximately how many hours it took you to finish this assignment (<i>I will not judge you for this at all...I am simply using it to gauge if the assignments are too easy or hard</i>)
+											</li>
+											<li>
+												Your overall impression of the assignment. Did you love it, hate it, or were you neutral? One word answers are fine, but if you have any suggestions for the future let me know.
+											</li>
+											<li>
+												Any other concerns that you have. For instance, if you have a bug that you were unable to solve but you made progress, write that here. The more you articulate the problem the more partial credit you will receive (fine to leave this blank)
+											</li>
+										</ol>
+
+										<h2><a name = "karplusbg">Background: Karplus Strong</a></h2>
+
+
+										<p>
+											We've now seen several ways of creating plucked strings at this point, but there is one more I want to show you that leads to an interesting "rubber band" timbre.  It is an instance of something more generally referred to as a "digital waveguide," where we actually think about how energy bounces back and forth along the string and interferes with itself. 
+										</p>
+
+										<p>
+											In the Karplus-Strong algorithm, we first "tune" the string by determining the period <code>T</code> of repetition of the base frequency of the string.  Recall that the period is the reciprocal of frequency <b>f</b>
+
+											<h4>
+												\[ T = \frac{1 \text{ second}} {f \text{ cycle}} \]
+											</h4>
+
+											But we actually want to know the number of <i>samples</i> per period.  So we need to do a conversation by multiplying by a fancy 1.  If <b>sr</b> is the sample rate in cycles per second, then we can do the following:
+
+											<h4>
+												\[ T = \frac{1 \text{ second}} {f \text{ cycle}}  \frac{sr \text{ samples}}{1 \text{ seconds}}  = \frac{sr \text{ samples}}{ f \text{ second}} \]
+											</h4>
+											
+											
+										</p>
+
+										<p>
+											Once we've established the period, we then do the following
+											<ol>
+												<li>
+													<p>
+														Initialize the first <code>T</code> samples to be random noise.  For example, if the frequency is 441hz at a sample rate of 44100hz, then the period is 100 samples, and so we'd fill in the first 100 samples with random noise, as shown below 
+													</p>
+													<img src = "KarplusNoiseFirst.svg">
+												</li>
+												<li>
+													Create every sample at index <code>T</code> and beyond one by one in order by setting them to be the average of two adjacent samples <code>T</code> indices back, scaled down by a certain amount; that is 
+
+													<h3>
+														\[ y[i] = \text{decay}*\frac{y[i-T]+y[i-T+1]}{2} \]
+													</h3>
+												</li>
+											</ol>
+
+											The random noise at the beginning represents a random initial state of the string, which can be though of as the initial "pluck."  Averaging samples one period back simulates the string reflecting energy back and forth over a that period.  <code>decay</code> is a number between 0 and 1 that represents a loss of energy over time as the energy dissipates due to friction.
+										</p>
+
+										<p>
+											The image below shows a period tuned to a 440hz A with a decay rate of <b>0.99</b> (audio below).  As you can see, the signal starts off noisy but eventually settles on something periodic.
+										</p>
+
+										<p>
+											<audio controls>
+												<source src="Audio/karplusA0.99.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
+
+										<img src = "KarplusA.svg">
+
+
+										<p>
+											Below is an example with a decay rate of <b>0.95</b>.  As you can hear, the audio dies out much faster
+										</p>
+										<p>
+
+										
+										<audio controls>
+											<source src="Audio/karplusA0.95.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										  </audio> 
+										</p>
+										
+
+
+										<h2><a name = "fmbg">Background: FM Synthesis</a></h2>
+											<p>
+												As we saw in <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module6/Video2.html">module 6</a>, the equation for an FM frequency waveform can be written as 
+											</p>
+
+											<h3>
+												\[ y(t) = A \cos( 2 \pi f_c t + I \sin(2 \pi f_m t))  \]
+											</h3>
+
+											where 
+											<ul>
+												<li>
+													<b>f<SUB>c</SUB></b>: The center frequency or "carrier frequency"
+												</li>
+												<li>
+													<b>f<SUB>m</SUB></b>: The modulation frequency, or how quickly we're going back and forth around the center, which also determines the spacing between harmonics of <code>f_c</code>
+												</li>
+												<li>
+													<b>I</b>: Modulation index: the ratio of the modulation deviation to <b>f<SUB>m</SUB></b>, which can also be thought of as the amplitude of the inner sine wave, and which provide some rough control over how many harmonics there are.
+												</li>
+												<li>
+													<b>A</b>: The overall amplitude of the waveform
+												</li>
+											</ul>
+		
+											<p>
+												But we can actually make <b>A</b> and <b>I</b> functions of time, so that the time-varying inner and outer amplitude waveform can be written as 
+											</p>
+		
+											<h3>
+												\[ y(t) = A(t) \cos( 2 \pi f_c t + I(t) \sin(2 \pi f_m t))  \]
+											</h3>
+											<p>
+												As Chowning shows in <a href = "https://web.eecs.umich.edu/~fessler/course/100/misc/chowning-73-tso.pdf">his paper</a>, choosing the right functions for <b>A(t)</b> and <b>I(t)</b> is crucial for creating different instrument sounds.  
+												
+											<p>
+												In the second part of this assignment, you will design several such functions, referred to as "envelopes" in this context.  You will then pair them with different modulation indices and different <b>f<SUB>m</SUB>/f<SUB>c</SUB></b> ratios to make a wide variety of instrument sounds.
+											</p>
+										
+										
+                                        
+										<HR>
+										<h2><a name = "programming">Programming Tasks</a></h2>
+										<p>
+											Your task in this assignment will be to fill in methods to synthesize a variety of musical instrument sounds, and to piece them all together into a tune.  Some example tunes have been provided for you as .txt files, and they are in the same format as they were in the <a href = "../HW1_RissetBeats/">last assignment</a>.  Each line in the text file contains a note number, followed by a space, followed by the duration of the note in sixteenth note intervals (e.g. a quarter note concert A would be <b>0 4</b>).
+
+											<!--
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												for p, time in zip(ps, times):
+													 ...</script>
+											-->
+
+
+										</p>
+
+										<h2><a name = "karplus">Part 1: Karplus-Strong (7 Points)</a></h2>
+
+										<p>
+											Implement the <a href = "#karplusbg">Karplus-Strong</a> algorithm by filling in the <code>karplus_strong_note</code> method in <b>instruments.py</b>.  You can use the <code>np.random.rand(m)</code> method to generate <code>m</code> samples of random noise at the beginning.  If this works properly, then you should get the following result when you run this in jupyter
+										</p>
+										<p>
+											<iframe src="Notebooks/karplus1.html" width="700" height="300"></iframe>
+										</p>
+
+
+										<h2><a name = "tunemaking">Part 2: Tune Making (8 Points)</a></h2>
+										<p>
+											Now it's time to make a general purpose tune generator by filling in the method <code>make_tune</code> in <b>instruments.py</b>.  This method takes another method, <code>note_fn</code>, as a parameter.  This parameter method takes three parameters: <b>sr, note, duration</b>, and it returns a numpy array of samples at the specified <code>note</code> for the specified <code>duration</code> (in seconds) at the specified sample rate <code>sr</code>.  You can call this parameter method just like any other method.  For example, the call
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												x = note_fn(44100, 0, 0.1)
+												#
+											</script>
+											
+											Will generate 0.1 seconds of a concert A at 44100hz.  You should loop through all of the notes in the specified tune in <code>make_tune</code>.  The easiest way to do this is to make one note at a time using calls to <code>note_fn</code>, and concatenate the generated samples onto the end of an array that is growing for each new note, and which will eventually hold the entire tune.  You can use the <code>np.concatenate</code> method to help put new notes on the end of a growing array, rather than pre-allocating an array and putting in slices.  For example, for two numpy arrays <code>y</code> and <code>x</code>, the code 
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												y = np.concatenate((y, x))
+											</script>
+											will put <code>x</code> onto the end of <code>y</code>.
+										</p>
+										<p>
+											Other than that, there's one very important change in the format of the note numbers from the <a href = "../HW1_RissetBeats/">last assignment</a>.  If the note number is a NaN (not a number), then this means a "rest," or a silence (all 0s) for the requested duration.  To check to see if a variable called <code>note</code> is nan, you can write
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											if np.isnan(note):
+												...
+										</script>
+
+										<p>
+											If this all works, you can pass along <code>karplus_strong_note</code> as the <code>note_fn</code> parameter to make audio as follows
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											%load_ext autoreload
+											%autoreload 2
+											import IPython.display as ipd
+											from instruments import *
+											sr = 44100
+											note_fn = lambda sr, note, duration: karplus_strong_note(sr, note, duration, 0.99)
+											y = make_tune("Tunes/missy.txt", 0.18, 44100, note_fn)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											And you should get the following audio (as part of a riff from <a href = "https://www.youtube.com/watch?v=FPoKiGQzbSQ">Missy Elliot's "Gossip Folks"</a>)
+										</p>
+
+										<audio controls>
+											<source src="Audio/missykarplus.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										  </audio> 
+										
+										<p>
+											Note the use of the anonymous function <code>lambda</code>, which you can use to fix the decay amount, and even to change the note parameter that gets passed along to <code>karplus_strong_note</code> from the tune method.  For example, the following code
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											note_fn = lambda sr, note, duration: karplus_strong_note(sr, note-12, duration, 0.92)
+											y = make_tune("Tunes/missy.txt", 0.18, 44100, note_fn)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											Would yield this sound
+										</p>
+
+										<audio controls>
+											<source src="Audio/missylowdecaykarplus.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										  </audio> 
+
+										<HR>
+										<h2><a name = "fmcode">Part 3: FM Synthesis Framework (5 Points)</a></h2>
+
+											<p>
+												In the following tasks, you will make a variety of different instrument types using <a href = "#fmbg">fm synthesis</a>, following suggestions from <a href = "https://web.eecs.umich.edu/~fessler/course/100/misc/chowning-73-tso.pdf">John Chowning's seminal paper</a>.  Each case boils down to creating the appropriate envelopes for <b>A(t)</b> and <b>I(t)</b>, selecting the max value for <b>I(t)</b>, and to tuning the ratio between <b>f<SUB>m</SUB></b> and <b>f<SUB>c</SUB></b>.
+											</p>
+											<p>
+												Your first task will be to write some general purpose code for FM synthesis that you can use over and over again for different instruments by filling in the <code>fm_synth_note</code> method.  Just like any note generation method in this assignment, the first three parameters are <code>sr</code>, <code>note</code>, and <code>duration</code>.  But then there are 4 more optional parameters for FM specifically, which can be tweaked to get vastly different instrument sounds:
+												<ul>
+													<li>
+														<code>ratio</code>: The ratio of <b>f<sub>m</sub></b> to <b>f<SUB>c</SUB></b>.  Recall that <b>f<SUB>c</SUB></b> is determined from the note, so this is all the information you need to figure out <b>f<SUB>m</SUB></b> as well.
+													</li>
+													<li>
+														<code>I</code>: An amount by which to scale the envelope for the bandwidth index.
+													</li>
+													<li>
+														<code>envelope</code>: A function that takes two parameters, <code>N</code> (number of samples) and <code>sr</code> (sample rate), and which is used to generate an envelope for the bandwidth index.  By default, this method returns all ones for a constant bandwidth index.  The full time-varying envelope is this numpy array times the <code>I</code> parameter above.
+													</li>
+													<li>
+														<code>amplitude</code>: A function that takes two parameters, <code>N</code> (number of samples) and <code>sr</code> (sample rate), and which is used to generate an envelope for the amplitude <b>A(t)</b> in front of the waveform.  By default, this method returns all ones for a constant unit amplitude.
+													</li>
+												</ul>
+											</p>
+
+											<p>
+												Once you put all of these parameters together to generate and return a waveform, you can use <code>fm_synth_note</code> as a note generation method in other methods.  For example, the <code>fm_plucked_string_note</code> method that has been provided to you wraps around <code>fm_synth_note</code> to generate a plucked string.  It uses the <code>exp_env</code> function as the generator function for both the modulation index envelope and the amplitude.  It also uses a ratio of 1 and an <code>I</code> of 8.  The code below puts <code>fm_plucked_string_note</code> into action with a clip from <a href = "https://www.youtube.com/watch?v=yK0P1Bk8Cx4">Kenny Loggins's "Danger Zone"</a>, and it should work once you've finished implementing <code>fm_synth_note</code>
+											</p>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												sr = 44100
+												note_fn = lambda sr, note, duration: fm_plucked_string_note(sr, note, duration, 8)
+												y = make_tune("Tunes/dangerzone.txt", 0.1, 44100, note_fn)
+												ipd.Audio(y, rate=sr)
+											</script>
+											<p>
+												<audio controls>
+													<source src="Audio/dangerzone.mp3" type="audio/mpeg">
+												  Your browser does not support the audio element.
+												  </audio> 
+											</p>
+											
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												sr = 44100
+												note_fn = lambda sr, note, duration: fm_plucked_string_note(sr, note-12, duration, 8)
+												y = make_tune("Tunes/dangerzone.txt", 0.1, 44100, note_fn)
+												ipd.Audio(y, rate=sr)
+											</script>
+
+											<p>
+												<audio controls>
+													<source src="Audio/dangerzone-12.mp3" type="audio/mpeg">
+												  Your browser does not support the audio element.
+												  </audio> 
+											</p>
+
+										
+
+										<HR>
+											<h2><a name = "fmzoo">Part 4: FM Synthesis Instrument Zoo (23 Points) </a></h2>
+										
+										<p>
+											In this section, you will use the above framework to make a variety of different instrument sounds.  Each instrument requires the creation or utilization of an envelope function and a method to put it all together.
+										</p>
+
+
+										<h3><a name = "bell">Bell Notes</a> (3 Points)</h3>
+										<p>
+											Fill in the method <code>fm_bell_note</code> to make a note that sounds like a struck bell.  This method is very similar to the <code>fm_plucked_string_note</code> method, but the parameters make all the difference.  In particular, you should use an exponential envelope with a lambda of 0.8 for both the amplitude and modulation envelope, and you should use a modulation frequency ratio of 1.4 to create inharmonic sounds characteristic of a bell.  Finally, you should use a modulation index <code>I</code> of 2.  Assuming this is all working properly, here's some code you can run
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											y = make_tune("Tunes/westminster.txt", 0.4, 44100, fm_bell_note)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Audio/westminster.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
+										
+
+										<h3><a name = "brass">Brass Notes</a> (5 Points)</h3>
+										<p>
+											To make a brass note, first fill in the method <code>brass_env(N, sr)</code> to generate an envelope that will be used for both the amplitude and modulation index.  The brass envelope is split into four parts
+											<ul>
+												<li>
+													<b>Attack: </b> The first 0.1 seconds of a ramp up from nothing
+												</li>
+												<li>
+													<b>Decay: </b> The next 0.1 seconds with a small decay
+												</li>
+												<li>
+													<b>Sustain: </b> All of the envelope up to the release, which is a very gradual decay
+												</li>
+												<li>
+													<b>Release: </b> The last 0.1 seconds of audio
+												</li>
+											</ul>
+											For example, the code below will generate the following plot (with added labels pointing out attack, decay, sustain, and release).
+										</p>
+
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											N = int(sr)
+											t = np.arange(N)/sr
+											env = brass_env(N, sr)
+											plt.plot(t, env)
+											plt.xlabel("Time (Sec)")
+											plt.ylabel("Envelope")
+											plt.title("Brass Envelope")
+											plt.savefig("Brass.svg", bbox_inches='tight')
+										</script>
+
+										<img src = "Brass.svg">
+										<p>
+											Remember, <a href = "https://docs.scipy.org/doc/numpy/reference/generated/numpy.linspace.html">linspace</a> is your friend!
+										</p>
+										<p>
+											Note that if the requested amount of samples aren't more than 0.3 seconds long, then the sustain should be cut out completely, and the release, decay, and attack should be shortened in that order.
+										</p>
+
+										<p>
+											Once you're finished fill in the method <code>fm_brass_note</code> to create a brass note using fm synthesis with <code>brass_env</code> used for both the modulation envelope and the amplitude envelope, and for a <code>ratio</code> of 1 and an <code>I</code> of 10.  Assuming this is all working properly, here are a few examples of tunes you can create with this sound.
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											y = make_tune("Tunes/usher.txt", 0.25, 44100, fm_brass_note)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Audio/usher.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											y = make_tune("Tunes/pictures.txt", 0.15, 44100, fm_brass_note)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Audio/pictures.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
+										<p>
+										
+											From <a href = "https://www.youtube.com/watch?v=GxBSyx85Kp8">Usher's "Yeah"</a> and <a href = "https://www.youtube.com/watch?v=Sq7Qd9PSmR0">Mussorgsky's "Pictures At An Exhibition"</a>, respectively.
+
+										</p>
+
+										<h3><a name = "drumlike">Drum-Like Sound</a> (5 Points)</h3>
+										<p>
+											To make a "drum-like" sound (according to <a href = "https://web.eecs.umich.edu/~fessler/course/100/misc/chowning-73-tso.pdf">Chowning's paper</a>), an envelope is required that look as below (with code to generate it).  Fill in the <code>drum_like_env</code> code to do this
+
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											N = int(sr/3)
+											t = np.arange(N)/sr
+											env = drum_like_env(N, sr)
+											plt.plot(t, env)
+											plt.xlabel("Time (Sec)")
+											plt.ylabel("Envelope")
+											plt.title("Drum-Like Envelope")
+											plt.savefig("DrumLike.svg", bbox_inches='tight')
+										</script>
+
+										<img src = "DrumLike.svg">
+
+										<p>
+											As a hint, consider sampling a horizontally shifted version of the function 
+											<h3>
+												\[ t^2 e^{-\lambda t} \]
+											</h3>
+										</p>
+
+										<p>
+											where lambda is some constant, and the larger the constant, the quicker the decay.  Once you're finished generating the envelope, fill in the method <code>fm_drum_sound</code> to create a drum sound using fm synthesis with <code>drum_like_env</code> used for both the modulation envelope and the amplitude envelope, and for a <code>ratio</code> of 1.4 and an <code>I</code> of 2.  You should also ignore the <code>note</code> parameter that's passed on and instead pass along the <code>fixed_note</code> parameter to <code>fm_synth_note</code> so that the drum stays at a constant pitch.
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											# Drum-like sound
+											sr = 44100
+											y = make_tune("Tunes/3on4.txt", 0.2, 44100, fm_drum_sound)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Audio/drumlike.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
+
+
+										<h3><a name = "wooddrum">Wood Drum Sound</a> (5 Points)</h3>
+										<p>
+											To make a "wood drum" sound (according to <a href = "https://web.eecs.umich.edu/~fessler/course/100/misc/chowning-73-tso.pdf">Chowning's paper</a>), an envelope is required that look as below (with code to generate it).  Fill in the <code>wood_drum_env</code> code to do this
+
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											N = int(sr/6)
+											t = np.arange(N)/sr
+											env = wood_drum_env(N, sr)
+											plt.plot(t, env)
+											plt.xlabel("Time (Sec)")
+											plt.ylabel("Envelope")
+											plt.title("Wood Drum Envelope")
+											plt.savefig("WoodDrum.svg", bbox_inches='tight')
+										</script>
+
+										<img src = "WoodDrum.svg">
+
+										<p>
+											Once you're finished generating the envelope, fill in the method <code>fm_wood_drum_sound</code> to create a wood drum sound using fm synthesis with <code>wood_drum_env</code> used for both the modulation envelope and the amplitude envelope, and for a <code>ratio</code> of 1.4 and an <code>I</code> of 10.  You should also ignore the <code>note</code> parameter that's passed on and instead pass along the <code>fixed_note</code> parameter to <code>fm_synth_note</code> so that the drum stays at a constant pitch.
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											# Wood Drum Sound
+											sr = 44100
+											y = make_tune("Tunes/3on4.txt", 0.2, 44100, fm_wood_drum_sound)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Audio/wooddrum.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
+
+
+										<h3><a name = "dirtybass">Dirty Bass Sound</a> (5 Points)</h3>
+										<p>
+											There's nothing to say we need to stick to sounds which are physically realistic.  In fact, a lot of the innovation that's happened with FM synthesis has come out of people coming up with their own strange envelopes and modulation schemes that have nothing to do with any physical motivation, but which sound really cool as electronic music.  I stole the idea below from <a href = "https://www.attackmagazine.com/technique/tutorials/dirty-fm-bass/">attackmagazine.com</a>.  See if you can make an envelope that looks like the one below:
+
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											N = int(sr/2)
+											t = np.arange(N)/sr
+											env = dirty_bass_env(N, sr)
+											plt.plot(t, env)
+											plt.xlabel("Time (Sec)")
+											plt.ylabel("Envelope")
+											plt.title("Dirty Bass Envelope")
+											plt.savefig("DirtyBass.svg", bbox_inches='tight')
+										</script>
+
+										<img src = "DirtyBass.svg">
+
+										<p>
+											Once you're finished generating the envelope, fill in the method <code>fm_dirty_bass_note</code> to create a dirty bass note using fm synthesis with <code>dirty_bass_env</code> used for both the modulation envelope and the amplitude envelope, and for a <code>ratio</code> of 1 and an <code>I</code> of 18.
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											y = make_tune("Tunes/dirtybass.txt", 0.25, 44100, fm_dirty_bass_note)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Audio/dirtybass.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
+
+
+										
+
+										<HR>
+										<h3><a name = "musical">Part 5: Musical Statement (3 Points)</a></h3>
+										<p>
+											You just made an amazing digital synthesizer, now put it to use!  Make your own tune and synthesize it with one of your methods.  This can be whatever you want, but it should have at least two instrument "tracks."  What this means is you should actually have more than one file and generate a different waveform for each with a different instrument, and then add them together to "mix" them.  For example, you might have some drums in the background of a brass riff, or you might have a bells intro to a plucked string riff.</b>
+										</p>
+
+										<p>
+											To download and submit your audio, right click on the audio widget in Jupyter and click "Save Audio As"
+										</p>
+										<p>
+											If you choose to enter your musical statement into the class-wide contest, then you can earn up to two points of extra credit as the winner.
+										</p>
+
+
+
+
+
+
+										<h3><a name = "bored">For the bored...</a></h3>
+										<p>
+											Try to make another instrument with FM synthesis!  You can look at some of the details in <a href = "https://web.eecs.umich.edu/~fessler/course/100/misc/chowning-73-tso.pdf">Chowning's paper</a> or google online for youtube videos and other tutorials on cool sounds that people have come up with.
+										</p>
+
+
+
+
+
+                                    
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../index.html#overview">Overview</a></li>
+												<li><a href = "../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../index.html#homework">Homework</a></li>
+												<li><a href = "../../index.html#grading">Grading</a></li>
+												<li><a href = "../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../index.html#participation">Participation</a></li>
+												<li><a href = "../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../Software/index.html">Software</a></li>
+										<li><a href = "../../Schedule/index.html">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+									
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Vocoders And Phase Retrieval</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW3_Vocoders/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
+												<ul>
+													<li>
+														<a href = "../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module0/Part1">Module 0: Warmup</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../Modules/Module8_DiscoveringFourier">Module 8: Discovering Fourier</a></li>
+												<li><a href = "../../Modules/Module8b_ImplementingDFT">Module 8b: Implementing The Discrete Fourier Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module10/Video0">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module11/Video0">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+													<ul>
+														<li><a href = "../../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
+													</ul>
+												</li>
+												<li><a href = "../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
+												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>

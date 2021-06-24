@@ -22,3 +22,9 @@
 [submodule "ClassExercises/Week15/Week15_NMF/Week15_NMF"]
 	path = ClassExercises/Week15/Week15_NMF/Week15_NMF
 	url = https://github.com/Ursinus-CS472A-S2021/Week15_NMF.git
+[submodule "Assignments/HW1_RissetBeats/HW1_RissetBeats"]
+	path = Assignments/HW1_RissetBeats/HW1_RissetBeats
+	url = https://github.com/Ursinus-CS472A-S2021/HW1_RissetBeats.git
+[submodule "Assignments/HW2_DigitalInstruments/HW2_DigitalInstruments"]
+	path = Assignments/HW2_DigitalInstruments/HW2_DigitalInstruments
+	url = https://github.com/Ursinus-CS472A-S2021/HW2_DigitalInstruments.git
