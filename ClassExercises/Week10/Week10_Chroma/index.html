@@ -1,0 +1,332 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 472A: Digital Music Processing, Spring 2021</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../../index.html" class="logo"><strong>Ursinus CS 472A: Digital Music Processing, Spring 2021</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h2>Week 10: Chroma Features And Chromagrams</h2>
+										<h3><a href = "http://www.ctralie.com">Chris Tralie</a></h3>
+									</header>
+
+									<div id="page-content">
+										<h2>Overview</h2>
+										<p>
+											We saw a couple of weeks ago in <a href = "../../Week8/Week8_MFCC">this exercise</a> that it is possible to achieve a timbral feature by means of matrix multiplication.  In particular, we created a matrix that encompassed a "triangular filterbank," where each row was a triangle centered at a different frequency, and the center frequencies from row to row were spaced out exponentially to match human pitch perception.  The rows are plotted individually below:
+										</p>
+
+										<img src = "TriangularFilterbank.png">
+
+										<p>
+											And we can look at it in matrix form as follows
+										</p>
+
+										<img src = "TriFilterbankFull.png">
+
+										<p>
+											When we multiply this matrix by a spectrogram on the right we obtain a mel spectrogram.
+										</p>
+										<p>
+											Today, we are going to create another kind of filterbank, known as a <b>chromogram</b>, which can also be written as a matrix multiplication with a spectrogram.  Our goal here is the opposite to what it was with the mel spectrogram; we actually want to pick up on pitches only and to throw the timbral information away.  Therefore, each row in the filterbank will correspond to one of 12 different notes, and we will create a bump centered on the center frequency corresponding to each octave of that note.  Recall that the equation for the frequency of a pitch <b>p</b> is 
+										</p>
+
+										<h3>
+											\[ f = 440*2^{p/12} \]
+										</h3>
+
+										<p>
+											We will refer to the <b>note number</b> relative to A, which is 0.  So row 0 holds A, row 1 holds A#, row 2 holds B, etc.  The image below shows this:
+										</p>
+
+										<img src = "ChromaMatrix.svg" width=900>
+
+										<p>
+											Let's zoom in on the first row:
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											K = int(win/2)+1
+											freqs = np.arange(K)*sr/win
+											plt.plot(freqs, M[0, :])
+											plt.xlim([0, 4000])
+										</script>
+
+										
+
+										<img src = "Row0.svg">
+
+										<p>
+											Observe how there is a peak over 440hz, as well as several octaves below and above, <b>so it doesn't matter what octave we play the note at; they all factor in just the same</b>.  If we plot the x-axis on a log scale, we see that they are equally spaced perceptually
+										</p>
+
+										<img src = "Row0Log.svg">
+
+										<p>
+											If we run the code below
+										</p>
+
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											%load_ext autoreload
+											%autoreload 2
+											import numpy as np
+											import matplotlib.pyplot as plt
+											import librosa
+											import IPython.display as ipd
+											from chroma import *
+
+											sr = 44100
+											win = int(sr/4)
+											M = get_chroma_matrix(sr, win)
+											x, sr = librosa.load("piano-chrom.wav", sr=sr)
+											S = np.abs(librosa.stft(x, win_length = win, n_fft = win))
+											chroma = M.dot(S) # Matrix multiplication
+											
+											plt.figure(figsize=(14, 4))
+											plt.subplot(131)
+											plt.imshow(M, interpolation='nearest', aspect='auto', cmap='magma_r')
+											plt.title("Chroma Matrix")
+											plt.xlabel("Frequency Bin")
+											plt.ylabel("Note Number")
+											plt.subplot(132)
+											S[S < 1e-5] = 1e-5
+											plt.imshow(np.log10(S), interpolation='none', aspect='auto', cmap='magma_r')
+											plt.title("Spectrogram")
+											plt.xlabel("Time Window")
+											plt.ylabel("Frequency Bin")
+											plt.subplot(133)
+											plt.imshow(chroma, interpolation='none', aspect='auto', cmap='magma_r')
+											plt.title("Chromagram")
+											plt.xlabel("Time Window")
+											plt.ylabel("Note Number")
+											plt.tight_layout()
+										</script>
+
+										<p>
+											We get the following plot:
+										</p>
+
+										<img src = "ChromaMult.svg" width=900>
+
+										<h2>Code</h2>
+										<p>
+											<a href = "https://github.com/Ursinus-CS472A-S2021/Week10_Chroma/archive/refs/heads/main.zip">Click here</a> to download the starter code for today.  You should edit the <code>get_chroma_matrix</code> method to fill in all 12 rows of the chroma matrix.  At row index <b>r</b>, place a bump around octaves between 3 below and 5 above the frequency <b>440*2<SUP>r/12</SUP></b>.  For a particular center frequency <b>f<SUB>c</SUB></b>, each bump should be in the form of a Gaussian bump
+										</p>
+
+										<h3>
+											\[ B(f) = e^{-(f-f_c)^2/\sigma^2} \]
+										</h3>
+
+										<p>
+											To keep things at a "constant quality factor" (also known as "constant Q"), sigma should be proportional to the frequency
+										</p>
+
+										<h3>
+											\[ \sigma = 0.02*f_c \]
+										</h3>
+
+                                    </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../../index.html#overview">Overview</a></li>
+												<li><a href = "../../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../../index.html#homework">Homework</a></li>
+												<li><a href = "../../../index.html#grading">Grading</a></li>
+												<li><a href = "../../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../../index.html#participation">Participation</a></li>
+												<li><a href = "../../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../../Software/index.html">Software</a></li>
+										<li><a href = "../../../Schedule/index.html">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+									
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW3_Vocoders">HW3: Vocoders And Phase Retrieval</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW3_Vocoders/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
+												<ul>
+													<li>
+														<a href = "../../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module0/Part1">Module 0: Warmup</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../../Modules/Module8_DiscoveringFourier">Module 8: Discovering Fourier</a></li>
+												<li><a href = "../../../Modules/Module8b_ImplementingDFT">Module 8b: Implementing The Discrete Fourier Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module10/Video0">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module11/Video0">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+													<ul>
+														<li><a href = "../../../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
+													</ul>
+												</li>
+												<li><a href = "../../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
+												<li><a href = "../../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
+												<li><a href = "../../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../../../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../../assets/js/jquery.min.js"></script>
+			<script src="../../../assets/js/skel.min.js"></script>
+			<script src="../../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>

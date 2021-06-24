@@ -7,3 +7,12 @@
 [submodule "ClassExercises/Week2/Week2_Harmonicity/Week2_Harmonicity"]
 	path = ClassExercises/Week2/Week2_Harmonicity/Week2_Harmonicity
 	url = https://github.com/Ursinus-CS472A-S2021/Week2_Harmonicity.git
+[submodule "ClassExercises/Week5/Week5_ApplyingDFT/Week5_ApplyingDFT"]
+	path = ClassExercises/Week5/Week5_ApplyingDFT/Week5_ApplyingDFT
+	url = https://github.com/Ursinus-CS472A-S2021/Week5_ApplyingDFT.git
+[submodule "ClassExercises/Week8/Week8_MFCC"]
+	path = ClassExercises/Week8/Week8_MFCC
+	url = https://github.com/Ursinus-CS472A-S2021/Week8_MFCC.git
+[submodule "ClassExercises/Week10/Week10_Chroma/Week10_Chroma"]
+	path = ClassExercises/Week10/Week10_Chroma/Week10_Chroma
+	url = https://github.com/Ursinus-CS472A-S2021/Week10_Chroma.git

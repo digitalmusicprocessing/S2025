@@ -1,0 +1,288 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 472A: Digital Music Processing, Spring 2021</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../../index.html" class="logo"><strong>Ursinus CS 472A: Digital Music Processing, Spring 2021</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h2>Week 7: DFT And Convolutions</h2>
+										<h3><a href = "http://www.ctralie.com">Chris Tralie</a></h3>
+									</header>
+
+									<div id="page-content">
+										<p>
+											In this exercise, we're going to explore what the DFT of signals looks like after convolution in terms of the DFTs of the original signal and the DFTs of the impulse responses.  Below are some imports that you can throw into your notebook to get started
+										</p>
+
+										<p>
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												import numpy as np
+												import matplotlib.pyplot as plt
+												import IPython.display as ipd
+												from scipy.signal import fftconvolve
+												import librosa
+											</script>
+										</p>
+
+										<p>
+											Also, recall how you can plot the DFT amplitudes with the correct frequencies as follows:
+										</p>
+
+										<p>
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												X = np.fft.fft(x)
+												nfreqs = int(len(x)/2) # Only plot the first half of the
+												# frequencies since the second half is the mirror image_on
+												X = X[0:nfreqs]
+												freqs = int(np.arange(nfreqs))*sr/len(x)
+												plt.plot(freqs, np.abs(X))
+											</script>
+										</p>
+
+										<p>
+											In all of the examples below, you should plot the DFT of the original signal, the DFT of the impulse response, and the DFT of the convolution
+										</p>
+										
+										<h3>Part 1: Comb Filters</h3>
+										<p>
+											We made some observations <a href = "../../Week4/Week4_CombFilters/solutions.html">a few weeks ago</a> about comb filters, including the fact that we can control the pitch by changing the spacing between the echoes in the impulse response, and the fact that the pitch becomes clearer if we have more echoes.  Load in the <a href = "robot.wav">robot audio</a>
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											x, sr = librosa.load("robot.wav")
+										</script>
+										<p>
+											and plot its DFT.  Then, setup a comb impulse response, plot its DFT, and plot the DFT of the convolution.  How do these change as you change the spacing of the comb and the number of echoes?
+
+
+										<h3>Part 2: Moving Average</h3>
+										<p>
+											Given audio of length <b>N</b>, create an impulse response that is all ones up to a certain index <b>K</b>, followed by all zeros after <b>K</b> up to <b>N</b>.  The effect of convolution here is to perform a moving average, with a window length of K.  What do you notice about the DFT of the impulse response and the DFT of the convolution as you vary window length in the moving average?
+										</p>
+
+										<p>
+											Try adding some noise to your signal with <b>np.random.randn(N)</b>, and repeat this experiment.
+										</p>
+
+										<h3>Part 3: Discrete Derivative</h3>
+										<p>
+											Given audio of length <b>N</b>, create an <b>N</b>-length impulse response that is all zeros except for the first two samples; the first sample should be a 1, and the second sample should be a -1.  What do you notice about the DFT of the impulse response and the DFT of the convolution?
+										</p>
+										
+									
+									
+										
+									
+									<!--<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+										import random
+										random.seed(371)
+										# This will choose a random number between 0 and 999 
+										# Since we have seeded, it will always be 318 on the 
+										# first call
+										random.randint(0, 1000)
+									]]></script> !-->
+
+                                    </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../../index.html#overview">Overview</a></li>
+												<li><a href = "../../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../../index.html#homework">Homework</a></li>
+												<li><a href = "../../../index.html#grading">Grading</a></li>
+												<li><a href = "../../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../../index.html#participation">Participation</a></li>
+												<li><a href = "../../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../../Software/index.html">Software</a></li>
+										<li><a href = "../../../Schedule/index.html">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+									
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW3_Vocoders">HW3: Vocoders And Phase Retrieval</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW3_Vocoders/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
+												<ul>
+													<li>
+														<a href = "../../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module0/Part1">Module 0: Warmup</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../../Modules/Module8_DiscoveringFourier">Module 8: Discovering Fourier</a></li>
+												<li><a href = "../../../Modules/Module8b_ImplementingDFT">Module 8b: Implementing The Discrete Fourier Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module10/Video0">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module11/Video0">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+													<ul>
+														<li><a href = "../../../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
+													</ul>
+												</li>
+												<li><a href = "../../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
+												<li><a href = "../../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
+												<li><a href = "../../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../../../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../../assets/js/jquery.min.js"></script>
+			<script src="../../../assets/js/skel.min.js"></script>
+			<script src="../../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>

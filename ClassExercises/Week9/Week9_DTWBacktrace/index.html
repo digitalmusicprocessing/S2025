@@ -1,0 +1,365 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 472A: Digital Music Processing, Spring 2021</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../../index.html" class="logo"><strong>Ursinus CS 472A: Digital Music Processing, Spring 2021</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+										<h2>Week 9: DTW Backtracing for Audio Alignment</h2>
+										<h3><a href = "http://www.ctralie.com">Chris Tralie</a></h3>
+									</header>
+
+									<div id="page-content">
+										
+
+										<p>
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												import numpy as np
+												import matplotlib.pyplot as plt
+												import librosa
+												import IPython.display as ipd
+												
+												def get_csm_fast(Y1, Y2):
+													Y1Sqr = np.sum(Y1**2, 1)
+													Y2Sqr = np.sum(Y2**2, 1)
+													D = Y1Sqr[:, None] + Y2Sqr[None, :] - 2*Y1.dot(Y2.T)
+													D[D < 0] = 0
+													D = np.sqrt(D)
+													return D
+												
+												def timemap_stretch(x, sr, path, hop_length=32, n_fft = 4096):
+													"""
+													Stretch audio x so that it aligns with another
+													audio clip, according to a warping path
+												
+													Parameters
+													----------
+													x: ndarray(N)
+														An array of audio samples
+													sr: int
+														Sample rate
+													path: ndarray(K, 2)
+														Warping path.  Indices of x are in first row
+													hop_length: int
+														Hop length to use in the phase vocoder
+													n_fft: int
+														Number of fft samples to use in the phase vocoder
+													"""
+													# Break down into regions of constant slope
+													xdiff = path[1::, 0] - path[0:-1, 0]
+													ydiff = path[1::, 1] - path[0:-1, 1]
+													xdiff = xdiff[1::] - xdiff[0:-1]
+													ydiff = ydiff[1::] - ydiff[0:-1]
+													diff = xdiff + ydiff
+													ret = np.array([])
+													i1 = 0
+													while i1 < len(diff):
+														i2 = i1+1
+														while i2 < len(diff) and diff[i2] == 0:
+															i2 += 1
+														while i2 < len(diff) and path[i2, 0] - path[i1, 0] < n_fft:
+															i2 += 1
+														if i2 >= len(diff):
+															break
+														fac = (path[i2, 1]-path[i1, 1])/(path[i2, 0]-path[i1, 0])
+														if fac > 0:
+															fac = 1/fac
+															xi = x[path[i1, 0]:path[i2, 0]+1]
+															D = librosa.stft(xi, n_fft = n_fft, hop_length=hop_length)
+															DNew = librosa.phase_vocoder(D, fac, hop_length=hop_length)
+															xifast = librosa.istft(DNew, hop_length=hop_length)
+															ret = np.concatenate((ret, xifast))
+														i1 = i2
+													return ret
+												
+												def stretch_audio(x1, x2, sr, path, hop_length):
+													"""
+													Use a phase vocoder to warp one audio stream
+													to another, according to some warping path
+												
+													Parameters
+													----------
+													x1: ndarray(M)
+														First audio stream
+													x2: ndarray(N)
+														Second audio stream
+													sr: int
+														Sample rate
+													path: ndarray(P, 2)
+														Warping path, in units of windows
+													hop_length: int
+														The hop length between windows
+													
+													Returns
+													-------
+													x3: ndarray(N, 2)
+														The synchronized audio.  x2 is in the right channel,
+														and x1 stretched to x2 is in the left channel
+													"""
+													print("Stretching...")
+													path_final = np.array(path)*hop_length
+													path_final = [(row[0], row[1]) for row in path_final if row[0] < x1.size and row[1] < x2.size]
+													path_final.append((x1.size, x2.size))
+													path_final = np.array(path_final, dtype=int)
+													x3 = np.zeros((x2.size, 2))
+													x3[:, 1] = x2
+													x1_stretch = timemap_stretch(x1, sr, path_final)
+													print("x1.shape = ", x1.shape)
+													print("x2.shape = ", x2.shape)
+													print("x1_stretch.shape = ", x1_stretch.shape)
+													x1_stretch = x1_stretch[0:min(x1_stretch.size, x3.shape[0])]
+													x3 = x3[0:min(x3.shape[0], x1_stretch.size), :]
+													x3[:, 0] = x1_stretch
+													return x3
+												
+												
+												def dtw(C):
+													M = C.shape[0] # Number of rows
+													N = C.shape[1] # Number of columns
+													S = np.zeros_like(C)
+													S[0, 0] = C[0, 0] # Base case
+													# First row; all warping paths that only match a single element of the first point cloud
+													# to some number of elements in the second point cloud
+													"""
+													# Slower pure python code to do the cumulative sum would look like this
+													for j in range(1, N):
+														S[0, j] = S[0, j-1] + C[0, j]
+													"""
+													S[0, :] = np.cumsum(C[0, :])
+													
+													# First column; all warping paths that only match a single element of the second point cloud
+													# to some number of elements in the first point cloud
+													S[:, 0] = np.cumsum(C[:, 0])
+													
+													# For the rest of the elements, we can apply the recurrence relation above
+													for i in range(1, M):
+														for j in range(1, N):
+															S[i, j] = min(S[i-1, j], S[i, j-1], S[i-1, j-1]) + C[i, j]
+													
+													path = [[M-1, N-1]]
+													# Loop through until you get to [0, 0]
+													while path[-1][0] != 0 and path[-1][1] != 0:
+														## TODO: Fill this in
+														pass
+													path.reverse()
+													return path
+												
+												x1, sr = librosa.load("vivaldi1.wav")
+												x2, sr = librosa.load("vivaldi2.wav")
+												hop_length = 512
+												Y1 = librosa.feature.mfcc(y=x1, sr=sr, hop_length=hop_length).T # A "transpose" flips the rows and the columns
+												Y2 = librosa.feature.mfcc(y=x2, sr=sr, hop_length=hop_length).T # So that each window is along a row
+												C = get_csm_fast(Y1, Y2)
+
+												path = dtw(C)
+
+												xsync = stretch_audio(x1, x2, sr, path, hop_length)
+												ipd.Audio([xsync[:, 0], xsync[:, 1]], rate=sr)
+											</script>
+										</p>
+
+                                    </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../../index.html#overview">Overview</a></li>
+												<li><a href = "../../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../../index.html#homework">Homework</a></li>
+												<li><a href = "../../../index.html#grading">Grading</a></li>
+												<li><a href = "../../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../../index.html#participation">Participation</a></li>
+												<li><a href = "../../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../../Software/index.html">Software</a></li>
+										<li><a href = "../../../Schedule/index.html">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+									
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW3_Vocoders">HW3: Vocoders And Phase Retrieval</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW3_Vocoders/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
+												<ul>
+													<li>
+														<a href = "../../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module0/Part1">Module 0: Warmup</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../../Modules/Module8_DiscoveringFourier">Module 8: Discovering Fourier</a></li>
+												<li><a href = "../../../Modules/Module8b_ImplementingDFT">Module 8b: Implementing The Discrete Fourier Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module10/Video0">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module11/Video0">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+													<ul>
+														<li><a href = "../../../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
+													</ul>
+												</li>
+												<li><a href = "../../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
+												<li><a href = "../../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
+												<li><a href = "../../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../../../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../../assets/js/jquery.min.js"></script>
+			<script src="../../../assets/js/skel.min.js"></script>
+			<script src="../../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
+</html>
