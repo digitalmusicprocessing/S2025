@@ -16,3 +16,9 @@
 [submodule "ClassExercises/Week10/Week10_Chroma/Week10_Chroma"]
 	path = ClassExercises/Week10/Week10_Chroma/Week10_Chroma
 	url = https://github.com/Ursinus-CS472A-S2021/Week10_Chroma.git
+[submodule "ClassExercises/Week11/Week11_Shazam/Week11_Shazam"]
+	path = ClassExercises/Week11/Week11_Shazam/Week11_Shazam
+	url = https://github.com/Ursinus-CS472A-S2021/Week11_Shazam.git
+[submodule "ClassExercises/Week15/Week15_NMF/Week15_NMF"]
+	path = ClassExercises/Week15/Week15_NMF/Week15_NMF
+	url = https://github.com/Ursinus-CS472A-S2021/Week15_NMF.git
