@@ -37,3 +37,6 @@
 [submodule "Assignments/HW5_VersionID/HW5_VersionID"]
 	path = Assignments/HW5_VersionID/HW5_VersionID
 	url = https://github.com/Ursinus-CS472A-S2021/HW5_VersionID.git
+[submodule "Assignments/HW6_LetItBee/HW6_LetItBee"]
+	path = Assignments/HW6_LetItBee/HW6_LetItBee
+	url = https://github.com/Ursinus-CS472A-S2021/HW6_LetItBee.git
