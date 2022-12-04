@@ -7,7 +7,7 @@
 <html>
 <!-- Header !-->
 	<head>
-		<title>Ursinus CS 472A: Digital Music Processing, Spring 2021</title>
+		<title>Ursinus CS 372: Digital Music Processing, Spring 2023</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<!--[if lte IE 8]><script src="../assets/js/ie/html5shiv.js"></script><![endif]-->
@@ -34,7 +34,7 @@
 
 							<!-- Header -->
 								<header id="header">
-									<a href="../index.html" class="logo"><strong>Ursinus CS 472A: Digital Music Processing, Spring 2021</strong></a>
+									<a href="../index.html" class="logo"><strong>Ursinus CS 372: Digital Music Processing, Spring 2023</strong></a>
 								</header>
 <!-- End Header !-->
 
@@ -42,11 +42,9 @@
 								<section>
 									<header class="main">
 										<h1>Software Environment</h1>
-									</header>
-									
-									<h2>Python Anaconda Installation</h2>
+                                    </header>
 									<p>
-										We will be using a distribution of python known as <a href = "https://www.anaconda.com/distribution/">Anaconda Python</a>, which comes shipped with the majority of the tools that we need for the course.  <a href = "https://www.anaconda.com/distribution/">Click here</a> to download Anaconda.  Please choose the 64-bit version of <b>Python 3.7</b> for your operating system (Windows/Mac/Linux), download it, and follow the default options during installation, includng registering this as the default Python for your system.
+										We will be using a distribution of python known as <a href = "https://www.anaconda.com/distribution/">Anaconda Python</a>, which comes shipped with the majority of the tools that we need for the course.  <a href = "https://www.anaconda.com/distribution/">Click here</a> to download Anaconda.  Please choose the 64-bit version of <b>Python 3.9</b> for your operating system (Windows/Mac/Linux), download it, and follow the default options during installation, includng registering this as the default Python for your system.
 									</p>
 
 									<p>
@@ -62,13 +60,96 @@
                                         Below is a picture of what jupyter looks like
                                     </p>
 
-									<img src = "JupyterScreen.png">
+                                    <img src = "JupyterScreen.png">
 
+									<p>
+										Personally, I prefer Jupyter, and this is what we'll be using in class.  But for those who are more used to things like Netbeans, you may prefer Spyder.
+									</p>
+
+
+									<HR>
+										<h2><a name = "preferred">My Preferred Solution: External .py Files Autoreloaded in Jupyter</a></h2>
+										<p>
+											My personal preferred way to code in python is to have most of my code that's going to be reused in a separate <code>.py</code> file that I import into a jupyter notebook, and I use the jupyter notebook like an extended "main" where I simply run experiments and plot results.  You can make a .py file from within the jupyter interface as follows (or you can use any other text editor such as <a href = "https://code.visualstudio.com/">Visual Studio Code</a> or <a href = "https://atom.io/">Atom</a>, as long as you save it in the same directory as your notebook):
+										</p>
+
+										<img src = "makepy.gif">
+
+										<p>
+											Then, you can create a notebook and import all of the code from your file by typing
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: python"><![CDATA[
+											%load_ext autoreload
+											%autoreload 2
+											from mycode import *
+										]]></script> 
+
+										<p>
+											Where I'm assuming I'm in the same directory as a file called mycode.py (or whatever else you want to call it).  The <a href = "https://ipython.org/ipython-doc/3/config/extensions/autoreload.html">autoreload</a> extension makes it so that you don't have to restart your notebook every time you make changes to your <code>.py</code> file, unless you add methods, in which case you'll still need to restart the notebook
+										</p>
+
+										<img src = "makenotebook.gif">
+
+									<HR>
+										<h2><a name = "colab">Google Colab</a></h2>
+										<p>
+											For students who prefer to work on the cloud during class, there is an option similar to repl.it known as <a href = "https://colab.research.google.com">Google Colab</a> that you can use.
+										</p>
+
+
+									<HR>
+										<h2><a name = "pycharm">PyCharm</a></h2>
+										<p>
+											For an option even more like Netbeans, there is <a href = "https://www.jetbrains.com/pycharm/">PyCharm community version</a>.  The first thing you will have to do is install a couple of packages that we'll be using in the class.  Create a script and run the following two lines
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: python"><![CDATA[
+											import subprocess
+											subprocess.call("pip install numpy matplotlib jupyter scikit-image".split())]]></script>  
+
+										<p>
+											Then, to make sure everything is working, run the following code:
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: python"><![CDATA[
+											import numpy as np
+											import matplotlib.pyplot as plt
+											import skimage.io
+
+											t = np.linspace(0, 2*np.pi, 100)
+											X = np.zeros((t.size, 2))
+											X[:, 0] = np.cos(t)
+											X[:, 1] = np.sin(t)
+											plt.scatter(X[:, 0], X[:, 1])
+											plt.axis("equal")
+											plt.savefig("out.png")
+
+											img = skimage.io.imread("out.png")
+											img[:, :, 0] = 0
+											skimage.io.imsave("out.png", img)]]></script> 
+										
+										<p>
+											You should see an image that looks like this:
+										</p>
+
+										<img src = "pycharmtest.png">
+
+										<p>
+											<b>NOTE: </b> Later in the course when we get to trees, I will want everyone to use Jupyter notebook or Google colab to help organize a bunch of plots better, but Pycharm should get you through most of the course
+										</p>
 
 
 
 						</div>
 					</div>
+
+
+				<!--Syntax highlighting in Javascript!-->
+				<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shCore.js"></script>
+				<script type="text/javascript" src="../../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+				<link type="text/css" rel="stylesheet" href="../../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+				<script type="text/javascript">SyntaxHighlighter.all();</script>
 
 <!-- Sidebar -->
 					<div id="sidebar">
@@ -93,11 +174,11 @@
 											</ul> 
 										</li>
 										<li><a href = "../Software/index.html">Software</a></li>
-										<li><a href = "../Schedule/index.html">Schedule</a></li>
+										<li><a href = "../index.html#schedule">Schedule</a></li>
                                         <li>
 											<span class="opener">Assignments</span>
 											<ul>
-												<li>
+												<!--<li>
 													<a href = "../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
 													<ul>
 														<li>
@@ -136,11 +217,37 @@
 														</li>
 													</ul>
 												
+												</li>!-->
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<!--<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+													<ul>
+														<li><a href = "../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
+													</ul>
 												</li>
+												<li><a href = "../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
+												<li><a href = "../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
+												<li><a href = "../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>!-->
 											</ul>
 										</li>
                                         <li>
-											<span class="opener">Pre-Class Modules</span>
+											<span class="opener">Optional Spring 2021 Modules</span>
 											<ul>
 												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module0/Part1">Module 0: Warmup</a></li>
 												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
@@ -162,32 +269,6 @@
 												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
 												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
 												<li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
-											</ul>
-										</li>
-                                        <li>
-											<span class="opener">Class Exercises</span>
-											<ul>
-												<li><a href = "https://ursinus-cs472a-s2021.github.io/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
-												<li><a href = "../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
-												<li><a href = "../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
-												<li><a href = "../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
-												<li><a href = "../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
-												<li><a href = "../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
-												<li>
-													<a href = "../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
-													<ul>
-														<li><a href = "../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
-													</ul>
-												</li>
-												<li><a href = "../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
-												<li><a href = "../ClassExercises/Week5/Week5_ApplyingDFT/index.html">Week 5: Applying The DFT</a></li>
-												<li><a href = "../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
-												<li><a href = "../ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
-												<li><a href = "../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
-												<li><a href = "../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
-												<li><a href = "../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
-												<li><a href = "../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
-												<li><a href = "../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>
 											</ul>
 										</li>
 									</ul>

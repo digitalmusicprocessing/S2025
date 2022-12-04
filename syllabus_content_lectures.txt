@@ -1,0 +1,144 @@
+SECTION
+<a name = "timedomain">Unit 1: Time Domain Audio Processing</a>
+
+
+LECTURE
+Course Overview, Sneak Preview, Digital Audio Representations
+
+<ul><li>Audio Reverse Game</li></ul>
+LECTURE
+Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch
+
+<ul><a href = "https://donsheehy.github.io/datastructures/fullbook.pdf">Sheehy</a> Ch. 2 for python intro</li></ul>
+LECTURE
+Square Waves, Triangle Waves, Sawtooth Waves, Noise, Beat Frequencies
+
+<ul><li></li></ul>
+LECTURE
+Octaves, Harmonicity, Circle of Fifths / Pythagorean Tuning
+
+<ul><li><a href = "ClassExercises/Week2/Week2_Harmonicity">Harmonicity Notes</a></li><li><a href = "https://en.wikipedia.org/wiki/Pythagorean_comma">Wikipedia Notes on The Pythagorean Comma</a></li></ul>
+LECTURE
+Finish Pythagorean Tuning, Chirps, Vibrato, Frequency Sonification
+
+
+LECTURE
+Zero Crossings, Consonant/Vowel Filtering, Dynamics, Intensity, Loudness
+
+
+LECTURE
+HW1: Risset Beats Q&A, Work Day
+
+<ul><li><a href = "Assignments/HW1_RissetBeats/HappyBirthdaySquareWaves.html">Happy Birthday Square Waves</a></li><li><a href = "Assignments/HW1_RissetBeats/PhaseAggregation.html">Phase Aggregation (Part 2) Notes</a></li> </ul>
+LECTURE
+Timbre, FM Synthesis, ADSR
+
+<ul><li><a href = "https://web.eecs.umich.edu/~fessler/course/100/misc/chowning-73-tso.pdf">John Chowning's 1973 paper on FM synthesis</a></li><li><a href = "https://en.wikipedia.org/wiki/Yamaha_DX7">Yamaha DX7</a></li><li><a href = "https://ccrma.stanford.edu/">Stanford CCRMA</a></li></ul>
+LECTURE
+Echoes / Impulse Responses / Convolution
+
+<ul><li><a href = "http://www.echothief.com/">Echo Thief</a><li><a href = "https://www.youtube.com/watch?v=aT2YGXxYx-w">Impluse response of a nuclear power plant</a></li></ul>
+LECTURE
+Comb Filters
+
+
+SECTION
+<a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a>
+
+
+LECTURE
+Discovering The Discrete Fourier Transform (DFT)
+
+
+LECTURE
+Real-Valued DFT Definition, Amplitude/Phase Shifts
+
+
+LECTURE
+Exploring The DFT on Audio Data: Pitch And Timbre
+
+
+LECTURE
+The Short-Time Fourier Transform (STFT), Spectrograms
+
+
+LECTURE
+Complex Numbers Review, Euler's Formula, Complex Definition of DFT And Phase
+
+
+LECTURE
+Vocoder Concept, Phasors
+
+
+LECTURE
+Phasor Mirroring, Aliasing, Inverse DFT
+
+
+LECTURE
+Convolution/multiplication duality
+
+
+LECTURE
+The Z-Transform, Lowpass Filters / Highpass Filters, frequency analysis of comb filters
+
+
+SECTION
+<a name = "classical">Unit 3: Classical Machine Learning / AI For Digital Music Processing</a>
+
+
+LECTURE
+Rhythm, Beats, And Audio novelty functions
+
+
+LECTURE
+Audio novelty functions And Autocorrelation
+
+
+LECTURE
+Matrix Multiplication, Mel Spacing
+
+
+LECTURE
+MFCC Features, Inverting MFCC
+
+<ul><li><a href = "ClassExercises/Week8/Week8_MFCC/Mel.html">Code from today</a></li></ul>
+LECTURE
+Cross-Similarity Matrices, Dynamic Time Warping
+
+
+LECTURE
+Dynamic Time Warping Continued
+
+
+LECTURE
+Chroma Features, Shepard Tones
+
+
+LECTURE
+Audio Fingerprints / The Shazam Algorithm
+
+<ul><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li>
+LECTURE
+Harmonic-Percussive Source Separation
+
+
+LECTURE
+Matrix Multiplication for Audio Activations
+
+
+LECTURE
+Source Separation via Nonnegative matrix factorization
+
+<ul><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
+SECTION
+<a name = "modern">Unit 4: Classical Machine Learning / AI For Digital Music Processing</a>
+
+
+LECTURE
+Introduction To Neural Networks
+
+
+LECTURE
+Deep Learning
+
+
