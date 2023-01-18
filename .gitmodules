@@ -1,6 +1,6 @@
 [submodule "ClassExercises/Week1/Week1_AudioReverseGame"]
 	path = ClassExercises/Week1/Week1_AudioReverseGame
-	url = https://github.com/Ursinus-CS472A-S2021/Week1_AudioReverseGame.git
+	url = https://github.com/ursinus-cs372-s2023/Week1_AudioReverseGame.git
 [submodule "ClassExercises/Week1/Week1_Friday"]
 	path = ClassExercises/Week1/Week1_Friday
 	url = https://github.com/Ursinus-CS472A-S2021/Week1_Friday.git

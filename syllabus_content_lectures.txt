@@ -5,7 +5,7 @@ SECTION
 LECTURE
 Course Overview, Sneak Preview, Digital Audio Representations
 
-<ul><li>Audio Reverse Game</li></ul>
+<ul><li><a href = "ClassExercises/Week1/Week1_AudioReverseGame">Audio Reverse Game</a></li></ul>
 LECTURE
 Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch
 
@@ -160,6 +160,10 @@ Deep beat tracking
 <ul><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
 LECTURE
 Deep beat tracking continued
+
+
+LECTURE
+Wavenet
 
 
 LECTURE
