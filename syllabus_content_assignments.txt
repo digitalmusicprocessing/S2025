@@ -1,3 +1,60 @@
-<a href = "https://ursinus.co1.qualtrics.com/jfe/form/SV_b8f6vIUU4KwTmcJ">Background Knowledge Assessment</a>
+Module 1: Python Basics Due by 11:59 PM
 
-2022-08-29
+2023-01-20
+Module 2: Sinusoids And Simple Numpy Tunes Due Before Class
+
+2023-01-23
+<HR>Assignment 1: Risset Beats Out
+
+2023-01-23
+Module 3: Standing Waves And Plucked String Synthesis Due Before Class 
+
+2023-01-25
+Module 4: Chirps, Instantaneous Frequency due before class 
+
+2023-01-27
+Assignment 1 Due
+
+2023-02-02
+Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics due before class
+
+2023-01-30
+Module 6: Timbre, FM Synthesis, Python Methods As Parameters (Optional, but will help with HW2)
+
+2023-02-03
+<HR>Assignment 2: Digital Instruments Out 
+
+2023-02-03
+Module 7: Echoes, Impulse Responses, And Convolution due before class 
+
+2023-02-06
+Module 8: Discovering The Fourier Transform due before class 
+
+2023-02-10
+Module 8b: Implement The Discrete Fourier Transform due before class 
+
+2023-02-13
+Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase due before class 
+
+2023-02-15
+Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties due before class 
+
+2023-02-17
+Module 11: STFT, Window Functions, Complex Numbers due before class 
+
+2023-02-22
+Assignment 2 Due
+
+2023-02-23
+Module 12: Complex DFT And Phasors (Optinal, But Will Help with HW3)
+
+2023-02-24
+<HR>Assignment 3: Vocoders And Phase Retrieval Out
+
+2023-02-24
+Module 14: Convolution And Multiplication Duality due before class 
+
+2023-02-27
+Module 15: Z Transform due before class 
+
+2023-03-01
