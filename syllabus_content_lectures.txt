@@ -13,7 +13,7 @@ Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch
 LECTURE
 Square Waves, Triangle Waves, Sawtooth Waves, Noise, Beat Frequencies
 
-<ul><li></li></ul>
+
 LECTURE
 Octaves, Harmonicity, Circle of Fifths / Pythagorean Tuning
 
@@ -139,7 +139,7 @@ Self-Similarity in Audio
 
 
 SECTION
-<a name = "modern">Unit 4: Modern Machine Learning / AI For Digital Music Processing</a>
+<a name = "neuralnets">Unit 4: Neural Networks for Digital Music Processing</a>
 
 
 LECTURE
@@ -152,5 +152,21 @@ Deep Learning
 
 LECTURE
 Convolutional Neural Networks
+
+
+LECTURE
+Deep beat tracking
+
+<ul><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
+LECTURE
+Deep beat tracking continued
+
+
+LECTURE
+Wave-U-Net for Source Separation
+
+<ul><li><a href = "https://arxiv.org/pdf/1806.03185.pdf">Wave-U-Net Paper</a></li></ul>
+LECTURE
+Music Enhancement
 
 

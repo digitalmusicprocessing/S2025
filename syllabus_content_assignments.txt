@@ -1,3 +1,6 @@
+<a href = "Assignments/Survey">Survey</a> and syllabus quiz due by 11:59PM
+
+2023-01-19
 Module 1: Python Basics Due by 11:59 PM
 
 2023-01-20
