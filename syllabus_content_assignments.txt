@@ -1,7 +1,7 @@
 <a href = "Assignments/Survey">Survey</a> and <a href = "https://ursinus.instructure.com/courses/15546/quizzes/21549">syllabus quiz</a> due by 11:59PM
 
 2023-01-19
-Module 1: Python Basics Due by 11:59 PM
+<a href = "https://ursinus-cs372-s2023.github.io/Modules/Module1/Video0">Module 1: Python Basics</a> Due by 11:59 PM
 
 2023-01-20
 Module 2: Sinusoids And Simple Numpy Tunes Due Before Class

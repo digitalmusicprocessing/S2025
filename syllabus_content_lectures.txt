@@ -171,6 +171,10 @@ Wave-U-Net for Source Separation
 
 <ul><li><a href = "https://arxiv.org/pdf/1806.03185.pdf">Wave-U-Net Paper</a></li></ul>
 LECTURE
-Music Enhancement
+Machine Learning Meets FM Synthesis
+
+
+LECTURE
+Machine Learning Meets FM Synthesis
 
 
