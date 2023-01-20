@@ -4,7 +4,7 @@
 <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module1/Video0">Module 1: Python Basics</a> Due by 11:59 PM
 
 2023-01-20
-Module 2: Sinusoids And Simple Numpy Tunes Due Before Class
+<a href = "https://ursinus-cs372-s2023.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a> Due Before Class
 
 2023-01-23
 <HR>Assignment 1: Risset Beats Out
