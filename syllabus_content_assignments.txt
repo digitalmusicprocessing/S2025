@@ -7,10 +7,10 @@
 <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a> Due Before Class
 
 2023-01-23
-<HR>Assignment 1: Risset Beats Out
+<HR><a href = "Assignments/HW1_RissetBeats">Assignment 1: Risset Beats</a> Out
 
 2023-01-23
-Module 3: Standing Waves And Plucked String Synthesis Due Before Class 
+<a href = "https://ursinus-cs372-s2023.github.io/Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a> Due Before Class 
 
 2023-01-25
 Module 4: Chirps, Instantaneous Frequency due before class 
