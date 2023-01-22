@@ -16,13 +16,13 @@
 Module 4: Chirps, Instantaneous Frequency due before class 
 
 2023-01-27
-Assignment 1 Due
-
-2023-02-02
 Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics due before class
 
 2023-01-30
 Module 6: Timbre, FM Synthesis, Python Methods As Parameters (Optional, but will help with HW2)
+
+2023-02-03
+<HR>Assignment 1 Due
 
 2023-02-03
 <HR>Assignment 2: Digital Instruments Out 
