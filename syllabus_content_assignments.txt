@@ -15,22 +15,22 @@
 2023-01-25
 Module 4: Chirps, Instantaneous Frequency due before class 
 
-2023-01-27
+2023-01-30
 Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics due before class
 
-2023-01-30
-Module 6: Timbre, FM Synthesis, Python Methods As Parameters (Optional, but will help with HW2)
-
 2023-02-03
+Module 6: Timbre, FM Synthesis, Python Methods As Parameters
+
+2023-02-06
 <HR>Assignment 1 Due
 
 2023-02-03
 <HR>Assignment 2: Digital Instruments Out 
 
-2023-02-03
+2023-02-06
 Module 7: Echoes, Impulse Responses, And Convolution due before class 
 
-2023-02-06
+2023-02-08
 Module 8: Discovering The Fourier Transform due before class 
 
 2023-02-10
