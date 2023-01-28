@@ -24,7 +24,7 @@
 	url = https://github.com/Ursinus-CS472A-S2021/Week15_NMF.git
 [submodule "Assignments/HW1_RissetBeats/HW1_RissetBeats"]
 	path = Assignments/HW1_RissetBeats/HW1_RissetBeats
-	url = https://github.com/Ursinus-CS472A-S2021/HW1_RissetBeats.git
+	url = https://github.com/ursinus-cs372-s2023/HW1_RissetBeats.git
 [submodule "Assignments/HW2_DigitalInstruments/HW2_DigitalInstruments"]
 	path = Assignments/HW2_DigitalInstruments/HW2_DigitalInstruments
 	url = https://github.com/Ursinus-CS472A-S2021/HW2_DigitalInstruments.git
@@ -40,3 +40,6 @@
 [submodule "Assignments/HW6_LetItBee/HW6_LetItBee"]
 	path = Assignments/HW6_LetItBee/HW6_LetItBee
 	url = https://github.com/Ursinus-CS472A-S2021/HW6_LetItBee.git
+[submodule "webaudio-pianoroll"]
+	path = webaudio-pianoroll
+	url = https://github.com/ursinus-cs372-s2023/webaudio-pianoroll.git
