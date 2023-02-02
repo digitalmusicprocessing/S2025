@@ -16,7 +16,7 @@
 <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency</a> Due Before Class 
 
 2023-01-30
-Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics Due Before Class
+<a href = "https://ursinus-cs372-s2023.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a> Due Before Class
 
 2023-02-03
 Module 6: Timbre, FM Synthesis, Python Methods As Parameters
