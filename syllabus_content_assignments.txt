@@ -25,10 +25,10 @@
 <HR>Assignment 1 Due
 
 2023-02-03
-<HR>Assignment 2: Digital Instruments Out 
+<HR><a href = "Assignments/HW2_DigitalInstruments">Assignment 2: Digital Instruments</a> Out 
 
 2023-02-06
-Module 7: Echoes, Impulse Responses, And Convolution Due Before Class 
+<a href = "https://ursinus-cs372-s2023.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a> Due Before Class 
 
 2023-02-08
 Module 8: Discovering The Fourier Transform Due Before Class 

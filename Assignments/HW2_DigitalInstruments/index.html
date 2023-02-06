@@ -41,10 +41,8 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-                                        <h2>Assignment 2: Digital Instruments (46 Points)</h2>
+                                        <h2>Assignment 2: Digital Instruments (50 Points)</h2>
                                         <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
-                                        <h3>Due Sunday 2/21/2021</h3>
-										<h3><a href = "statements.html">Click here</a> to listen to musical statements!</h3>
 									</header>
 
 									<div id="page-content">
@@ -72,6 +70,9 @@
 													<li><a href = "#fmzoo">Part 4: FM Synthesis Instrument Zoo (23 Points)</a>
 														<ul>
 															<li>
+																<a href = "#electricguitar">Electric Guitar (2 Points)</a>
+															</li>
+															<li>
 																<a href = "#bell">Bell Notes (3 Points)</a>
 															</li>
 															<li>
@@ -81,7 +82,10 @@
 																<a href = "drumlike">Drum-Like Sound (5 Points)</a>
 															</li>
 															<li>
-																<a href = "#wooddrum">Wood Drum Sound (5 Points)</a>
+																<a href = "#snaredrum">Snare Drum (3 Points)</a>
+															</li>
+															<li>
+																<a href = "#wooddrum">Wood Drum Sound (4 Points)</a>
 															</li>
 															<li>
 																<a href = "#dirtybass">Dirty Bass Sound (5 Points)</a>
@@ -107,7 +111,7 @@
 											
 											
 										<p>
-											<a href = "https://github.com/Ursinus-CS472A-S2021/HW2_DigitalInstruments/archive/main.zip">Click here</a> to download the starter code for this assignment, which also includes some tunes in .txt files that you can use to test your code.  You will be editing the file <code>instruments.py</code> and running methods from this file in jupyter so you can listen to audio.
+											<a href = "https://github.com/ursinus-cs372-s2023/HW2_DigitalInstruments/archive/refs/heads/main.zip">Click here</a> to download the starter code for this assignment, which also includes some tunes in .txt files that you can use to test your code.  You will be editing the file <code>instruments.py</code> and running methods from this file in jupyter so you can listen to audio.
 										</p>
 										
 
@@ -124,7 +128,7 @@
 										<h3><a name = "submit">What To Submit</a></h3>
 
 										<p>                                       
-                                            When you are finished, please submit your python file <code>instruments.py</code> to canvas, as well as an audio file for your musical statement and all of the txt files for the instrument tracks that make it up.  Please also submit the code or notebook you used to make the musical statement.  Finally, please submit answers to the following questions on Canvas
+                                            When you are finished, submit your python file <code>instruments.py</code> to canvas, as well as an audio file for your musical statement and all of the txt files for the instrument tracks that make it up.  Also submit the code or notebook you used to make the musical statement.  Finally, submit the following information on canvas:
 										
 										<ol>
 											<li>
@@ -132,15 +136,6 @@
 											</li>
 											<li>
 												If you want to submit your musical statement to the music contest, and if so, what name or pseudonym you would like to use in the musical gallery on our class web site
-											</li>
-											<li>
-												Approximately how many hours it took you to finish this assignment (<i>I will not judge you for this at all...I am simply using it to gauge if the assignments are too easy or hard</i>)
-											</li>
-											<li>
-												Your overall impression of the assignment. Did you love it, hate it, or were you neutral? One word answers are fine, but if you have any suggestions for the future let me know.
-											</li>
-											<li>
-												Any other concerns that you have. For instance, if you have a bug that you were unable to solve but you made progress, write that here. The more you articulate the problem the more partial credit you will receive (fine to leave this blank)
 											</li>
 										</ol>
 
@@ -298,7 +293,7 @@
 											will put <code>x</code> onto the end of <code>y</code>.
 										</p>
 										<p>
-											Other than that, there's one very important change in the format of the note numbers from the <a href = "../HW1_RissetBeats/">last assignment</a>.  If the note number is a NaN (not a number), then this means a "rest," or a silence (all 0s) for the requested duration.  To check to see if a variable called <code>note</code> is nan, you can write
+											Finally, if the note number is a <code>nan</code> (not a number), then this means a "rest," or a silence (all 0s) for the requested duration.  To check to see if a variable called <code>note</code> is nan, you can write
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											if np.isnan(note):
@@ -374,7 +369,14 @@
 											</p>
 
 											<p>
-												Once you put all of these parameters together to generate and return a waveform, you can use <code>fm_synth_note</code> as a note generation method in other methods.  For example, the <code>fm_plucked_string_note</code> method that has been provided to you wraps around <code>fm_synth_note</code> to generate a plucked string.  It uses the <code>exp_env</code> function as the generator function for both the modulation index envelope and the amplitude.  It also uses a ratio of 1 and an <code>I</code> of 8.  The code below puts <code>fm_plucked_string_note</code> into action with a clip from <a href = "https://www.youtube.com/watch?v=yK0P1Bk8Cx4">Kenny Loggins's "Danger Zone"</a>, and it should work once you've finished implementing <code>fm_synth_note</code>
+												Once you put all of these parameters together to generate and return a waveform, you can use <code>fm_synth_note</code> as a note generation method in other methods.  
+											</p>
+											<p>
+												
+												For example, the <code>fm_plucked_string_note</code> method that has been provided to you wraps around <code>fm_synth_note</code> to generate a plucked string.  It uses the <code>exp_env</code> function as the generator function for both the modulation index envelope and the amplitude.  It also uses a ratio of 1 and an <code>I</code> of 8.  
+											</p>
+											<p>
+												The code below puts <code>fm_plucked_string_note</code> into action with a clip from <a href = "https://www.youtube.com/watch?v=yK0P1Bk8Cx4">Kenny Loggins's "Danger Zone"</a>, and it should work once you've finished implementing <code>fm_synth_note</code>
 											</p>
 
 											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
@@ -414,10 +416,30 @@
 											In this section, you will use the above framework to make a variety of different instrument sounds.  Each instrument requires the creation or utilization of an envelope function and a method to put it all together.
 										</p>
 
+										<h3><a name = "electriguitar">Electric Guitar</a> (2 Points)</h3>
+										<p>
+											(Shout out to Michael Tecce, spring 2021 for this idea)
+										</p>
+										<p>
+											Fill in the method <code>fm_electric_guitar_note</code> to make a sound like an electric guitar.  This is simply the result of passing the output of <code>fm_plucked_string_note</code> through a square wave; that is, if the sample is positive, turn it into +1, and if the sample is negative, turn it into -1.  We've been over quick ways to turn cosines into square waves, so it is possible to do this in one line of code (though you could do it with a loop through the samples).
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											y = make_tune("Tunes/sweetchild.txt", 0.12, 44100, fm_electric_guitar_note)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Audio/sweetchild.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
 
 										<h3><a name = "bell">Bell Notes</a> (3 Points)</h3>
 										<p>
-											Fill in the method <code>fm_bell_note</code> to make a note that sounds like a struck bell.  This method is very similar to the <code>fm_plucked_string_note</code> method, but the parameters make all the difference.  In particular, you should use an exponential envelope with a lambda of 0.8 for both the amplitude and modulation envelope, and you should use a modulation frequency ratio of 1.4 to create inharmonic sounds characteristic of a bell.  Finally, you should use a modulation index <code>I</code> of 2.  Assuming this is all working properly, here's some code you can run
+											Fill in the method <code>fm_bell_note</code> to make a note that sounds like a struck bell.  This method is very similar to the <code>fm_plucked_string_note</code> method, but the parameters make all the difference.  In particular, you should use an exponential envelope with a &mu; of 0.8 for both the amplitude and modulation envelope, and you should use a modulation frequency ratio of 1.4 to create inharmonic sounds characteristic of a bell.  Finally, you should use a modulation index <code>I</code> of 2.  Assuming this is all working properly, here's some code you can run
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
@@ -532,12 +554,12 @@
 										<p>
 											As a hint, consider sampling a horizontally shifted version of the function 
 											<h3>
-												\[ t^2 e^{-\lambda t} \]
+												\[ t^2 e^{-\mu t} \]
 											</h3>
 										</p>
 
 										<p>
-											where lambda is some constant, and the larger the constant, the quicker the decay.  Once you're finished generating the envelope, fill in the method <code>fm_drum_sound</code> to create a drum sound using fm synthesis with <code>drum_like_env</code> used for both the modulation envelope and the amplitude envelope, and for a <code>ratio</code> of 1.4 and an <code>I</code> of 2.  You should also ignore the <code>note</code> parameter that's passed on and instead pass along the <code>fixed_note</code> parameter to <code>fm_synth_note</code> so that the drum stays at a constant pitch.
+											where &mu; is some constant, and the larger the constant, the quicker the decay.  Once you're finished generating the envelope, fill in the method <code>fm_drum_sound</code> to create a drum sound using fm synthesis with <code>drum_like_env</code> used for both the modulation envelope and the amplitude envelope, and for a <code>ratio</code> of 1.4 and an <code>I</code> of 2.  You should also ignore the <code>note</code> parameter that's passed on and instead pass along the <code>fixed_note</code> parameter to <code>fm_synth_note</code> so that the drum stays at a constant pitch.
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
@@ -554,8 +576,34 @@
 											  </audio> 
 										</p>
 
+										<h3><a name = "snaredrum">Snare Drum Sound</a> (3 Points)</h3>
+										<p>
+											(Shout out to Michael Tecce, spring 2021 for this idea)
+										</p>
 
-										<h3><a name = "wooddrum">Wood Drum Sound</a> (5 Points)</h3>
+										<p>
+											This is not exactly FM synthesis, but a snare drum can be created by filling an array with uniform random noise and multiplying it by a quickly exponentially decaying envelope.  Fill in the method <code>snare_drum_sound</code> to do this.  Use the <code><a href = "https://numpy.org/doc/stable/reference/random/generated/numpy.random.rand.html">np.random.rand</a></code> method to fill all of the samples with noise, then multiply them with an exponential envelope decaying quickly with <b>&mu; = 20</b>
+										</p>
+
+										<p>
+											Below is an example
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											# Snare drum
+											sr = 44100
+											y = make_tune("Tunes/3on4.txt", 0.2, 44100, snare_drum_sound)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											<audio controls>
+												<source src="Audio/snare.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											  </audio> 
+										</p>
+
+										<h3><a name = "wooddrum">Wood Drum Sound</a> (4 Points)</h3>
 										<p>
 											To make a "wood drum" sound (according to <a href = "https://web.eecs.umich.edu/~fessler/course/100/misc/chowning-73-tso.pdf">Chowning's paper</a>), an envelope is required that look as below (with code to generate it).  Fill in the <code>wood_drum_env</code> code to do this
 
@@ -707,15 +755,9 @@
 												<li>
 													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
 												</li>
-												<!--
 												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
-									
-													<ul>
-														<li>
-															<a href = "../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
-														</li>
-													</ul>
 												</li>
+												<!--
 												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Vocoders And Phase Retrieval</a>
 													<ul>
 														<li>
@@ -778,8 +820,8 @@
 												<li><a href = "https://ursinus-cs372-s2023.github.io/Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
 												<li><a href = "https://ursinus-cs372-s2023.github.io/Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
 												<li><a href = "https://ursinus-cs372-s2023.github.io/Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
-												<!--
 												<li><a href = "https://ursinus-cs372-s2023.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<!--
 												<li><a href = "../../Modules/Module8_DiscoveringFourier">Module 8: Discovering Fourier</a></li>
 												<li><a href = "../../Modules/Module8b_ImplementingDFT">Module 8b: Implementing The Discrete Fourier Transform</a></li>
 												<li><a href = "https://ursinus-cs372-s2023.github.io/Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
