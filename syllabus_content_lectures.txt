@@ -61,7 +61,7 @@ Exploring The DFT on Audio Data: Pitch And Timbre
 LECTURE
 The Short-Time Fourier Transform (STFT), Spectrograms
 
-
+<ul><li><a href = "https://musiclab.chromeexperiments.com/spectrogram">Live spectrogram demo in the browser</a></li></ul>
 LECTURE
 Complex Numbers Review, Euler's Formula, Complex Definition of DFT And Phase
 
