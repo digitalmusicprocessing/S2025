@@ -47,7 +47,7 @@
 
 									<div id="page-content">
 										<p>
-											As we saw in <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">module 7</a>, it is possible to simulate echoes/reverberation with a process called "convlution."  We create an "impulse response," which tells us the time lags and amplitudes of all of the echoes, and which can be written as a numpy array.  And then we "convolve" this impulse response with a sound to hear what it would sound like with all of those echoes.
+											As we saw in <a href = "../../../../Modules/Module7/Video1">module 7</a>, it is possible to simulate echoes/reverberation with a process called "convlution."  We create an "impulse response," which tells us the time lags and amplitudes of all of the echoes, and which can be written as a numpy array.  And then we "convolve" this impulse response with a sound to hear what it would sound like with all of those echoes.
 										</p>
 
 										<p>
@@ -91,17 +91,18 @@
 
 										<h2>Exercise 3: Towards Vocoders</h2>
 										<p>
-											Instead of using noise as the original sound source, try using some other sound and passing it through a comb filter.  Recall that you can load sound using librosa as 
+											Instead of using noise as the original sound source, try using the file <a href = "robot.wav">robot.wav</a> and passing it through a comb filter.  You can load it using scipy.io:
 										</p>
 
 										<p>
 											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-												x, sr = librosa.load(filename, sr=44100)
+												from scipy.io import wavfile
+												sr, x = wavfile.read("robot.wav")
 											</script>
 										</p>
 
 										<p>
-											<a href = "robot.mp3">Click here</a> to download an example.  You will have to play around with the comb spacing and number of teeth to get the best results.
+											You will have to play around with the comb spacing and number of teeth to get the best results.
 										</p>
 
 										
@@ -204,9 +205,10 @@
 												<li><a href = "../../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
 												<li><a href = "../../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
 												<li><a href = "../../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
-												<!--
 												<li>
 													<a href = "../../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+												</li>
+												<!--
 													<ul>
 														<li><a href = "../../../ClassExercises/Week4/Week4_CombFilters/solutions.html">solutions</a> </li>
 													</ul>
