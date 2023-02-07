@@ -31,12 +31,9 @@
 <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a> Due Before Class 
 
 2023-02-08
-Module 8: Discovering The Fourier Transform Due Before Class 
+<a href = "https://ursinus-cs372-s2023.github.io/Modules/Module8/Video1">Module 8: Discovering The Fourier Transform</a> Due Before Class 
 
 2023-02-10
-Module 8b: Implement The Discrete Fourier Transform Due Before Class 
-
-2023-02-13
 Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase Due Before Class 
 
 2023-02-15
