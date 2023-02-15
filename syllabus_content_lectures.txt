@@ -55,7 +55,7 @@ Real-Valued DFT Definition, Amplitude/Phase Shifts
 
 
 LECTURE
-Exploring The DFT on Audio Data: Pitch And Timbre
+Exploring The DFT on Audio Data: Pitch And Timbre, Fast(er) Risset Beats
 
 
 LECTURE

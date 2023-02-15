@@ -43,3 +43,6 @@
 [submodule "webaudio-pianoroll"]
 	path = webaudio-pianoroll
 	url = https://github.com/ursinus-cs372-s2023/webaudio-pianoroll.git
+[submodule "ClassExercises/Week5/Week5_ViolinSounds"]
+	path = ClassExercises/Week5/Week5_ViolinSounds
+	url = https://github.com/ursinus-cs372-s2023/Week5_ViolinSounds.git
