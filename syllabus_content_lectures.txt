@@ -59,6 +59,10 @@ Exploring The DFT on Audio Data: Pitch And Timbre, Fast(er) Risset Beats
 
 
 LECTURE
+Converting Frequency Units on Real Audio, Begin The Short-Time Fourier Transform (STFT)
+
+
+LECTURE
 The Short-Time Fourier Transform (STFT), Spectrograms
 
 <ul><li><a href = "https://musiclab.chromeexperiments.com/spectrogram">Live spectrogram demo in the browser</a></li></ul>
