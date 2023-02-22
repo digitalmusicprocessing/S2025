@@ -121,7 +121,7 @@ Dynamic Time Warping Continued
 LECTURE
 Chroma Features, Shepard Tones
 
-
+<ul><li><a href = "https://www.youtube.com/watch?v=YUOR7_40-dQ">Shepard Tone Visualization</a></li></ul>
 LECTURE
 Audio Fingerprints / The Shazam Algorithm
 

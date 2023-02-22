@@ -40,7 +40,7 @@
 <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module10/Video1">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties, Inverse DFT And Fast Risset</a> Due Before Class 
 
 2023-02-17
-Module 11: STFT, Window Functions Due Before Class 
+<a href = "https://ursinus-cs372-s2023.github.io/Modules/Module11/Video1">Module 11: STFT, Window Functions, Complex Numbers</a> Due Before Class 
 
 2023-02-22
 Module 12: Complex DFT And Phasors Due Before Class
