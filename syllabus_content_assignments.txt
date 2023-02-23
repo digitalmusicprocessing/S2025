@@ -43,7 +43,7 @@
 <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module11/Video1">Module 11: STFT, Window Functions, Complex Numbers</a> Due Before Class 
 
 2023-02-22
-Module 12: Complex DFT And Phasors Due Before Class
+<a href = "https://ursinus-cs372-s2023.github.io/Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a> Due Before Class
 
 2023-02-24
 Assignment 2 Due
