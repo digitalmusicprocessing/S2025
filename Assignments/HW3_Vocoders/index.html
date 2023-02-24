@@ -118,15 +118,7 @@
 											<li>
 												If you want to submit your musical statement to the music contest, and if so, what name or pseudonym you would like to use in the musical gallery on our class web site
 											</li>
-											<li>
-												Approximately how many hours it took you to finish this assignment (<i>I will not judge you for this at all...I am simply using it to gauge if the assignments are too easy or hard</i>)
-											</li>
-											<li>
-												Your overall impression of the assignment. Did you love it, hate it, or were you neutral? One word answers are fine, but if you have any suggestions for the future let me know.
-											</li>
-											<li>
-												Any other concerns that you have. For instance, if you have a bug that you were unable to solve but you made progress, write that here. The more you articulate the problem the more partial credit you will receive (fine to leave this blank)
-											</li>
+											
 										</ol>
 
 
@@ -135,7 +127,7 @@
 										<HR>
 										<h2><a name = "programming">Programming Tasks</a></h2>
 										<p>
-											<a href = "https://github.com/Ursinus-CS472A-S2021/HW3_Vocoders/archive/main.zip">Click here</a> to download the starter code for this assignment.  In all of the tasks below, you will be editing methods in the <code>vocoder.py</code> file.  You should also copy your <code>instruments.py</code> file from <a href = "../HW2_DigitalInstruments/">homework 2</a> into this directory, as it will be used to generate instruments in part 2 that will be shaped by voice.
+											<a href = "https://github.com/ursinus-cs372-s2023/HW3_Vocoders/archive/refs/heads/main.zip">Click here</a> to download the starter code for this assignment.  In all of the tasks below, you will be editing methods in the <code>vocoder.py</code> file.  You should also copy your <code>instruments.py</code> file from <a href = "../HW2_DigitalInstruments/">homework 2</a> into this directory, as it will be used to generate instruments in part 2 that will be shaped by voice.
 										</p>
 
 										<p>
@@ -169,7 +161,7 @@
 											import matplotlib.pyplot as plt
 											import librosa
 											from scipy.signal import fftconvolve
-											from scipy.ndimage.filters import maximum_filter1d
+											from scipy.ndimage import maximum_filter, maximum_filter1d
 											from scipy.interpolate import interp2d
 											import IPython.display as ipd
 											from vocoder import *
@@ -178,7 +170,11 @@
 
 										<h2><a name = "comb">Part 1: Comb Filter Vocoder (10 Points)</a></h2>
 										<p>
-											We saw in a <a href = "../../ClassExercises/Week4/Week4_CombFilters/solutions.html">class exercise</a> that it is possible to make a pitched "robot sound" by applying <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">convolution</a> to a sound with a comb filter.  In order to control the pitch, we noted that the spacing between impulses on the comb needs to be equal to the period, in samples, of the base frequency of the note we seek.  You will use this observation to make an entire tune of such notes by applying different comb filters to different slices of audio, with one slice for each note.  Fill in the method <code>comb_tune</code> to accomplish this.  In particular, for each note, you should create a comb filter with <code>num_pulses</code> "teeth" with a spacing appropriate for that note.  You should then convole that comb with the chunk of audio, referred to as <code>xi</code> in the code, using <code>fftconvolve</code>.  
+											We saw in a <a href = "../../ClassExercises/Week4/Week4_CombFilters/solutions.html">class exercise</a> that it is possible to make a pitched "robot sound" by applying <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module7/Video1">convolution</a> to a sound with a comb filter.  In order to control the pitch, we noted that the spacing between impulses on the comb needs to be equal to the period, in samples, of the base frequency of the note we seek.  You will use this observation to make an entire tune of such notes by applying different comb filters to different slices of audio, with one slice for each note.  
+										</p>
+										<h4>Your Task</h4>
+										<p>
+											Fill in the method <code>comb_tune</code>.  For each note, you should create a comb filter with <code>num_pulses</code> "teeth" with a spacing appropriate for that note.  You should then convole that comb with the chunk of audio, referred to as <code>xi</code> in the code, using <code>fftconvolve</code>.  
 										</p>
 
 										<p>
@@ -271,8 +267,9 @@
 											Therefore, you can simply divide the shifted and overlapped inverse STFT by <b>Q/2</b> to recover the original audio.
 										</p>
 
+										<h4>Your Task</h4>
 										<p>
-											To complete this task, fill in the method <code>istft</code> to return audio samples corresponding to a complex STFT.  To invert the fourier transform in each window, you can use <code>np.real(<a href = "https://numpy.org/doc/stable/reference/generated/numpy.fft.ifft.html">np.fft.ifft</a>())</code>. (The np.real is there because it's possible to have very small imaginary components upon inversion that mean nothing).  To test this, perform and STFT and see if you can recover the original audio by performing your inverse STFT.  For example, the run the following code
+											Fill in the method <code>istft</code> to return audio samples corresponding to a complex STFT.  To invert the fourier transform in each window, you can use <code>np.real(<a href = "https://numpy.org/doc/stable/reference/generated/numpy.fft.ifft.html">np.fft.ifft</a>())</code>. (The np.real is there because it's possible to have very small imaginary components upon inversion that mean nothing).  To test this, perform and STFT and see if you can recover the original audio by performing your inverse STFT.  For example, the run the following code
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
@@ -299,10 +296,11 @@
 											Once you have the inverse STFT working, there's actually a very simple procedure we can use to make a vocoder shaped around any instrument sound.  Let's say we have instrument audio <b>I</b> and voice audio <b>V</b>.  We're going to use the voice audio to shape the instrument audio by mixing together their STFTs.  In particular, simply multiply each element in <b>STFT(I)</b> by the corresponding <u>amplitude</u> in <b>STFT(V)</b>, and then take the inverse STFT.
 										</p>
 										<p>
-											We do have to be careful if we use the synthetic instruments from <a href = "../HW2_KarplusAndFM">assignment 2</a> for the instrument sound, as the base frequency and its integer harmonics don't occur densely enough to support the spectrum of the voice in a way that is intelligible.  To mitigate this, we have to apply some nonlinear distortion to the instrument sound to expand its frequency content so that it has enough to support the voice.  We can do this by passing our instrument audio samples through <code>np.sign</code>, which is akin to turning an electronic amplifier way up (this is the way we get that gritty, harmonically rich electric guitar sound in rock music).
+											We do have to be careful if we use the synthetic instruments from <a href = "../HW2_DigitalInstruments">assignment 2</a> for the instrument sound, as the base frequency and its integer harmonics don't occur densely enough to support the spectrum of the voice in a way that is intelligible.  To mitigate this, we have to apply some nonlinear distortion to the instrument sound to expand its frequency content so that it has enough to support the voice.  As with the <a href = "../HW2_DigitalInstruments/index.html#electricguitar">electric guitar</a>, we can do this by passing our instrument audio samples through <code>np.sign</code>, which is akin to turning an electronic amplifier way up (this is the way we get that gritty, harmonically rich electric guitar sound in rock music).
 										</p>
+										<h4>Your Task</h4>
 										<p>
-											To complete this task, fill in the method <code>spectrogram_vocoder</code>.  Below is an example using the voice to shape an FM brass sound with this method
+											Fill in the method <code>spectrogram_vocoder</code>.  Below is an example using the voice to shape an FM brass sound with this method
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											sr = 44100
@@ -497,15 +495,21 @@
 											</audio> 
 										</p>
 
-										
+
+
 										<HR>
-										<h2><a name = "soundimages">Phase Retrieval Application 1: Sound Images (Optional)</a></h2>
+										<h2><a name = "soundimages">Phase Retrieval Application 1: Sound Images (8 Points)</a></h2>
 										<p>
 											One interesting "synesthetic" application that phase retrieval unlocks is that we can turn images into audio by taking any grayscale image and considering it a magnitude only specification of an STFT.  If we apply phase retrieval, we can then fill in the phases for a sound whose absolute value STFT would match the specified image.
 										</p>
 
 										<p>
-											<b>NOTE: </b> John Muller pointed out that Aphex Twin has a song <a href = "https://en.wikipedia.org/wiki/Windowlicker#Spectrogram">where they actually do this</a>!
+											<b>NOTE: </b> John Muller (from spring 2021) pointed out that Aphex Twin has a song <a href = "https://en.wikipedia.org/wiki/Windowlicker#Spectrogram">where they actually do this</a>!
+										</p>
+
+										<h4>Your Task</h4>
+										<p>
+											Fill in the method <code>im2sound</code> to create a sound from an image.  You will have to copy over the pixels of the image to a spectrogram, as well as their <a href = "../../../Modules/Module13/Video1">mirror image</a> to ensure that the inverse DFT produces real numbers.  See some of the examples below
 										</p>
 
 										<h3>Example 1: 1-Pixel Trajectory</h3>
@@ -571,18 +575,18 @@
 										</p>
 
 
-										<h3>Example 3: CS 472</h3>
+										<h3>Example 3: CS 372</h3>
 										<p>
 											Let's suppose we have the following image:
 										</p>
 
-										<img src = "HW3_Vocoders/CS472.png">
+										<img src = "HW3_Vocoders/CS372.png">
 
 										<p>
 											If we create the following complex magnitude spectrogram with a window length of 2048
 										</p>
 
-										<img src = "Examples/CS472Spec.png">
+										<img src = "Examples/CS372Spec.png">
 										<p>
 											And then invert it with phase retrieval, we get the following audio
 										</p>
@@ -597,14 +601,54 @@
 
 										<p>
 											<audio controls>
-												<source src="Examples/CS472.mp3" type="audio/mpeg">
+												<source src="Examples/CS372.mp3" type="audio/mpeg">
 											  Your browser does not support the audio element.
 											</audio> 
 										</p>
 
 
+
 										<HR>
-											<h2><a name = "pitchshift">Phase Retrieval Application 2: Pitch Shifting (Optional)</a></h2>
+											<h2><a name = "beepytunes">Phase Retrieval Application 2: Beepy Tunes, Aka Tricking Shazam (8 Points)</a></h2>
+
+											<p>
+												The "Shazam technique" is an algorithm for recognizing a tune from a short clip of audio in a noisy environment, and it's led to the popular <a href = "https://www.shazam.com/">shazam app</a>.  The ingenious idea of this algorithms it retain only maxes in the spectrogram, and to throw everything else away.  You can read more details about this algorithm in the <a href = "http://www.ctralie.com/Teaching/CS174_F2020/Assignments/HW5b_Shazam/Wang03-shazam.pdf">original paper</a> and in a <a href = "https://ursinus-cs174-s2022.github.io/CoursePage/Assignments/FinalProject_Shazam/background.html">writeup I made</a>.
+											</p>
+	
+											<p>
+												The first step that Shazam does is find every point in the spectrogram that is greater than all of its neighbors in a rectangle around it 
+											</p>
+											<img src = "WindowMaxLabeled.svg">
+											<p>
+												Since we know this, we can make a spectrogram with only the maxes and trick the Shazam algorithm into thinking it's the original.  For example, below is 
+											</p>
+
+											<img src = "RickRollMaxes.png">
+
+
+											<h4>Your Task</h4>
+											<p>
+												Fill in the <code>make_beepy_tune</code> to create a beepy tune from a particular audio waveform.  Below is the code you can use to replicate the Rick Roll example above:
+											</p>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												from scipy.io import wavfile
+												sr, x = wavfile.read("rickroll.wav")
+												w = 2048
+												h = 1024
+												win_fn = sin_window
+												time_win = 8
+												freq_win = 5
+												n_iters = 3
+												max_freq = 256
+												y = make_beepy_tune(x, w, h, win_fn, time_win, freq_win, max_freq, n_iters)
+												ipd.Audio(y, rate=sr)
+											</script>
+											
+
+
+										<HR>
+											<h2><a name = "pitchshift">Phase Retrieval Application 3: Pitch Shifting (Extra Credit +3)</a></h2>
 	
 											<p>
 												For those who want a challenge, you can try to implement pitch shifting by nonlinearly warping the frequency axis, resampling, and performing phase retrieval (though this will be ungraded).  Have a look a the <code>time_shift</code> method to see how to do the warp, and fill in the <code>pitch_shift</code> method.  Here is an example shifting down in pitch by 4 halfsteps.  Notice how the frequencies get compressed.
