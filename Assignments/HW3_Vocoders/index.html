@@ -273,8 +273,7 @@
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											sr = 44100
-											x, sr = librosa.load("mj.wav", sr=sr)
+											sr, x = wavfile.read("mj.wav")
 											w = 1024
 											h = 256
 											S = stft(x, w, h, hann_window)
@@ -306,9 +305,9 @@
 											sr = 44100
 											w = 2048
 											h = 64
-											tune = make_tune("Tunes/daft.txt", 0.25, 44100, fm_brass_note)
-											tune = np.sign(tune) # Apply nonlinear distortion to expand frequency content
-											voice, sr = librosa.load("daft.wav", sr=sr)
+											tune = make_tune("Tunes/daft.txt", 0.25, 44100, fm_bell_note)
+											tune = np.sign(tune)
+											sr, voice = wavfile.read("daft.wav")
 											y = specgram_vocoder(tune, voice, sr, w, h, hann_window)
 											ipd.Audio(y, rate=sr)
 										</script>
