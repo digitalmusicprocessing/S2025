@@ -159,7 +159,7 @@
 											%autoreload 2
 											import numpy as np
 											import matplotlib.pyplot as plt
-											import librosa
+											from scipy.io import wavfile
 											from scipy.signal import fftconvolve
 											from scipy.ndimage import maximum_filter, maximum_filter1d
 											from scipy.interpolate import interp2d
@@ -342,12 +342,11 @@
 											Below is an example using the voice to shape an FM bell sound
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											sr = 44100
 											w = 2048
 											h = 64
 											tune = make_tune("Tunes/daft.txt", 0.25, 44100, fm_bell_note)
-											tune = np.sign(tune) # Apply nonlinear distortion to expand frequency content
-											voice, sr = librosa.load("daft.wav", sr=sr)
+											tune = np.sign(tune)
+											sr, voice = wavfile.read("daft.wav")
 											y = specgram_vocoder(tune, voice, sr, w, h, hann_window)
 											ipd.Audio(y, rate=sr)
 										</script>
@@ -417,11 +416,10 @@
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											sr = 44100
 											w =  2048
 											h = 128
 											win_fn = hann_window
-											x, sr = librosa.load("mj.wav", sr=sr)
+											sr, x = wavfile.read("mj.wav")
 											S = stft(x, w, h, win_fn)
 											SAbs = np.abs(S) # Throw away all phase information
 											y = griffin_lim(SAbs, w, h, win_fn, 10)
@@ -457,11 +455,10 @@
 											For a slightly more interesting algorithm that runs with Griffin Lim as a subroutine, there is also code provided for you in <code>time_shift</code> that computes the magnitude spectrogram and stretches or compresses it along the time axis, followed by phase retrieval, to change the timing without changing the pitch.  If your phase retrieval code works properly, here is what you should get when stretching out the time by 1.5x
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											sr = 44100
 											w =  2048
 											h = 128
 											win_fn = hann_window
-											voice, sr = librosa.load("mj.wav", sr=sr)
+											sr, voice = wavfile.read("mj.wav")
 											y = time_shift(voice, 1.5, w, h, win_fn, 10)
 											ipd.Audio(y, rate=int(sr))
 										</script>
@@ -478,11 +475,10 @@
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											sr = 44100
 											w =  2048
 											h = 128
 											win_fn = hann_window
-											voice, sr = librosa.load("mj.wav", sr=sr)
+											sr, voice = wavfile.read("mj.wav")
 											y = time_shift(voice, 0.6, w, h, win_fn, 10)
 											ipd.Audio(y, rate=int(sr))
 										</script>
@@ -653,11 +649,10 @@
 												For those who want a challenge, you can try to implement pitch shifting by nonlinearly warping the frequency axis, resampling, and performing phase retrieval (though this will be ungraded).  Have a look a the <code>time_shift</code> method to see how to do the warp, and fill in the <code>pitch_shift</code> method.  Here is an example shifting down in pitch by 4 halfsteps.  Notice how the frequencies get compressed.
 											</p>
 											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-												sr = 44100
 												w =  8192
 												h = 128
 												win_fn = hann_window
-												voice, sr = librosa.load("mj.wav", sr=sr)
+												sr, voice = wavfile.read("mj.wav")
 												y = pitch_shift(voice, -4, w, h, win_fn, 10)
 												ipd.Audio(y, rate=int(sr))
 											</script>
@@ -676,11 +671,10 @@
 												Here is an example shifting up in pitch by 4 halfsteps.  Notice how the frequencies get stretched out.
 											</p>
 											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-												sr = 44100
 												w =  8192
 												h = 128
 												win_fn = hann_window
-												voice, sr = librosa.load("mj.wav", sr=sr)
+												voice, sr = wavfile.read("mj.wav")
 												y = pitch_shift(voice, 4, w, h, win_fn, 10)
 												ipd.Audio(y, rate=int(sr))
 											</script>
