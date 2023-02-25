@@ -71,11 +71,11 @@ Complex Numbers Review, Euler's Formula, Complex Definition of DFT And Phase
 
 
 LECTURE
-Vocoder Concept, Phasors
+Phasor Mirroring, Aliasing, Inverse DFT
 
 
 LECTURE
-Phasor Mirroring, Aliasing, Inverse DFT
+Inverse STFT, Vocoder Concept, Phase Retrieval
 
 
 LECTURE

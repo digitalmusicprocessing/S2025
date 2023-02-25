@@ -41,9 +41,8 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-                                        <h2>Assignment 3: Vocoders And Phase Retrieval (37 Points)</h2>
+                                        <h2>Assignment 3: Spectacular Spectrograms (50 Points)</h2>
                                         <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
-                                        <h3>Due Wednesday 3/10/2021</h3>
 										<h3><a href = "statements.html">Click here</a> to listen to musical statements!</h3>
 									</header>
 
@@ -72,14 +71,15 @@
 														<a href = "#part3">Part 3: Phase Retrieval</a>
 														<ul>
 															<li><a href = "#griffinlim">The Griffin-Lim Algorithm (8 Points)</a></li>
-															<li><a href = "#soundimages">Phase Retrieval Application 1: Sound Images (Optional)</a></li>
-															<li><a href = "#pitchshift">Phase Retrieval Application 2: Pitch Shifting (Optional)</a></li>
+															<li><a href = "#soundimages">Phase Retrieval Application 1: Sound Images (7 Points)</a></li>
+															<li><a href = "#beepytunes">Phase Retrieval Application 2: Beepy Tunes, Aka Tricking Shazam (7 Points)</a></li>
+															<li><a href = "#pitchshift">Phase Retrieval Application 3: Pitch Shifting (Extra Credit +3)</a></li>
 														</ul>
 													</li>
 													
 													
 													<li>
-														<a href = "#musical">Part 4: Musical Statement (4 Points)</a>
+														<a href = "#musical">Part 4: Musical Statement (3 Points)</a>
 													</li>
 													<li>
 														<a href = "#bored">For the bored...</a>
@@ -92,7 +92,7 @@
 										<h2><a name = "overview">Overview / Logistics</a></h2>
 
 										<p>
-											Can't sing?  No problem.  In this assignment, you will implement several algorithms to create "singing instruments," which is an application of something known as a <b>vocoder</b>.  Students will also implement a procedure known as "phase retrieval" to estimate phase from amplitude-only information.  Both of these tasks will be a great opportunity to practice Short-Time Fourier Transform concepts in the service of a super fun application.  More background information and directions will be interspersed in the <a href = "#programming">programming task descriptions</a>.
+											Can't sing?  No problem.  In this assignment, you will implement several algorithms to create "singing instruments," which is an application of something known as a <b>vocoder</b>.  Students will also implement a procedure known as "phase retrieval" to estimate phase from amplitude-only information.  Both of these tasks will be a great opportunity to practice Short-Time Fourier Transform concepts in the service of a slew of fun applications.  More background information and directions will be interspersed in the <a href = "#programming">programming task descriptions</a>.
 										</p>
 										
 
@@ -269,7 +269,7 @@
 
 										<h4>Your Task</h4>
 										<p>
-											Fill in the method <code>istft</code> to return audio samples corresponding to a complex STFT.  To invert the fourier transform in each window, you can use <code>np.real(<a href = "https://numpy.org/doc/stable/reference/generated/numpy.fft.ifft.html">np.fft.ifft</a>())</code>. (The np.real is there because it's possible to have very small imaginary components upon inversion that mean nothing).  To test this, perform and STFT and see if you can recover the original audio by performing your inverse STFT.  For example, the run the following code
+											Fill in the method <code>istft</code> to return audio samples corresponding to a complex STFT.  To invert the fourier transform in each window, you can use <code>np.real(<a href = "https://numpy.org/doc/stable/reference/generated/numpy.fft.ifft.html">np.fft.ifft</a>())</code>. (The np.real is there because due to rounding error, it's possible to have very small imaginary components upon inversion that mean nothing).  To test this, perform and STFT and see if you can recover the original audio by performing your inverse STFT.  For example, the run the following code
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
@@ -396,12 +396,12 @@
 											<li>Compute the phase of everything in <b>A</b></li>
 											<li>Let <b>S</b> have the amplitudes of <b>SAbs</b> but the phases of <b>A</b>.  As a hint for this, if you have a matrix <b>P</b> with all of the phases of <b>A</b> expressed in radians, you can turn this into a matrix of complex exponentials <b>e<SUP>iP</SUP></b> with 
 											<P>
-												<code>np.exp(np.complex(0, 1)*P)</code>
+												<code>np.exp(1j*P)</code>
 											</P>
 											which applies <b>e<SUP>iP</SUP></b> element-wise on every element in <b>P</b>. Now, the phases are expressed as complex numbers which can simply be multiplied by the amplitudes in <b>SAbs</b>.  In fact, if you say 
 
 											<p>
-												np.abs(np.exp(np.complex(0, 1)*P))
+												<code>np.abs(np.exp(1j*P))</code>
 											</p>
 
 											you will notice this gives you a matrix of all 1s.  This is because the magnitude of any complex number <b>e<SUP>i &theta; </SUP></b> is 1.  In other words, these numbers do not change the amplitude, only the phase.  This is exactly what we want.
@@ -411,6 +411,7 @@
 											<li>Perform one final istft on <b>S</b>, and return the resulting audio</li>
 										</ol>
 
+										<h4>Your Task</h4>
 										<p>
 											Fill in the <code>griffin_lim</code> method to implement this algorithm.  A simple sanity check you can do to make sure it's working properly is to perform an STFT, throw out all of the phase information, and try to go back.  For example, try the following code:
 										</p>
@@ -493,7 +494,7 @@
 
 
 										<HR>
-										<h2><a name = "soundimages">Phase Retrieval Application 1: Sound Images (8 Points)</a></h2>
+										<h2><a name = "soundimages">Phase Retrieval Application 1: Sound Images (7 Points)</a></h2>
 										<p>
 											One interesting "synesthetic" application that phase retrieval unlocks is that we can turn images into audio by taking any grayscale image and considering it a magnitude only specification of an STFT.  If we apply phase retrieval, we can then fill in the phases for a sound whose absolute value STFT would match the specified image.
 										</p>
@@ -604,7 +605,7 @@
 
 
 										<HR>
-											<h2><a name = "beepytunes">Phase Retrieval Application 2: Beepy Tunes, Aka Tricking Shazam (8 Points)</a></h2>
+											<h2><a name = "beepytunes">Phase Retrieval Application 2: Beepy Tunes, Aka Tricking Shazam (7 Points)</a></h2>
 
 											<p>
 												The "Shazam technique" is an algorithm for recognizing a tune from a short clip of audio in a noisy environment, and it's led to the popular <a href = "https://www.shazam.com/">shazam app</a>.  The ingenious idea of this algorithms it retain only maxes in the spectrogram, and to throw everything else away.  You can read more details about this algorithm in the <a href = "http://www.ctralie.com/Teaching/CS174_F2020/Assignments/HW5b_Shazam/Wang03-shazam.pdf">original paper</a> and in a <a href = "https://ursinus-cs174-s2022.github.io/CoursePage/Assignments/FinalProject_Shazam/background.html">writeup I made</a>.
@@ -615,10 +616,29 @@
 											</p>
 											<img src = "WindowMaxLabeled.svg">
 											<p>
-												Since we know this, we can make a spectrogram with only the maxes and trick the Shazam algorithm into thinking it's the original.  For example, below is 
+												Since we know this, we can make a spectrogram with only the maxes and trick the Shazam algorithm into thinking it's the original.  For example, below is a spectrogram that we get by picking out all of time/frequency points in a 20 second clip from <a href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ">Rick Astley's famous tune</a> within a 17 x 11 window whos max frequency bin is 256:
 											</p>
 
-											<img src = "RickRollMaxes.png">
+											<img src = "Examples/RickRollMaxes.png">
+
+											<p>
+												If we invert the spectrogram using Griffin-Lim, we get the following "tune":
+											</p>
+
+											<p>
+												<audio controls>
+													<source src="Examples/rickRollTrick.wav" type="audio/mpeg">
+												  Your browser does not support the audio element.
+												</audio> 
+											</p>
+
+											<p>
+												If you hold up your phone with Shazam, it will be tricked into thinking this is Rick Astley.  So you can rick roll your phone!
+											</p>
+
+											<p>
+												As a side note, I made a web site to do this live at <a href = "https://www.beepytunes.com">https://www.beepytunes.com</a>
+											</p>
 
 
 											<h4>Your Task</h4>
@@ -627,7 +647,6 @@
 											</p>
 
 											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-												from scipy.io import wavfile
 												sr, x = wavfile.read("rickroll.wav")
 												w = 2048
 												h = 1024
@@ -639,6 +658,16 @@
 												y = make_beepy_tune(x, w, h, win_fn, time_win, freq_win, max_freq, n_iters)
 												ipd.Audio(y, rate=sr)
 											</script>
+
+											<h4>
+												Tips / Tricks
+											</h4>
+											<ul>
+												<li>As you did with sound images, you will have to mirror the frequencies </li>
+												<li>
+													You can accomplish this task with a doubly-nested for loop, but have a look at the documentation for the <code><a href = "https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.maximum_filter.html">maximum_filter</a></code> method in the <code>scipy.ndimage</code> library.  One call to this method with the appropriate parameters could save you that entire loop system!
+												</li>
+											</ul>
 											
 
 
@@ -688,7 +717,7 @@
 	
 											<img src = "Examples/MJ_8192_128_4.svg" width=1000>
 
-										<h2><a name = "musical">Musical Statement (4 Points)</a></h2>
+										<h2><a name = "musical">Musical Statement (3 Points)</a></h2>
 										<p>
 											You just made some really wacky compositional tools, so use them!  As usual, a submission is required, but you may also choose to submit your entry to a contest, where the winner will earn 2 extra credit points.
 										</p>
