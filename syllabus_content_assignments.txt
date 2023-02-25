@@ -63,7 +63,7 @@ Module 15: Z Transform Due Before Class
 2023-03-03
 HW3 Due
 
-2023-03-17
-<HR>HW4: Tempo Estimation And Beat Tracking Out
+2023-03-16
+HW4: Tempo Estimation And Beat Tracking Out
 
 2023-03-17
