@@ -304,7 +304,7 @@
 											sr = 44100
 											w = 2048
 											h = 64
-											tune = make_tune("Tunes/daft.txt", 0.25, 44100, fm_bell_note)
+											tune = make_tune("Tunes/daft.txt", 0.25, 44100, fm_brass_note)
 											tune = np.sign(tune)
 											sr, voice = wavfile.read("daft.wav")
 											y = specgram_vocoder(tune, voice, sr, w, h, hann_window)
