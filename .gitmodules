@@ -43,6 +43,3 @@
 [submodule "ClassExercises/Week5/Week5_ViolinSounds"]
 	path = ClassExercises/Week5/Week5_ViolinSounds
 	url = https://github.com/ursinus-cs372-s2023/Week5_ViolinSounds.git
-[submodule "Assignments/HW3_Vocoders/HW3_Vocoders"]
-	path = Assignments/HW3_Vocoders/HW3_Vocoders
-	url = https://github.com/ursinus-cs372-s2023/HW3_Vocoders.git
