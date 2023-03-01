@@ -55,10 +55,7 @@ Assignment 2 Due
 <a href = "../Modules/Module13/Video1.html">Module 13: Aliasing</a> Due Before Class
 
 2023-02-27
-Module 14: Convolution And Multiplication Duality Due Before Class 
-
-2023-03-01
-Module 15: Z Transform Due Before Class 
+<a href = "../Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a> Due Before Class
 
 2023-03-03
 HW3 Due
