@@ -46,3 +46,6 @@
 [submodule "Assignments/HW3_Vocoders/HW3_Vocoders"]
 	path = Assignments/HW3_Vocoders/HW3_Vocoders
 	url = https://github.com/ursinus-cs372-s2023/HW3_Vocoders.git
+[submodule "ClassExercises/Week7/Week7_FilterDesign"]
+	path = ClassExercises/Week7/Week7_FilterDesign
+	url = https://github.com/ursinus-cs372-s2023/Week7_FilterDesign.git

@@ -452,7 +452,7 @@
 		
 
 <!-- Begin Schedule -->
-<tr><td colspan = "5"><h2><b><a name = "timedomain">Unit 1: Time Domain Audio Processing</a></b></h2><p></p></td></tr>
+<tr><td colspan = "5"><h2><b><a name = "timedomain">Unit 1: Time Domain Audio Processing</a></b></h2><p>We will begin our foray into digital audio processing by thinking of audio as a big, long 1D array.  Under typical conditions, we have 44100 elements for every second of audio.  This means we have nearly a million elements in our arrays for only 20 seconds of audio!  We'll also see that the elements of this array, known as "audio samples," are a bit of a mess, but we'll be able to do a surprising amount by manipulating the samples, and we'll be able to create some cool sounds by synthesizing samples from equations.  Students will also get more comfortable with python and numpy in the stage of the course.</p></td></tr>
 <tr><td>1</td><td>Wed 1/18/2023</td><td>Course Overview, Sneak Preview, Digital Audio Representations</td><td><ul><li><a href = "https://docs.google.com/presentation/d/1iGzlfXFMncoEZ0IIRhtumJZHFwEgrdSW-C8RH6GsBrc/edit?usp=share_link">Slides from today</a></li><li><a href = "ClassExercises/Week1/Week1_AudioReverseGame">Audio Reverse Game</a></li></ul></td><td></td></tr>
 <tr><td></td><td>Thu 1/19/2023</td><td></td><td></td><td bgcolor=#f4e6e7><a href = "Assignments/Survey">Survey</a> and <a href = "https://ursinus.instructure.com/courses/15546/quizzes/21549">syllabus quiz</a> due by 11:59PM
 </td></tr><tr><td>2</td><td>Fri 1/20/2023</td><td>Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch</td><td><ul><a href = "https://donsheehy.github.io/datastructures/fullbook.pdf">Sheehy</a> Ch. 2 for python intro</li></ul></td><td bgcolor=#f4e6e7><a href = "../Modules/Module1/Video0">Module 1: Python Basics</a> Due by 11:59 PM
@@ -474,7 +474,7 @@
 </td></tr>
 <tr><td>10</td><td>Wed 2/8/2023</td><td>Comb Filters</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a> Due Before Class 
 </td></tr>
-<tr><td colspan = "5"><h2><b><a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a></b></h2><p></p></td></tr>
+<tr><td colspan = "5"><h2><b><a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a></b></h2><p>We are now ready to introduce one of the most important tools in this class: the Discrete Fourier Transform (DFT).  As it turns out, every possible sound can be represented as a sum of sines and cosines at different frequencies!  If we examine the amplitudes of these sines/cosines instead of the audio samples directly, this can give us a lot more insight into what's actually going on.  This is because, as we observed last semester, we perceive anything "periodic" (that repeats itself in time) as a pitch, and sines/cosines are the fudamental building blocks of any periodic signal.  Hence, the DFT gives us numbers that are much closer to what we perceive about the audio.</p></td></tr>
 <tr><td>11</td><td>Fri 2/10/2023</td><td>Discovering The Discrete Fourier Transform (DFT)</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module8/Video1">Module 8: Discovering The Fourier Transform</a> Due Before Class 
 </td></tr>
 <tr><td>12</td><td>Mon 2/13/2023</td><td>Real-Valued DFT Definition, Amplitude/Phase Shifts</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a> Due Before Class 
@@ -494,7 +494,7 @@
 <tr><td>19</td><td>Wed 3/1/2023</td><td>Convolution/multiplication duality</td><td></td><td></td></tr>
 <tr><td>20</td><td>Fri 3/3/2023</td><td>The Z-Transform, Lowpass Filters / Highpass Filters, frequency analysis of comb filters</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a> Due Before Class
 </td></tr>
-<tr><td colspan = "5"><h2><b><a name = "classical">Unit 3: Classical Machine Learning / AI For Digital Music Processing</a></b></h2><p></p></td></tr>
+<tr><td colspan = "5"><h2><b><a name = "classical">Unit 3: Classical Machine Learning / AI For Digital Music Processing</a></b></h2><p>Now that we have frequency domain tools down, we're going to build things on top of it to address several higher level problems, including: <ul><li>Tempo estimation and beat tracking</li><li>Timbre and pitch modeling for audio classification</li><li>The "Shazam algorithm" for audio fingerprinting</li><li>Hierarchical music structure estimation</li><li>Cross-version comparison and time warping</li><li>"Un-mixing" audio, or separating audio into its tracks</li></ul>All of these problems can be accomplished with straightforward mathematical algorithms built on top of the Short-Time Fourier Transform (STFT).</p></td></tr>
 <tr><td>--</td><td>Mon 3/6/2023</td><td>Spring Break</td><td></td><td>No CS 372 Class.  Enjoy the break!</td></tr>
 <tr><td>--</td><td>Wed 3/8/2023</td><td>Spring Break</td><td></td><td>No CS 372 Class.  Enjoy the break!</td></tr>
 <tr><td>--</td><td>Fri 3/10/2023</td><td>Spring Break</td><td></td><td>No CS 372 Class.  Enjoy the break!</td></tr>
@@ -503,16 +503,16 @@
 <tr><td></td><td>Thu 3/16/2023</td><td></td><td></td><td bgcolor=#f4e6e7>HW3 Due
 </td></tr><tr><td>23</td><td>Fri 3/17/2023</td><td>Matrix Multiplication, Mel Spacing</td><td></td><td bgcolor=#f4e6e7>HW4: Tempo Estimation And Beat Tracking Out
 </td></tr>
-<tr><td>24</td><td>Mon 3/20/2023</td><td>Autotuners</td><td></td><td></td></tr>
-<tr><td>25</td><td>Wed 3/22/2023</td><td>MFCC Features, Inverting MFCC</td><td><ul><li><a href = "ClassExercises/Week8/Week8_MFCC/Mel.html">Code from today</a></li></ul></td><td></td></tr>
-<tr><td>26</td><td>Fri 3/24/2023</td><td>Cross-Similarity Matrices, Dynamic Time Warping</td><td></td><td></td></tr>
-<tr><td>27</td><td>Mon 3/27/2023</td><td>Dynamic Time Warping Continued</td><td></td><td></td></tr>
-<tr><td>28</td><td>Wed 3/29/2023</td><td>Chroma Features, Shepard Tones</td><td><ul><li><a href = "https://www.youtube.com/watch?v=YUOR7_40-dQ">Shepard Tone Visualization</a></li></ul></td><td></td></tr>
-<tr><td>29</td><td>Fri 3/31/2023</td><td>Audio Fingerprints / The Shazam Algorithm</td><td><ul><li><a href = "https://www.princeton.edu/~cuff/ele201/files/Wang03-shazam.pdf">The original Shazam Paper</a></li><li><a href = "https://slideslive.com/38917442/characterizing-musical-correlates-of-largescale-discovery-behavior?ref=speaker-19235">Blair Kaneshiro Talk</a></li><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li></td><td></td></tr>
+<tr><td>24</td><td>Mon 3/20/2023</td><td>MFCC Features, Inverting MFCC</td><td><ul><li><a href = "ClassExercises/Week8/Week8_MFCC/Mel.html">Code from today</a></li></ul></td><td></td></tr>
+<tr><td>25</td><td>Wed 3/22/2023</td><td>Chroma Features, Shepard Tones</td><td><ul><li><a href = "https://www.youtube.com/watch?v=YUOR7_40-dQ">Shepard Tone Visualization</a></li></ul></td><td></td></tr>
+<tr><td>26</td><td>Fri 3/24/2023</td><td>Audio Fingerprints / The Shazam Algorithm</td><td><ul><li><a href = "https://www.princeton.edu/~cuff/ele201/files/Wang03-shazam.pdf">The original Shazam Paper</a></li><li><a href = "https://slideslive.com/38917442/characterizing-musical-correlates-of-largescale-discovery-behavior?ref=speaker-19235">Blair Kaneshiro Talk</a></li><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li></td><td></td></tr>
+<tr><td>27</td><td>Mon 3/27/2023</td><td>Self-Similarity in Audio</td><td></td><td></td></tr>
+<tr><td>28</td><td>Wed 3/29/2023</td><td>Cross-Similarity Matrices, Dynamic Time Warping</td><td></td><td></td></tr>
+<tr><td>29</td><td>Fri 3/31/2023</td><td>Dynamic Time Warping Continued</td><td></td><td></td></tr>
 <tr><td>30</td><td>Mon 4/3/2023</td><td>Harmonic-Percussive Source Separation</td><td></td><td></td></tr>
 <tr><td>31</td><td>Wed 4/5/2023</td><td>Matrix Multiplication for Audio Activations</td><td></td><td></td></tr>
 <tr><td>32</td><td>Fri 4/7/2023</td><td>Source Separation via Nonnegative matrix factorization</td><td><ul><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul></td><td></td></tr>
-<tr><td>33</td><td>Mon 4/10/2023</td><td>Self-Similarity in Audio</td><td></td><td></td></tr>
+<tr><td>33</td><td>Mon 4/10/2023</td><td>Autotuners</td><td></td><td></td></tr>
 <tr><td colspan = "5"><h2><b><a name = "neuralnets">Unit 4: Neural Networks for Digital Music Processing</a></b></h2><p></p></td></tr>
 <tr><td>34</td><td>Wed 4/12/2023</td><td>Introduction To Neural Networks</td><td></td><td></td></tr>
 <tr><td>35</td><td>Fri 4/14/2023</td><td>Deep Learning</td><td></td><td></td></tr>
@@ -990,9 +990,9 @@
 												<li><a href = "ClassExercises/Week6/2DArrays/index.html">Week 6: 2D Arrays And Spectrograms</a></li>
 												<li><a href = "ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
 												<li><a href = "ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
 												<!--
 												<li><a href = "ClassExercises/Week7/Week7_DFTConvolutions">Week 7: DFT And Convolutions</a></li>
-												<li><a href = "ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
 												<li><a href = "ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
 												<li><a href = "ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
 												<li><a href = "ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>!-->

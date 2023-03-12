@@ -1,6 +1,6 @@
 SECTION
 <a name = "timedomain">Unit 1: Time Domain Audio Processing</a>
-
+We will begin our foray into digital audio processing by thinking of audio as a big, long 1D array.  Under typical conditions, we have 44100 elements for every second of audio.  This means we have nearly a million elements in our arrays for only 20 seconds of audio!  We'll also see that the elements of this array, known as "audio samples," are a bit of a mess, but we'll be able to do a surprising amount by manipulating the samples, and we'll be able to create some cool sounds by synthesizing samples from equations.  Students will also get more comfortable with python and numpy in the stage of the course.
 
 LECTURE
 Course Overview, Sneak Preview, Digital Audio Representations
@@ -44,7 +44,7 @@ Comb Filters
 
 SECTION
 <a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a>
-
+We are now ready to introduce one of the most important tools in this class: the Discrete Fourier Transform (DFT).  As it turns out, every possible sound can be represented as a sum of sines and cosines at different frequencies!  If we examine the amplitudes of these sines/cosines instead of the audio samples directly, this can give us a lot more insight into what's actually going on.  This is because, as we observed last semester, we perceive anything "periodic" (that repeats itself in time) as a pitch, and sines/cosines are the fudamental building blocks of any periodic signal.  Hence, the DFT gives us numbers that are much closer to what we perceive about the audio.
 
 LECTURE
 Discovering The Discrete Fourier Transform (DFT)
@@ -88,7 +88,7 @@ The Z-Transform, Lowpass Filters / Highpass Filters, frequency analysis of comb 
 
 SECTION
 <a name = "classical">Unit 3: Classical Machine Learning / AI For Digital Music Processing</a>
-
+Now that we have frequency domain tools down, we're going to build things on top of it to address several higher level problems, including: <ul><li>Tempo estimation and beat tracking</li><li>Timbre and pitch modeling for audio classification</li><li>The "Shazam algorithm" for audio fingerprinting</li><li>Hierarchical music structure estimation</li><li>Cross-version comparison and time warping</li><li>"Un-mixing" audio, or separating audio into its tracks</li></ul>All of these problems can be accomplished with straightforward mathematical algorithms built on top of the Short-Time Fourier Transform (STFT).
 
 LECTURE
 Rhythm, Beats, And Audio novelty functions
@@ -103,21 +103,9 @@ Matrix Multiplication, Mel Spacing
 
 
 LECTURE
-Autotuners
-
-
-LECTURE
 MFCC Features, Inverting MFCC
 
 <ul><li><a href = "ClassExercises/Week8/Week8_MFCC/Mel.html">Code from today</a></li></ul>
-LECTURE
-Cross-Similarity Matrices, Dynamic Time Warping
-
-
-LECTURE
-Dynamic Time Warping Continued
-
-
 LECTURE
 Chroma Features, Shepard Tones
 
@@ -126,6 +114,18 @@ LECTURE
 Audio Fingerprints / The Shazam Algorithm
 
 <ul><li><a href = "https://www.princeton.edu/~cuff/ele201/files/Wang03-shazam.pdf">The original Shazam Paper</a></li><li><a href = "https://slideslive.com/38917442/characterizing-musical-correlates-of-largescale-discovery-behavior?ref=speaker-19235">Blair Kaneshiro Talk</a></li><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li>
+LECTURE
+Self-Similarity in Audio
+
+
+LECTURE
+Cross-Similarity Matrices, Dynamic Time Warping
+
+
+LECTURE
+Dynamic Time Warping Continued
+
+
 LECTURE
 Harmonic-Percussive Source Separation
 
@@ -139,7 +139,7 @@ Source Separation via Nonnegative matrix factorization
 
 <ul><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
 LECTURE
-Self-Similarity in Audio
+Autotuners
 
 
 SECTION
