@@ -30,7 +30,7 @@
 	url = https://github.com/ursinus-cs372-s2023/HW2_DigitalInstruments.git
 [submodule "Assignments/HW4_RhythmAnalysis/HW4_RhythmAnalysis"]
 	path = Assignments/HW4_RhythmAnalysis/HW4_RhythmAnalysis
-	url = https://github.com/Ursinus-CS472A-S2021/HW4_RhythmAnalysis.git
+	url = https://github.com/ursinus-cs372-s2023/HW4_RhythmAnalysis.git
 [submodule "Assignments/HW5_VersionID/HW5_VersionID"]
 	path = Assignments/HW5_VersionID/HW5_VersionID
 	url = https://github.com/Ursinus-CS472A-S2021/HW5_VersionID.git

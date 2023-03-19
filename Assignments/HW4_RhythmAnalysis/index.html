@@ -41,10 +41,8 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-                                        <h2>Assignment 4: Tempo Estimation And Beat Tracking (50 Points)</h2>
+                                        <h2>Assignment 4: Tempo Estimation And Beat Tracking (45 Points)</h2>
                                         <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
-                                        <h3>Parts 2 And 3 Due Friday 4/2/2021</h3>
-										<h3>Part 3 Due Friday 4/9/2021</h3>
 									</header>
 
 									<div id="page-content">
@@ -62,7 +60,7 @@
 													<li><a href = "#tempo">Part 2: Tempo Estimation</a>
 														<ul>
 															<li><a href = "#fouriertempo">Fourier-Based Tempo Estimation (7 Points)</li>
-															<li><a href = "#dftacf">DFT-ACF Tempo Estimation (12 Points)</a></li>
+															<li><a href = "#dftacf">DFT-ACF Tempo Estimation (10 Points)</a></li>
 														</ul>
 													</li>
 													<li>
@@ -73,9 +71,6 @@
 															</li>
 															<li>
 																<a href = "#beattrack">Dynamic Programming Beat Tracking (15 Points)</a>
-															</li>
-															<li>
-																<a href = "#myown">Making Your Own System (3 Points)</a>
 															</li>
 														</ul>
 													</li>
@@ -131,40 +126,7 @@
 										<HR>
 										<h2><a name = "programming">Programming Tasks</a></h2>
 										<p>
-											<a href = "https://github.com/Ursinus-CS472A-S2021/HW4_RhythmAnalysis/archive/main.zip">Click here</a> to download the starter code for this assignment.  You should also download two testing suites for tempo estimation and beat tracking from the following links, and extract them into the same directory as the code (interestingly, the two datasets contain the same 20 audio clips, but they each have different information in text files about them):
-										</p>
-
-										<h4>Tempo Dataset</h4>
-										<a href = "https://www.music-ir.org/evaluation/MIREX/data/2006/tempo/tempo_train_2006.zip">https://www.music-ir.org/evaluation/MIREX/data/2006/tempo/tempo_train_2006.zip</a>
-										<p>
-											<code>User: tempo Password: t3mp0</code>
-										</p>
-
-										<p>
-											It is assumed that you will extract this to the directory <code>Tempo</code>, so that, for example, the line
-											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-												x, sr = librosa.load("Tempo/train/train4.wav", sr=44100)</script>
-											
-											will actually run
-										</p>
-
-										<h4>Beat Tracking Dataset</h4>
-										<a href = "https://www.music-ir.org/evaluation/MIREX/data/2006/beat/beattrack_train_2006.zip">https://www.music-ir.org/evaluation/MIREX/data/2006/beat/beattrack_train_2006.zip</a>
-										<p>
-											<code>User: beattrack, Password: b34trx</code>
-										</p>
-
-										<p>
-											It is assumed that you will extract this to the directory <code>Beattrack</code>, so that, for example, the line
-											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-												beats = get_gt_beats("Beattrack/train/train2.txt", 3)</script>
-											
-											will actually run
-										</p>
-										
-
-										<p>
-											Below are the imports you will need to test your code in jupyter
+											<a href = "https://github.com/Ursinus-CS472A-S2021/HW4_RhythmAnalysis/archive/main.zip">Click here</a> to download the starter code for this assignment.  This code includes two testing suites for tempo estimation and beat tracking from <a href = "https://www.music-ir.org/mirex/wiki/MIREX_HOME">MIREX</a>. Below are the imports you will need to test your code in jupyter:
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											%load_ext autoreload
@@ -172,7 +134,7 @@
 											import numpy as np
 											import matplotlib.pyplot as plt
 											import IPython.display as ipd
-											import librosa
+											from scipy.io import wavfile
 											import pandas as pd
 											from novfn import *
 											from tempo import *
@@ -181,7 +143,7 @@
 
 										<h2><a name = "anf">Part 1: Superflux Audio Novelty Functions (8 Points)</a></h2>
 										<p>
-											There is a whole zoo of possible ways of computing audio novelty functions that pick up on rhythmic events.  For example, even all the way back in 2007, the authors of <a href = "http://www.cp.jku.at/research/papers/gouyon_etal_icassp_2007.pdf">this paper</a> experimented with 172 unique such novelty functions!   In this section, we will explore a more recent method known as <b>superflux</b> for generating superior audio functions to the versions we described in <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video1">module 16</a>.  This technique is described in detail in <a href = "http://dafx13.nuim.ie/papers/09.dafx2013_submission_12.pdf">this paper</a> from 2013, but we will summarize the key steps below.  Before we do that, though, let's look at an example of how superflux compares to the naive technique.  Consider the following audio clip, obtained from the <a href = "https://github.com/librosa/librosa_gallery/blob/master/audio/Karissa_Hobbs_-_09_-_Lets_Go_Fishin.mp3">librosa gallery</a>.
+											There is a whole zoo of possible ways of computing audio novelty functions that pick up on rhythmic events.  For example, even all the way back in 2007, the authors of <a href = "http://www.cp.jku.at/research/papers/gouyon_etal_icassp_2007.pdf">this paper</a> experimented with 172 unique such novelty functions!   In this section, we will explore a more recent method known as <b>superflux</b> for generating superior audio functions to the versions we described in <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module16/Video1">module 16</a>.  This technique is described in detail in <a href = "http://dafx13.nuim.ie/papers/09.dafx2013_submission_12.pdf">this paper</a> from 2013, but we will summarize the key steps below.  Before we do that, though, let's look at an example of how superflux compares to the naive technique.  Consider the following audio clip, obtained from the <a href = "https://github.com/librosa/librosa_gallery/blob/master/audio/Karissa_Hobbs_-_09_-_Lets_Go_Fishin.mp3">librosa gallery</a>.
 										</p>
 
 										<p>
@@ -195,19 +157,19 @@
 											Then, once you've implemented superflux by filling in the method <code>get_superflux_novfn</code>, the following code will run.
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											x, sr = librosa.load("fishin.wav", sr=44100)
+											sr, x = wavfile.read("fishin.wav")
 											hop_length = 256
 											win_length = 2048
 											mu = 8
 											y1 = get_novfn(x, sr, hop_length, win_length)
 											y2 = get_superflux_novfn(x, sr, hop_length, win_length, mu=mu, Gamma=1, max_win=3)
-											
+											 
 											plt.figure(figsize=(10, 6))
 											plt.subplot(211)
 											plt.plot(np.arange(len(y1))*hop_length/sr, y1)
 											plt.title("Fishin' Naive Novelty Function")
 											plt.xlabel("Time (Sec)")
-											
+											 
 											plt.subplot(212)
 											plt.plot(np.arange(len(y2))*hop_length/sr, y2)
 											plt.title("Fishin' Superflux Novelty Function")
@@ -219,7 +181,7 @@
 										</p>
 
 										<p>
-											<img src = "Fishin.svg">
+											<img src = "Fishin.svg" width="90%">
 										</p>
 
 										<p>
@@ -254,7 +216,7 @@
 											</audio> 
 										</p>
 
-										<h3><a name = "superfluxalgorithm">Algorithm Steps</a></h3>
+										<h3><a name = "superfluxalgorithm">Your Task: Superflux Algorithm Steps</a></h3>
 
 										<p>
 											Fill in the method <code>get_superflux_novfn</code> in the file <code>novfn.py</code> to implement the superflux pipeline, performing the following steps in sequence:
@@ -262,7 +224,7 @@
 
 										<ol>
 											<li>
-												Compute the absolute magnitude spectrogram (this has been provided for you using librosa's stft method)
+												Compute the absolute magnitude spectrogram (this has been provided for you)
 											</li>
 											<li>
 												Convert the spectrogram to a <b>mel spectrogram</b> via the provided <code>get_mel_filterbank</code> method.  As described in Section 2.1 of the <a href = "http://dafx13.nuim.ie/papers/09.dafx2013_submission_12.pdf">superflux paper</a>, the mel filterbank should contain 138 bins spanning frequencies from <b>27.5 hz</b> to <b>16000hz</b>. 
@@ -277,7 +239,7 @@
 												Take the sum of positive differences of amplitudes across all frequency bins from a window to a window in the future, similarly to the naive version.  However, the hop length in superflux is generally taken to be smaller than usual so the windows are sampled at a higher resolution, leading to a higher resolution audio novelty function.  This means that adjacent windows change less.  To compensate for this, instead of taking the difference in amplitudes for corresponding frequencies in adjacent windows, you should take differences with windows that are <code>mu</code> hops ahead in the future (as described in Section 2.1 of <a href = "http://dafx13.nuim.ie/papers/09.dafx2013_submission_12.pdf">the superflux paper</a>).
 
 												<p>
-													<b>Hint:</b> Be sure to review <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video0">module 16 video 0 and video 1</a> to recall how to do the positive difference step.
+													<b>Hint:</b> Be sure to review <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module16/Video0">module 16 video 0 and video 1</a> to recall how to do the positive difference step.
 												</p>
 											</li>
 										</ol>
@@ -295,16 +257,19 @@
 
 										<h3><a name = "fouriertempo">Fourier-Based Tempo Estimation (7 Points)</a></h3>
 
+										<h4>Your Task</h4>
 										<p>
-											In this section, you will fill in the method <code>get_fourier_tempo</code> to estimate the tempo, in beats per minute, of a tune based on its audio novelty function <b>after subtracting its mean</b> (this makes it so that bin 0, the average, is 0 and doesn't throw off the estimate).  Below, we describe the theory.
+											Fill in the method <code>get_fourier_tempo</code> to estimate the tempo, in beats per minute, of a tune based on its audio novelty function <b>after subtracting its mean</b> (this makes it so that bin 0, the average, is 0 and doesn't throw off the estimate).
 										</p>
+
+										<h4>Description</h4>
 										<p>
 											Since rhythm is repetitive in popular music genres, the audio novelty function should be periodic; i.e. the spacing between beats should be fairly consistent, up to some missing beats for syncopation and other effects.  This means that the Discrete Fourier Transform should have peaks at frequencies corresponding to the tempo, and possibly its harmonics.  Let's consider the superflux novelty function of <code>train4.wav</code> in the tempo dataset (a clip from <a href = "https://www.youtube.com/watch?v=RPFyeCmHXjY">"Green Eyes"</a> by Erykah Badu), as obtained by the following code
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											x, sr = librosa.load("Tempo/train/train4.wav", sr=44100)
-											hop_length = 256
+											sr, x = wavfile.read("Testing/Audio/train4.wav")
+											hop_length = 512
 											win_length = 2048
 											max_win = 3
 											mu = 4
@@ -339,13 +304,13 @@
 
 										<h4>Results</h4>
 										<p>
-											Let's first run this technique using the vanilla audio novelty function on all 20 clips.  As we see, we get only 5/20 to within 8% of at least one of the two ground truth tempos.  However, we see that many of the ones that are marked wrong are harmonics of the true tempo.  For instance, we report a tempo of 306 for train3, which is double the highest tempo.  This is one of the downsides of using Fourier here; the impulsive beats have many harmonics in their Fourier representation, and we sometimes pick a harmonic instead of the true base frequency corresponding to the rhythm.  We will try to address this with another technique later, but it is a problem that will plague any tempo estimator to some extent.
+											Let's first run this technique using the vanilla audio novelty function on all 20 clips.  As we see, we get only <b>6/20</b> to within 8% of at least one of the two ground truth tempos.  However, we see that many of the ones that are marked wrong are harmonics of the true tempo.  For instance, we report a tempo of 306 for train3, which is double the highest tempo.  This is one of the downsides of using Fourier here; the impulsive beats have many harmonics in their Fourier representation, and we sometimes pick a harmonic instead of the true base frequency corresponding to the rhythm.  We will try to address this with another technique later, but it is a problem that will plague any tempo estimator to some extent.
 										</p>
 
 										<iframe src="vanilla_acf_dft.html" width="800" height="500"></iframe>
 
 										<p>
-											One thing we can change here is to use an improved audio novelty function.  So let's swap in the superflux method we worked so hard for.  We get 6/10 here, so better, but probably not a statistically significant improvement
+											One thing we can change here is to use an improved audio novelty function.  So let's swap in the superflux method we worked so hard for.  We get <b>8/20</b> here, so better, but probably not a statistically significant improvement
 										</p>
 
 										<iframe src="superflux_fourier.html" width="800" height="500"></iframe>
@@ -354,12 +319,20 @@
 										</p>
 
 
-										<h3><a name = "dftacf">DFT-ACF Tempo Estimation (12 Points)</a></h3>
+										<h3><a name = "dftacf">DFT-ACF Tempo Estimation (10 Points)</a></h3>
+
+										<h4>Your Task</h4>
 										<p>
-											In this section, you will fill in the method <code>get_acf_dft_tempo</code> to compute an improved tempo estimate, based on a combination of the autocorrelation function (ACF) and the DFT (<a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video2">click here</a> to review the ACF).  In the process, you will also fill in the helper method <code>dft_warped</code>.  The algorithm is described in <a href = "https://link.springer.com/content/pdf/10.1155/2007/67215.pdf">Section 3.1.1 of Peeters, 2007</a>, but we will summarize the theory and the steps below.
+											Fill in the method <code>get_acf_dft_tempo</code> in <code>tempo.py</code> to compute an improved tempo estimate, based on a combination of the autocorrelation function (ACF) and the DFT (<a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video2">click here</a> to review the ACF).  In the process, you will also fill in the helper method <code>dft_warped</code>.
 										</p>
+
+										<h4>
+											Description
+										</h4>
 										<p>
-											As we discussed, one of the issues with using the DFT is that we sometimes pick harmonics of the true rhythm, since harmonics exist for any periodic signal that isn't a pure sinusoid.  We could try the autocorrelation function (ACF), but, as it turns out, this has the opposite problem: subharmonics of tempo.  The ACF takes a dot product between a signal and its shifts, so it will have a local max if the shift coincides with the period <b>T</b>.  But this also means that it will have peaks at <b>2T</b>, <b>3T</b>, <b>4T</b>, etc.  Since the the period is inversely related to the frequency, these longer periods actually correspond to fractions of tempo.
+											The algorithm is described in <a href = "https://link.springer.com/content/pdf/10.1155/2007/67215.pdf">Section 3.1.1 of Peeters, 2007</a>, but we will summarize the theory and the steps below.
+										</p>
+											As we discussed, one of the issues with using the DFT is that we sometimes pick harmonics of the true rhythm, since harmonics exist for any periodic signal that isn't a pure sinusoid.  We could try the autocorrelation function (ACF), but, as it turns out, this has the opposite problem: <i>subharmonics</i> of tempo.  The ACF takes a dot product between a signal and its shifts, so it will have a local max if the shift coincides with the period <b>T</b>.  But this also means that it will have peaks at <b>2T</b>, <b>3T</b>, <b>4T</b>, etc.  Since the the period is inversely related to the frequency, these longer periods actually correspond to fractions of tempo.
 										</p>
 
 										<p>
@@ -399,21 +372,21 @@
 										</p>
 										
 										<p>
-											<img src = "DFT_ACF_5.svg">
+											<img src = "DFT_ACF_5.svg" width="90%">
 										</p>
 
 										<h4>Example: <code>train14.wav</code></h4>
 
 										<p>
-											Below is another example on <code>train5.wav</code> in the tempo dataset.  Here we really see the effect of damping down the subharmonics of the ACF
+											Below is another example on <code>train14.wav</code> in the tempo dataset.  Here we really see the effect of damping down the subharmonics of the ACF
 										</p>
 										<p>
-											<img src = "DFT_ACF_14.svg">
+											<img src = "DFT_ACF_14.svg" width="90%">
 										</p>
 
 										<h4>Results</h4>
 										<p>
-											Below are the results, which show a substantial improvement over everything we've seen so far, with a 12/20!  Obviously, there is still room for improvement, but this is a surprisingly good agreement with human annotations given how little code we wrote, and most of the errors are "octave errors" where the tempo is a double or a half of one of the ground truth tempos.
+											Below are the results, which show a substantial improvement over everything we've seen so far, with a <b>10/20</b>!  Obviously, there is still room for improvement, but this is a surprisingly good agreement with human annotations given how little code we wrote, and most of the errors are "octave errors" where the tempo is a double or a half of one of the ground truth tempos.
 										</p>
 
 										<iframe src="superflux_acf_dft.html" width="800" height="500"></iframe>
@@ -680,30 +653,6 @@
 										<p>
 											<img src = "Examples/Train3Beattrack.svg" width=600>
 										</p>
-
-										<h3><a name = "myown">Making Your Own System (3 Points)</a></h3>
-
-										<p>
-											Now that you have code to automatically estimate tempo and beat locations, you can make a full pipeline to estimate beats from raw audio.  Fill in the method <code>get_beats_fromaudio</code> to do this.  To get full credit, you can simply apply the pipeline we've used so far here by computing the audio novelty function, estimating tempo, and applying dynamic programming beat tracking with that tempo.  But if you work to tweak this a little bit, you might get a superior system.  In fact, we will have a class-wide contest on previously unseen data, and <b>the winner will get 3 points of extra credit</b>.  Systems will be scored by seeing which systems maximize true positives in beat locations, while also minimizing false positives.  Here are a few things to try to bring your system to the next level, though you are certainly not limited to these suggestions!
-										</p>
-										<ul>
-											<li>
-												Tweak the parameters in all stages of the pipeline to get the best results.  In particular, with the superflux novelty function, use a mel filterbank with a smaller maximum frequency, or fewer or more bins.  You can also tweak mu and the window length and hop length.
-											</li>
-											<li>
-												Try to clean up the audio novelty function by subtracting off the local mean in small windows and thresholding anything that's negative after that to 0.  This will promote peaks in the audio novelty function and suppress noise.
-											</li>
-											<li>
-												If you're doing dynamic programming beat tracking, try biasing at different tempo levels beyond the one that maximizes the acf-dct (e.g. also the second highest and third highest scores) and seeing which tempo level leads to beats with the most consistent spacing.
-											</li>
-											<li>
-												Experiment with the tempo estimation scheme suggested in section 3.2 of the <a href = "https://academiccommons.columbia.edu/doi/10.7916/D8CV4T9J/download">Ellis paper</a>.
-											</li>
-											<li>
-												Instead of using a single tempo estimate, perform "short time autocorrelation" to estimate tempo in windows, and try to stick to this varying tempo in each window as you're doing dynamic programming beat tracking.
-											</li>
-										</ul>
-
 										
                                     
                                 </div>
