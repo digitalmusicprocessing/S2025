@@ -396,129 +396,28 @@
 
 
 										<h2><a name = "beat">Part 3: Beat Tracking</a></h2>					
+										
 										<p>
-											Now that we have good audio novelty functions and tempo estimation schemes, we can use them to go a finer grained representation of rhythm and actually have the computer "tap its virtual foot to the beat."  We designed audio novelty functions to spike for likely beat events, but not all peaks correspond to true beats (<b>false positives</b>), and not all beats show up as spikes (<b>false negatives</b>).  Therefore, we somehow have to balance picking tap times in the audio novelty function that correspond to high values, while also skipping some high values or picking low values every once in a while to keep the tempo going.  
-										</p>
-
-										<p>
-											To accomplish this, we will implement what is now a classical technique by following <a href = "https://academiccommons.columbia.edu/doi/10.7916/D8CV4T9J/download">this 2007 paper by Dan Ellis</a>.  This technique uses <a href = "https://ursinus-cs371-s2021.github.io/Modules/Module10/Video0">dynamic programming</a> to solve an optimization problem trading off peak picking in the audio novelty function and tightness around a tempo.  As such, it has a lot in common with <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video2">dynamic time warping</a>.  First, let's define an objective function to maximize, and then we will explain how to maximize it to obtain an optimal sequence of beats using dynamic programming and backtracing.  Let's start with the following parameters
-											
-											<ul>
-												<li>An audio novelty function <b>n[i]</b></li>
-												<li>A tempo <b>T</b> in units of the audio novelty function</li>
-												<li>a sequence of <b>B</b> beats <b>b[j]</b>, which are also specified in units of the audio novelty function, so that <b>n[b[j]]</b> gives the novelty function associated with the <b>j<SUP>th</SUP></b> beat</li>
-											</ul>
-											Then, we have the following objective function in terms of these three parameters
-										</p>		
-
-										<h3>
-											\[ c(n, b, T) = \sum_{j = 1}^{N-1} \left( n[b[j]] - \alpha  \left| \log \left( \frac{b[j]-b[j-1]}{T} \right) \right| ^2    \right) \]
-										</h3>
-
-										<p>
-											Since we want to maximize this function, the <b>n[b[j]]</b> term for each beat promotes choosing beats at locations where the novelty function is high.  But we also want to make sure we keep a consistent tempo, so the second term penalizes deviations from the tempo <b>T</b> between chosen beat locations.  If the tempo is perfectly <b>T</b>, then <b>b[j] - b[j-1]</b> will always be <b>T</b>, so the second term will be 0.  But the moment the tempo is too fast or too slow between two adjacent beats, that term will deduct from the objective function.  Still, we may be happy to accept a slight penalty in tempo so that our beats reside at locations of high novelty.  The <b>&alpha;</b> parameter chooses how much we want to penalize for deviations of tempo.  A higher <b>&alpha;</b> will lead to a more consistent tempo, but the beats may not exactly align with rhythmic events.  By contract, a low <b>&alpha;</b> will cause the computer to tap its foot very consistently with rhythmic events, but the tempo may be all over the place.
-										</p>
-
-										<h3>Solving for beats</h3>
-										<p>
-											Given a tempo <b>T</b> and an audio novelty function <b>n[i]</b>, we can solve for optimal beats via dynamic programming.  We need to create two 1D arrays, <code>cscore</code> and <code>backlink</code>, each with as many samples as there are samples in the audio novelty function:
-										</p>
-										<ul>
-											<li><code>cscore[i]</code> is a dynamic programming array that stores the maximum possible value of the objective function when solving a subproblem from index <b>0</b> to index <b>i</b> of the audio novelty function.</li>
-											<li><code>backlink[i]</code> stores the index of the last beat that was chosen before index <b>i</b> in the optimal solution with score <code>cscore[i]</code></li>
-										</ul>
-										<p>
-											To fill these in, we need a loop that builds up the subproblems from small to large, until we have the whole problem solved, just as in <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video2">dynamic time warping</a>. Below is the algorithm to do this using a recurrence relation that is solved with dynamic programming.  Note that for simplicity of the description, the tempo <b>T</b> is assumed here to be in units of <b>samples of the novelty function per beat</b>, which is a period, <i>though the tempo is provided in units of <b>beats per minute</b>, which is a frequency, as an argument to the method</i>.  Also, when you write the code, you will have to be careful to round and cast variables as <code>int</code> when necessary.
-										</p>
-										<h4>Pseudocode</h4>
-											<ol>
-												<li>
-													for i from 2T to len(cscore)
-												<ul>
-													<li>
-														To solve for <code>cscore[i]</code>, the optimal score up to index <b>i</b>, we suppose that we're choosing a beat at index <b>i</b>.  Then, we recursively compute the score, via dynamic programming, by checking over possible beat indices <b>j</b> that could represent the beat that comes directly before <b>i</b>.  The recurrence for this is as follows:
-														<h4>
-															\[ \text{cscore}[i] = \text{max}_{j = i-2T}^{i-T/2} \left( n[i] + \text{cscore}[j] - \alpha \left| \log \left(  \frac{i-j}{T} \right) \right|^2 \right) \]
-														</h4>
-														<p>
-															We restrict ourselves to previous beat locations <b>j</b> that occur between half of the tempo and 2x the tempo before index <b>i</b>.  We get credit for <code>n[i]</code>, the novelty function for our newest beat at index <b>i</b>, as well as <code>cscore[j]</code>, the best score of all possible beats chosen up to and including index <b>j</b>.  But we also deduct a penalty depending on the interval between beat <b>j</b> and beat <b>i</b>.
-														</p>
-														<p>
-															Along with storing the maximum possible value in <code>cscore[i]</code>, we also store the the index <b>j</b> that led to the maximum in <code>backlink[i]</code>.
-														</p>
-													</li>
-												</ul>
-											</li>
-											<li>
-												Once the entirety of <code>cscore</code> and <code>backlink</code> is filled in, we can extract the optimal beat locations.  Starting at the index that maximizes <code>cscore</code>, we follow the links in <code>backlink</code> to pick all of the beats.  We will be finished once we get back to the beginning.  For example, suppose we had the following <code>backlink</code> array (which, for pedagogical purposes, is <i>much</i> short than what you will get on real audio data)
-
-												<p>
-													<table>
-														<tr>
-															<td colspan="12">backlink</td>
-														</tr>
-														<tr>
-															<td>index</td>
-															<td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>9</td><td>9</td><td>10</td>
-														</tr>
-														<tr>
-															<td>value</td>
-															<td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>2</td><td>5</td><td>4</td><td>6</td><td>5</td><td>8</td>
-														</tr>
-													</table>
-												</p>
-
-												<p>
-													We can represent this array visually as a 1D <a href = "https://en.wikipedia.org/wiki/Directed_acyclic_graph">directed acyclic graph</a>
-												</p>
-
-												<p>
-													<img src = "backlink.svg" width=400>
-												</p>
-
-												<p>
-													Then we simply follow the arrows until we get to 0.  For example, let's say <code>cscore[9]</code> was the maximum.  Then we follow the path
-													
-												</p>
-
-												<p>
-													<code>
-														9 -> 5 -> 2 -> 0
-													</code>
-												</p>
-
-												<p>
-													For another example, if <code>cscore[10]</code> was the maximum, we follow the path
-												</p>
-
-												<p>
-													<code>
-														10 -> 8 -> 6 -> 5 -> 2 -> 0
-													</code>
-												</p>
-
-												<p>
-													You should of course reverse the order of this list so that the beats you return start at smaller indices, and you should also convert them from units of the audio novelty function to beats per minute.
-												</p>
-												
-
-											</li>
-											</ol>
-										<h4>Matlab code</h4>
-										<p>
-										 	You may also be interested in referencing the matlab code in <a href = "https://academiccommons.columbia.edu/doi/10.7916/D8CV4T9J/download">the paper</a>, but you should be careful since although Matlab is a predecessor to numpy, the syntax is different and may throw you off a bit.
+											In this section, you will implement the dynamic programming beat tracking algorithm described at <a href = "../../ClassExercises/BeattrackNotes/">this link</a>, editing code in the <code>beat.py</code> file.
 										</p>
 
 										<h3><a name = "sonifybeats">Sonifying Beats (5 Pts)</a></h3>
 										<p>
-											As with all of our features, it's helpful to "sonify" what we have computed so we can hear its quality.  Fill in the method <code>sonify_beats</code> to create little blips that occur at beat locations.  In particular, you should sonify each beat by adding in a small 440hz sinusoid at each beat location.  Each blip should be added in to a slice of the array starting at the beat location and continuing for <code>blip_len</code> seconds.  For example, if you run the following code to load one of the ground truth human annotators on the third train clip
+											As with all of our features, it's helpful to "sonify" what we have computed so we can hear its quality.  So let's setup these tools before we even attempt to track the beats
+										</p>
+										<h4>Your Task</h4>
+										<p>
+											
+											Fill in the method <code>sonify_beats</code> to create little blips that occur at beat locations.  In particular, you should sonify each beat by adding in a small 440hz sinusoid at each beat location.  Each blip should be added in to a slice of the array starting at the beat location and continuing for <code>blip_len</code> seconds.  For example, if you run the following code to load one of the ground truth human annotators on the third train clip
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-										sr = 44100
-										beats = get_gt_beats("Beattrack/train/train4.txt", 3)
-										y = sonify_beats("Beattrack/train/train4.wav", sr, beats)
-										ipd.Audio(y, rate=sr)
+											sr = 44100
+											beats = get_gt_beats("Testing/Beattrack/train4.txt", 3) # Load in ground truth beats for annotator 3
+											sr, x = wavfile.read("Testing/Audio/train4.wav")
+											x = x/32768.0 # Put into the range [-1, 1]
+											y = sonify_beats(x, sr, beats)
+											ipd.Audio(y, rate=sr)
 										</script>
 										<p>
 											then you should hear this
@@ -529,10 +428,12 @@
 										</audio> 
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-										sr = 44100
-										beats = get_gt_beats("Beattrack/train/train1.txt", 0)
-										y = sonify_beats("Beattrack/train/train1.wav", sr, beats)
-										ipd.Audio(y, rate=sr)
+											sr = 44100
+											beats = get_gt_beats("Testing/Beattrack/train1.txt", 0) # Load in ground truth beats for annotator 0
+											sr, x = wavfile.read("Testing/Audio/train1.wav")
+											x = x/32768.0 # Put into the range [-1, 1]
+											y = sonify_beats(x, sr, beats)
+											ipd.Audio(y, rate=sr)
 										</script>
 										<p>
 											then you should hear this
@@ -545,16 +446,17 @@
 
 										<h3><a name = "beattrack">Dynamic Programming Beat Tracking (15 Points)</a></h3>
 										<p>
-											Fill in the method <code>get_beats</code> to perform dynamic programming beat tracking, according to the <a href = "#beat">description above</a>.  You can use both the <code>sonify_beats</code> method, as well as the provided <code>plot_beats</code> method, to help check to make sure it's working well.  For example, consider generating the following novelty function for the first example in the beats dataset
+											Fill in the method <code>get_beats</code> to perform <a href = "../../ClassExercises/BeattrackNotes/">dynamic programming beat tracking</a>.  You can use both the <code>sonify_beats</code> method, as well as the provided <code>plot_beats</code> method, to help check to make sure it's working well.  For example, consider generating the following novelty function for the first example in the beats dataset
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											hop_length = 256
 											win_length = 2048
-											max_win = 3
-											mu = 4
+											max_win = 6
+											mu = 1
 											Gamma = 1
-											x, sr = librosa.load("Beattrack/train/train1.wav", sr=44100)
+											sr, x = wavfile.read("Testing/Audio/train1.wav")
+											x = x/32768.0
 											novfn = get_superflux_novfn(x, sr, hop_length, win_length, max_win, mu, Gamma)
 											</script>
 
@@ -567,7 +469,7 @@
 											plt.figure(figsize=(12, 5))
 											plot_beats(novfn, beats, sr, hop_length)
 											plt.xlim([0, 10])
-											y = sonify_beats("Beattrack/train/train1.wav", sr, beats)
+											y = sonify_beats(x, sr, beats)
 											ipd.Audio(y, rate=sr)
 											</script>
 										<audio controls>
@@ -595,18 +497,19 @@
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											hop_length = 256
 											win_length = 2048
-											max_win = 3
+											max_win = 6
 											mu = 4
 											Gamma = 1
-											x, sr = librosa.load("Beattrack/train/train2.wav", sr=44100)
+											sr, x = wavfile.read("Testing/Audio/train2.wav")
+											x = x/32768.0
 											novfn = get_superflux_novfn(x, sr, hop_length, win_length, max_win, mu, Gamma)
-											beats = get_beats(novfn, sr, hop_length, 167, 100)
 
+											beats = get_beats(novfn, sr, hop_length, 167, 200)
 											plt.figure(figsize=(12, 5))
 											plot_beats(novfn, beats, sr, hop_length)
 											plt.xlim([0, 10])
-
-											y = sonify_beats("Beattrack/train/train2.wav", sr, beats)
+											y = sonify_beats(x, sr, beats)
+											plt.savefig("Beat_1_120_100.svg", bbox_inches='tight')
 											ipd.Audio(y, rate=sr)
 											</script>
 										
@@ -628,19 +531,21 @@
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											hop_length = 256
 											win_length = 2048
-											max_win = 3
+											max_win = 6
 											mu = 4
 											Gamma = 1
-											x, sr = librosa.load("Beattrack/train/train3.wav", sr=44100)
+											sr, x = wavfile.read("Testing/Audio/train3.wav")
+											x = x/32768.0
 											novfn = get_superflux_novfn(x, sr, hop_length, win_length, max_win, mu, Gamma)
-											beats = get_beats(novfn, sr, hop_length, 153, 1000)
-											
+
+											beats = get_beats(novfn, sr, hop_length, 153, 200)
 											plt.figure(figsize=(12, 5))
 											plot_beats(novfn, beats, sr, hop_length)
 											plt.xlim([0, 10])
-											
-											y = sonify_beats("Beattrack/train/train3.wav", sr, beats)
+											y = sonify_beats(x, sr, beats)
+											plt.savefig("Train2_Beattrack.svg", bbox_inches='tight')
 											ipd.Audio(y, rate=sr)
+
 										</script>
 
 										<p>

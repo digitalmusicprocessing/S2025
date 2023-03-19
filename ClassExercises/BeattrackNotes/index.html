@@ -1,0 +1,465 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 372: Digital Music Processing, Spring 2023</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Ursinus CS 372: Digital Music Processing, Spring 2023</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Assignment 4: Tempo Estimation And Beat Tracking (45 Points)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
+									</header>
+
+									<div id="page-content">
+				
+										<p>
+											Now that we have good audio novelty functions and tempo estimation schemes, we can use them to go a finer grained representation of rhythm and actually have the computer "tap its virtual foot to the beat."  We designed audio novelty functions to spike for likely beat events, but not all peaks correspond to true beats (<b>false positives</b>), and not all beats show up as spikes (<b>false negatives</b>).  Therefore, we somehow have to balance picking tap times in the audio novelty function that correspond to high values, while also skipping some high values or picking low values every once in a while to keep the tempo going.  
+										</p>
+
+										<p>
+											To accomplish this, we will implement what is now a classical technique by following <a href = "https://academiccommons.columbia.edu/doi/10.7916/D8CV4T9J/download">this 2007 paper by Dan Ellis</a>.  This technique uses <a href = "https://ursinus-cs371-s2021.github.io/Modules/Module10/Video0">dynamic programming</a> to solve an optimization problem trading off peak picking in the audio novelty function and tightness around a tempo.  First, let's define an objective function to maximize, and then we will explain how to maximize it to obtain an optimal sequence of beats using dynamic programming and backtracing.  Let's start with the following parameters
+											
+											<ul>
+												<li>An audio novelty function <b>n[i]</b></li>
+												<li>A tempo <b>T</b> in units of the audio novelty function</li>
+												<li>a sequence of <b>B</b> beats <b>b[j]</b>, which are also specified in units of the audio novelty function, so that <b>n[b[j]]</b> gives the novelty function associated with the <b>j<SUP>th</SUP></b> beat</li>
+											</ul>
+											Then, we have the following objective function in terms of these three parameters
+										</p>		
+
+										<h3>
+											\[ c(n, b, T) = \sum_{j = 1}^{N-1} \left( n[b[j]] - \alpha  \left| \log \left( \frac{b[j]-b[j-1]}{T} \right) \right| ^2    \right) \]
+										</h3>
+
+										<p>
+											Since we want to maximize this function, the <b>n[b[j]]</b> term for each beat promotes choosing beats at locations where the novelty function is high.  But we also want to make sure we keep a consistent tempo, so the second term penalizes deviations from the tempo <b>T</b> between chosen beat locations.  If the tempo is perfectly <b>T</b>, then <b>b[j] - b[j-1]</b> will always be <b>T</b>, so the second term will be 0.  But the moment the tempo is too fast or too slow between two adjacent beats, that term will deduct from the objective function.  Still, we may be happy to accept a slight penalty in tempo so that our beats reside at locations of high novelty.  The <b>&alpha;</b> parameter chooses how much we want to penalize for deviations of tempo.  A higher <b>&alpha;</b> will lead to a more consistent tempo, but the beats may not exactly align with rhythmic events.  By contract, a low <b>&alpha;</b> will cause the computer to tap its foot very consistently with rhythmic events, but the tempo may be all over the place.
+										</p>
+
+										<h3>Solving for beats</h3>
+										<p>
+											Given a tempo <b>T</b> and an audio novelty function <b>n[i]</b>, we can solve for optimal beats via dynamic programming.  We need to create two 1D arrays, <code>cscore</code> and <code>backlink</code>, each with as many samples as there are samples in the audio novelty function:
+										</p>
+										<ul>
+											<li><code>cscore[i]</code> is a dynamic programming array that stores the maximum possible value of the objective function when solving a subproblem from index <b>0</b> to index <b>i</b> of the audio novelty function.</li>
+											<li><code>backlink[i]</code> stores the index of the last beat that was chosen before index <b>i</b> in the optimal solution with score <code>cscore[i]</code></li>
+										</ul>
+										<p>
+											To fill these in, we need a loop that builds up the subproblems from small to large, until we have the whole problem solved, just as in <a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video2">dynamic time warping</a>. Below is the algorithm to do this using a recurrence relation that is solved with dynamic programming.  Note that for simplicity of the description, the tempo <b>T</b> is assumed here to be in units of <b>samples of the novelty function per beat</b>, which is a period, <i>though the tempo is provided in units of <b>beats per minute</b>, which is a frequency, as an argument to the method</i>.  Also, when you write the code, you will have to be careful to round and cast variables as <code>int</code> when necessary.
+										</p>
+										<h4>Pseudocode</h4>
+											<ol>
+												<li>
+													for i from 2T to len(cscore)
+												<ul>
+													<li>
+														To solve for <code>cscore[i]</code>, the optimal score up to index <b>i</b>, we suppose that we're choosing a beat at index <b>i</b>.  Then, we recursively compute the score, via dynamic programming, by checking over possible beat indices <b>j</b> that could represent the beat that comes directly before <b>i</b>.  The recurrence for this is as follows:
+														<h4>
+															\[ \text{cscore}[i] = \text{max}_{j = i-2T}^{i-T/2} \left( n[i] + \text{cscore}[j] - \alpha \left| \log \left(  \frac{i-j}{T} \right) \right|^2 \right) \]
+														</h4>
+														<p>
+															We restrict ourselves to previous beat locations <b>j</b> that occur between half of the tempo and 2x the tempo before index <b>i</b>.  We get credit for <code>n[i]</code>, the novelty function for our newest beat at index <b>i</b>, as well as <code>cscore[j]</code>, the best score of all possible beats chosen up to and including index <b>j</b>.  But we also deduct a penalty depending on the interval between beat <b>j</b> and beat <b>i</b>.
+														</p>
+														<p>
+															Along with storing the maximum possible value in <code>cscore[i]</code>, we also store the the index <b>j</b> that led to the maximum in <code>backlink[i]</code>.
+														</p>
+													</li>
+												</ul>
+											</li>
+											<li>
+												Once the entirety of <code>cscore</code> and <code>backlink</code> is filled in, we can extract the optimal beat locations.  Starting at the index that maximizes <code>cscore</code>, we follow the links in <code>backlink</code> to pick all of the beats.  We will be finished once we get back to the beginning.  For example, suppose we had the following <code>backlink</code> array (which, for pedagogical purposes, is <i>much</i> short than what you will get on real audio data)
+
+												<p>
+													<table>
+														<tr>
+															<td colspan="12">backlink</td>
+														</tr>
+														<tr>
+															<td>index</td>
+															<td>0</td><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td><td>7</td><td>9</td><td>9</td><td>10</td>
+														</tr>
+														<tr>
+															<td>value</td>
+															<td>0</td><td>0</td><td>0</td><td>1</td><td>2</td><td>2</td><td>5</td><td>4</td><td>6</td><td>5</td><td>8</td>
+														</tr>
+													</table>
+												</p>
+
+												<p>
+													We can represent this array visually as a 1D <a href = "https://en.wikipedia.org/wiki/Directed_acyclic_graph">directed acyclic graph</a>
+												</p>
+
+												<p>
+													<img src = "backlink.svg" width=400>
+												</p>
+
+												<p>
+													Then we simply follow the arrows until we get to 0.  For example, let's say <code>cscore[9]</code> was the maximum.  Then we follow the path
+													
+												</p>
+
+												<p>
+													<code>
+														9 -> 5 -> 2 -> 0
+													</code>
+												</p>
+
+												<p>
+													For another example, if <code>cscore[10]</code> was the maximum, we follow the path
+												</p>
+
+												<p>
+													<code>
+														10 -> 8 -> 6 -> 5 -> 2 -> 0
+													</code>
+												</p>
+
+												<p>
+													You should of course reverse the order of this list so that the beats you return start at smaller indices, and you should also convert them from units of the audio novelty function to beats per minute.
+												</p>
+												
+
+											</li>
+											</ol>
+										<h4>Matlab code</h4>
+										<p>
+										 	You may also be interested in referencing the matlab code in <a href = "https://academiccommons.columbia.edu/doi/10.7916/D8CV4T9J/download">the paper</a>, but you should be careful since although Matlab is a predecessor to numpy, the syntax is different and may throw you off a bit.
+										</p>
+
+										<h3><a name = "sonifybeats">Sonifying Beats (5 Pts)</a></h3>
+										<p>
+											As with all of our features, it's helpful to "sonify" what we have computed so we can hear its quality.  Fill in the method <code>sonify_beats</code> to create little blips that occur at beat locations.  In particular, you should sonify each beat by adding in a small 440hz sinusoid at each beat location.  Each blip should be added in to a slice of the array starting at the beat location and continuing for <code>blip_len</code> seconds.  For example, if you run the following code to load one of the ground truth human annotators on the third train clip
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+										sr = 44100
+										beats = get_gt_beats("Beattrack/train/train4.txt", 3)
+										y = sonify_beats("Beattrack/train/train4.wav", sr, beats)
+										ipd.Audio(y, rate=sr)
+										</script>
+										<p>
+											then you should hear this
+										</p>
+										<audio controls>
+											<source src="Examples/beatsonify1.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+										sr = 44100
+										beats = get_gt_beats("Beattrack/train/train1.txt", 0)
+										y = sonify_beats("Beattrack/train/train1.wav", sr, beats)
+										ipd.Audio(y, rate=sr)
+										</script>
+										<p>
+											then you should hear this
+										</p>
+										<audio controls>
+											<source src="Examples/beatsonify2.mp3" type="audio/mpeg">
+											Your browser does not support the audio element.
+										</audio> 
+										<P></P>
+
+										<h3><a name = "beattrack">Dynamic Programming Beat Tracking (15 Points)</a></h3>
+										<p>
+											Fill in the method <code>get_beats</code> to perform dynamic programming beat tracking, according to the <a href = "#beat">description above</a>.  You can use both the <code>sonify_beats</code> method, as well as the provided <code>plot_beats</code> method, to help check to make sure it's working well.  For example, consider generating the following novelty function for the first example in the beats dataset
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											hop_length = 256
+											win_length = 2048
+											max_win = 3
+											mu = 4
+											Gamma = 1
+											x, sr = librosa.load("Beattrack/train/train1.wav", sr=44100)
+											novfn = get_superflux_novfn(x, sr, hop_length, win_length, max_win, mu, Gamma)
+											</script>
+
+										<p>
+											The tempo in this tune is 129.5 beats per minute.  If we're slightly off on our tempo estimate and guess 120, and we're also very permissive with sticking to the tempo, we don't always get a consistent pulse, and we get subdivided beats at times
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											beats = get_beats(novfn, sr, hop_length, 120, 1)
+											plt.figure(figsize=(12, 5))
+											plot_beats(novfn, beats, sr, hop_length)
+											plt.xlim([0, 10])
+											y = sonify_beats("Beattrack/train/train1.wav", sr, beats)
+											ipd.Audio(y, rate=sr)
+											</script>
+										<audio controls>
+											<source src="Examples/Beat_1_120_1.mp3" type="audio/mpeg">
+											Your browser does not support the audio element.
+										</audio> 
+										<p>
+											<img src = "Examples/Beat_1_120_1.svg" width=600>
+										</p>
+										<p>
+											If, however, we increase the &alpha; penalty of tempo deviation from 1 to 100, the algorithm is less tempted to add beats on some of the high audio novelty function regions in subdivided places
+										</p>
+										<audio controls>
+											<source src="Examples/Beat_1_120_100.mp3" type="audio/mpeg">
+											Your browser does not support the audio element.
+										</audio> 
+										<p>
+											<img src = "Examples/Beat_1_120_100.svg" width=600>
+										</p>
+
+										<p>
+											Here's a slightly tougher example
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											hop_length = 256
+											win_length = 2048
+											max_win = 3
+											mu = 4
+											Gamma = 1
+											x, sr = librosa.load("Beattrack/train/train2.wav", sr=44100)
+											novfn = get_superflux_novfn(x, sr, hop_length, win_length, max_win, mu, Gamma)
+											beats = get_beats(novfn, sr, hop_length, 167, 100)
+
+											plt.figure(figsize=(12, 5))
+											plot_beats(novfn, beats, sr, hop_length)
+											plt.xlim([0, 10])
+
+											y = sonify_beats("Beattrack/train/train2.wav", sr, beats)
+											ipd.Audio(y, rate=sr)
+											</script>
+										
+										<p>
+											And here are the results
+										</p>
+										<audio controls>
+											<source src="Examples/train2beattrack.mp3" type="audio/mpeg">
+											Your browser does not support the audio element.
+										</audio> 
+										<p>
+											<img src = "Examples/Train2Beattrack.svg" width=600>
+										</p>
+
+										<p>
+											Here's yet another example, where we really have to turn up &alpha; so that the algorithm is not tempted to take a few large peaks in novelty to stay on tempo (e.g. around 3 seconds and 5.5 seconds)
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											hop_length = 256
+											win_length = 2048
+											max_win = 3
+											mu = 4
+											Gamma = 1
+											x, sr = librosa.load("Beattrack/train/train3.wav", sr=44100)
+											novfn = get_superflux_novfn(x, sr, hop_length, win_length, max_win, mu, Gamma)
+											beats = get_beats(novfn, sr, hop_length, 153, 1000)
+											
+											plt.figure(figsize=(12, 5))
+											plot_beats(novfn, beats, sr, hop_length)
+											plt.xlim([0, 10])
+											
+											y = sonify_beats("Beattrack/train/train3.wav", sr, beats)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											And here are the results
+										</p>
+										<audio controls>
+											<source src="Examples/train3beattrack.mp3" type="audio/mpeg">
+											Your browser does not support the audio element.
+										</audio> 
+										<p>
+											<img src = "Examples/Train3Beattrack.svg" width=600>
+										</p>
+										
+                                    
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../index.html#overview">Overview</a></li>
+												<li><a href = "../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../index.html#homework">Homework</a></li>
+												<li><a href = "../../index.html#grading">Grading</a></li>
+												<li><a href = "../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../index.html#participation">Participation</a></li>
+												<li><a href = "../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../Software/index.html">Software</a></li>
+										<li><a href = "../../webaudio-pianoroll/index.html">Piano Roll Editor</a></li>
+										<li><a href = "../../index.html#schedule">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+												</li>
+												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Spectacular Spectrograms</a>
+												</li>
+												<!--
+												<li><a href = "../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
+												<ul>
+													<li>
+														<a href = "../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>!-->
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "../../ClassExercises/Week1/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+												</li>
+												<li><a href = "../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../ClassExercises/Week6/2DArrays/index.html">Week 6: 2D Arrays And Spectrograms</a></li>
+												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<!--
+												<li><a href = "../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
+												<li><a href = "../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
+												<li><a href = "../../ClassExercises/Week11/Week11_Shazam">Week 11: Shazam</a></li>!-->
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "../../../Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "../../../Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "../../../Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "../../../Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "../../../Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "../../../Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "../../../Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../../Modules/Module8/Video1">Module 8: Discovering The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "../../../Modules/Module10/Video1">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties, Inverse DFT And Fast Risset</a></li>
+												<li><a href = "../../../Modules/Module11/Video1">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "../../../Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "../../../Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "../../../Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "../../../Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "../../../Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<!--
+												<li><a href = "../../../Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												<li><a href = "../../../Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+												!-->
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
