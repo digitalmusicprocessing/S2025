@@ -99,9 +99,9 @@ Audio novelty functions And Autocorrelation
 
 
 LECTURE
-Matrix Multiplication, Mel Spacing
+Matrix Multiplication, Mel Spacing, Dynamic Programming Beat Tracking
 
-
+<ul><li><a href = "ClassExercises/BeattrackNotes">Notes on dynamic programming beat tracking</a></li></ul>
 LECTURE
 MFCC Features, Inverting MFCC
 

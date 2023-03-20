@@ -41,7 +41,7 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-                                        <h2>Assignment 4: Tempo Estimation And Beat Tracking (45 Points)</h2>
+                                        <h2>Assignment 4: Tempo Estimation And Beat Tracking (50 Points)</h2>
                                         <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
 									</header>
 
@@ -70,7 +70,7 @@
 																<a href = "#sonifybeats">Sonifying Beats (5 Pts)</a>
 															</li>
 															<li>
-																<a href = "#beattrack">Dynamic Programming Beat Tracking (15 Points)</a>
+																<a href = "#beattrack">Dynamic Programming Beat Tracking (20 Points)</a>
 															</li>
 														</ul>
 													</li>
@@ -99,26 +99,8 @@
 										<h3><a name = "submit">What To Submit</a></h3>
 
 										<p>                                       
-                                            When you are finished, submit your python filed <code>novfn.py</code>, <code>tempo.py</code>, and <code>beat.py</code> to Canvas.  Finally, submit answers to the following questions on Canvas
+                                            When you are finished, submit your python filed <code>novfn.py</code>, <code>tempo.py</code>, and <code>beat.py</code> to Canvas.
 										
-										<ol>
-											<li>
-												What would you like your name/pseudonym to be for the beat tracking contest?
-											</li>
-											<li>
-												Briefly describe your beat tracking system in a couple of sentences so your classmates can understand what you did.
-											</li>
-											
-											<li>
-												Approximately how many hours it took you to finish this assignment (<i>I will not judge you for this at all...I am simply using it to gauge if the assignments are too easy or hard</i>)
-											</li>
-											<li>
-												Any constructive suggestions for if I decide to give this assignment to future students?
-											</li>
-											<li>
-												Any other concerns that you have. For instance, if you have a bug that you were unable to solve but you made progress, write that here. The more you articulate the problem the more partial credit you will receive (fine to leave this blank)
-											</li>
-										</ol>
 
 
 										
@@ -282,7 +264,7 @@
 											If we plot the magnitudes of the first 400 frequency bins of the DFT, we see the following plot:
 										</p>
 
-										<img src = "EBDFT.svg">
+										<img src = "EBDFT.svg" width="80%">
 
 										<p>
 											There are three peaks at the beginning, and we end up finding that the max occurs at the third such bin at frequency index 63.  The sample rate is 44100 and the hop length is 256, which means we have <b>(44100/256)</b> samples of the audio novelty function per second.  The audio clip is 30 seconds long, which translates into an interval of <b>5165</b> samples in the audio novelty function at this rate.  We put this all together to find that the frequency is 
@@ -398,7 +380,14 @@
 										<h2><a name = "beat">Part 3: Beat Tracking</a></h2>					
 										
 										<p>
-											In this section, you will implement the dynamic programming beat tracking algorithm described at <a href = "../../ClassExercises/BeattrackNotes/">this link</a>, editing code in the <code>beat.py</code> file.
+											In this section, you will implement the dynamic programming beat tracking algorithm described at <a href = "../../ClassExercises/BeattrackNotes/">this link</a>, editing code in the <code>beat.py</code> file.  
+										</p>
+
+										<p>
+											<b>NOTE: </b> This method of tracking beats requires us to have an estimate of the tempo up front.  Of course, we could use the methods from <a href = "#tempo">part 2</a> to compute this before running beat tracking.  
+										</p>
+										
+										<p><b>NOTE ALSO: </b>If you're curious about other techniques for beat tracking in python, check out <a href = "https://madmom.readthedocs.io/en/latest/">madmom</a>.
 										</p>
 
 										<h3><a name = "sonifybeats">Sonifying Beats (5 Pts)</a></h3>
@@ -444,7 +433,9 @@
 										</audio> 
 										<P></P>
 
-										<h3><a name = "beattrack">Dynamic Programming Beat Tracking (15 Points)</a></h3>
+										<h3><a name = "beattrack">Dynamic Programming Beat Tracking (20 Points)</a></h3>
+										
+										<h4>Your Task</h4>
 										<p>
 											Fill in the method <code>get_beats</code> to perform <a href = "../../ClassExercises/BeattrackNotes/">dynamic programming beat tracking</a>.  You can use both the <code>sonify_beats</code> method, as well as the provided <code>plot_beats</code> method, to help check to make sure it's working well.  For example, consider generating the following novelty function for the first example in the beats dataset
 										</p>
@@ -477,7 +468,7 @@
 											Your browser does not support the audio element.
 										</audio> 
 										<p>
-											<img src = "Examples/Beat_1_120_1.svg" width=600>
+											<img src = "Examples/Beat_1_120_1.svg" width="80%">
 										</p>
 										<p>
 											If, however, we increase the &alpha; penalty of tempo deviation from 1 to 100, the algorithm is less tempted to add beats on some of the high audio novelty function regions in subdivided places
@@ -487,7 +478,7 @@
 											Your browser does not support the audio element.
 										</audio> 
 										<p>
-											<img src = "Examples/Beat_1_120_100.svg" width=600>
+											<img src = "Examples/Beat_1_120_100.svg" width="80%">
 										</p>
 
 										<p>
@@ -521,7 +512,7 @@
 											Your browser does not support the audio element.
 										</audio> 
 										<p>
-											<img src = "Examples/Train2Beattrack.svg" width=600>
+											<img src = "Examples/Train2Beattrack.svg" width="80%">
 										</p>
 
 										<p>
@@ -556,8 +547,10 @@
 											Your browser does not support the audio element.
 										</audio> 
 										<p>
-											<img src = "Examples/Train3Beattrack.svg" width=600>
+											<img src = "Examples/Train3Beattrack.svg" width="80%">
 										</p>
+
+										
 										
                                     
                                 </div>
@@ -616,15 +609,8 @@
 												</li>
 												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Spectacular Spectrograms</a>
 												</li>
-												<!--
-												<li><a href = "../../Assignments/HW3b_ConvolutionCompetition">HW3b: Convolution Competition</a>
-												<ul>
-													<li>
-														<a href = "../../Assignments/HW3b_ConvolutionCompetition/statements.html">Musical Statements</a>
-													</li>
-												</ul>
-												</li>
 												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<!--
 												<li><a href = "../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
 												<li><a href = "../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
 													<ul>
@@ -653,6 +639,7 @@
 												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
 												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
 												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../ClassExercises/BeattrackNotes">Week 9: Notes on Dynamic Programming Beat Tracking</a></li>
 												<!--
 												<li><a href = "../../ClassExercises/Week9/Week9_DTWBacktrace">Week 9: DTW Backtrace</a></li>
 												<li><a href = "../../ClassExercises/Week10/Week10_Chroma">Week 10: Chromagrams</a></li>
