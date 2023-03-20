@@ -105,7 +105,7 @@ Matrix Multiplication, Mel Spacing, Dynamic Programming Beat Tracking
 LECTURE
 MFCC Features, Inverting MFCC
 
-<ul><li><a href = "ClassExercises/Week8/Week8_MFCC/Mel.html">Code from today</a></li></ul>
+
 LECTURE
 Chroma Features, Shepard Tones
 
@@ -114,18 +114,6 @@ LECTURE
 Audio Fingerprints / The Shazam Algorithm
 
 <ul><li><a href = "https://www.princeton.edu/~cuff/ele201/files/Wang03-shazam.pdf">The original Shazam Paper</a></li><li><a href = "https://slideslive.com/38917442/characterizing-musical-correlates-of-largescale-discovery-behavior?ref=speaker-19235">Blair Kaneshiro Talk</a></li><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li>
-LECTURE
-Self-Similarity in Audio
-
-
-LECTURE
-Cross-Similarity Matrices, Dynamic Time Warping
-
-
-LECTURE
-Dynamic Time Warping Continued
-
-
 LECTURE
 Harmonic-Percussive Source Separation
 
@@ -138,6 +126,18 @@ LECTURE
 Source Separation via Nonnegative matrix factorization
 
 <ul><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
+LECTURE
+Self-Similarity in Audio, Spectral Clustering
+
+
+LECTURE
+Cross-Similarity Matrices, Dynamic Time Warping
+
+
+LECTURE
+Dynamic Time Warping Continued
+
+
 LECTURE
 Autotuners
 
