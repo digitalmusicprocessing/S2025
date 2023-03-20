@@ -41,76 +41,103 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-										<h2>Week 11: Shazam</h2>
+										<h2>Week 9: Mel-Frequency Cepstral Coefficients (MFCC)</h2>
 										<h3><a href = "http://www.ctralie.com">Chris Tralie</a></h3>
 									</header>
 
 									<div id="page-content">
-										<h2>Overview</h2>
 										<p>
-											As we've been discussing, one of the key stems in the Shazam algorithm, as discussed in <a href = "http://www.ctralie.com/Teaching/CS174_F2020/Assignments/HW5b_Shazam/Wang03-shazam.pdf">Wang 2003</a>, is to pick time/frequency bins that are local maxes within a certain window.  Fill in the code below to do this.  <a href = "https://github.com/Ursinus-CS472A-S2021/Week11_Shazam/archive/refs/heads/main.zip">Click here</a> to download some tunes.
+											Today we're going to be talking about a classical timbre feature known as the Mel-Frequency Cepstral Coefficient (MFCC) transform.  This feature was originally used to compress speech for analysis, but it has seen wide use in music information retrieval.  As we will see, it basically throws out most information of absolute pitch, but retains information about timbre.
+										</p>
+
+										<h2>Part 1: Inverting Mel-Spaced Spectrograms</h2>
+										<p>
+											The first step of the MFCC is to pass from an ordinary spectrogram representation to a <a href = "../../../../Modules/Module16/Video4">mel-space spectrogram</a>.  As we discussed, we can accomplish this by multiplying a spectrogram <i>on the left</i> by a matrix <b>M</b> in which each row is a different triangle centered on a different band.  This matrix <b>M</b> is referred to as a <b>Mel Filterbank</b>.  Below is an image of a mel filterbank
+										</p>
+
+										<img src = "melFilterbank.png">
+
+										<p>
+											And below is an image of the corresponding multiplication:
+										</p>
+
+										<img src = "multiplication.png">
+
+										<p>
+											As we discussed in <a href = "../../../../Modules/Module16/Video4">module 16</a>, though, we are losing information when we do this.  It is often informative to "sonify" what information was retained so we can listen to what the computer hears at this point.
+										</p>
+
+										<h4>Your Task</h4>
+										<p>
+											<a href = "https://github.com/ursinus-cs372-s2023/Week9_MFCC/archive/refs/heads/main.zip">Click here</a> to download the starter code for today.  It contains an implementation of a mel-spaced filterbank, as well as code to do an STFT.  You can edit the notebook <code>MFCC.ipynb</code>.
 										</p>
 
 										<p>
-											<img src = "WindowMaxLabeled.svg">
+											Below are the steps to perform and sonify the mel spectrogram
 										</p>
+										<ol>
+											<li>Create a magnitude mel-spaced spectrogram <b>MS</b> by multiplying on the left by a matrix <b>M</b></li>
+											<li>
+												Multiply <b>MS</b> on the left by the <i>transpose</i> of <b>M</b>; that is, <b>M</b> where the rows are switched for the columns.  You can obtain this with <b>M.T</b> in numpy.  This will yield a matrix with the original shape of the STFT, which is the closest approximation we can get to the STFT after we've applied the mel filterbank.  We'll check in as a class after this step
+											</li>
+											<li>
+												Apply random phases to this new spectrogram
+											</li>
+											<li>
+												Mirror this new spectrogram and perform the inverse STFT, then listen to the result.
+											</li>
+										</ol>
 
-										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											%load_ext autoreload
-											%autoreload 2
-											%matplotlib notebook
-											import numpy as np
-											import matplotlib.pyplot as plt
-											import IPython.display as ipd
-											from scipy.ndimage import maximum_filter
-											from spectrogramtools import *
-											import scipy.io as sio
+										<HR>
+											<h2>Part 2: Mel-Frequency Cepstral Coefficients</h2>
+
+											<p>
+												There is another set of steps we do to to the mel-spectrogram to reduce the dimension of the features even more, while still retaining important information.  The steps culminate in something called the Mel-Frequency Cepstral Coefficients (MFCCs).  In this section, you'll fill in the method <code>mfcc</code> in <code>mfcc.py</code> to accomplish this.  The steps are below:
+											</p>		
 											
-											sr, x = sio.wavfile.read("ExampleQueries/baddayClean.wav")
-											x = np.array(x, dtype=float)
-											win_length = 2048
-											hop_length = 512
-											max_freq = 128
-											S = STFT(x, win_length, hop_length)
-											S = np.abs(S)
-											orig_shape = S.shape[0]
-											S = S[0:max_freq, :]
+											<ol>
+												<li>
+													First, compute the spectrogram and convert to a mel-spaced spectrogram using <code>n_bands</code> bands and frequencies between 1hz and <code>f_max</code> hz.  Typically, <code>n_bands = 40</code> and <code>f_max = 8000</code>
+												</li>
+												<li>
+													Take the log amplitude of the MFCC coefficients.  You can use <code>amplitude_to_db</code> to help
+												</li>
+												<li>
+													<p>
+														Take the <a href = "https://en.wikipedia.org/wiki/Discrete_cosine_transform#DCT-III">"Discrete Cosine Transform Type 3" (DCT-III)</a> of each column of this log amplitude mel-spaced spectrogram.  This can be accomplished by multiplying by the left on a matrix like this, which you get from calling the provided <code>get_dct_basis</code> method:
+													</p>
 
-											time_win = 8
-											freq_win = 3
+													<img src = "DCTIII.svg">
 
-											SM = np.zeros_like(S)
-											## TODO: Fill this in.  Put a 1 at SM[i, j] if 
-											## S[i, j] is greater than its neighbors in the box
-											## [i-freq_win, i+freq_win] x [j-time_win, j+time_win]
+													<p>
+														Doing this multiplication is like taking a truncated Discrete Fourier Transform of each row of the log amplitude, mel-spaced spectrogram.  The DCT-III is just a slightly different "basis" for frequencies than the DFT, and it's a purely real basis (no phase).
+													</p>
+												</li>
+											</ol>
+									
+											<p>
+												If this is all working properly, the result on <a href = "doves.wav">doves.wav</a> should be this:
+											</p>
 
-											X, Y = np.meshgrid(np.arange(SM.shape[1]), np.arange(SM.shape[0]))
-											X = X[SM == 1]
-											Y = Y[SM == 1]
+											<img src = "MFCC.png">
 
-											plt.figure(figsize=(8, 6))
-											plt.subplot(211)
-											plt.imshow(S, aspect='auto', cmap='magma_r')
-											plt.scatter(X, Y)
-											plt.gca().invert_yaxis()
-											plt.subplot(212)
-											plt.imshow(SM, aspect='auto')
-											plt.gca().invert_yaxis()
-											plt.tight_layout()
-											
-										</script>
+											<p>
+												And here's what it looks like if we zero out the first row
+											</p>
 
-										<p>
-											If it works, you should see something like this
-										</p>
+											<HR>
+												<h2>Genre Identification</h2>
 
-										<p>
-											<img src = "badday.svg">
-										</p>
 
-										<p>
-											Once you get it to work, I'm going to blow your mind with a sonification of what we have
-										</p>
+									
+									<!--<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+										import random
+										random.seed(371)
+										# This will choose a random number between 0 and 999 
+										# Since we have seeded, it will always be 318 on the 
+										# first call
+										random.randint(0, 1000)
+									]]></script> !-->
 
                                     </div>
 						</div>

@@ -49,3 +49,6 @@
 [submodule "Assignments/HW4_RhythmAnalysis/HW4_Rhythm"]
 	path = Assignments/HW4_RhythmAnalysis/HW4_Rhythm
 	url = https://github.com/ursinus-cs372-s2023/HW4_Rhythm.git
+[submodule "ClassExercises/Week9/Week9_MFCC/Week9_MFCC"]
+	path = ClassExercises/Week9/Week9_MFCC/Week9_MFCC
+	url = https://github.com/ursinus-cs372-s2023/Week9_MFCC.git
