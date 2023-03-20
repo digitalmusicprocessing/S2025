@@ -108,7 +108,7 @@
 										<HR>
 										<h2><a name = "programming">Programming Tasks</a></h2>
 										<p>
-											<a href = "https://github.com/Ursinus-CS472A-S2021/HW4_RhythmAnalysis/archive/main.zip">Click here</a> to download the starter code for this assignment.  This code includes two testing suites for tempo estimation and beat tracking from <a href = "https://www.music-ir.org/mirex/wiki/MIREX_HOME">MIREX</a>. Below are the imports you will need to test your code in jupyter:
+											<a href = "https://github.com/ursinus-cs372-s2023/HW4_Rhythm/archive/refs/heads/main.zip">Click here</a> to download the starter code for this assignment.  This code includes two testing suites for tempo estimation and beat tracking from <a href = "https://www.music-ir.org/mirex/wiki/MIREX_HOME">MIREX</a>. Below are the imports you will need to test your code in jupyter:
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											%load_ext autoreload
@@ -140,6 +140,7 @@
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											sr, x = wavfile.read("fishin.wav")
+											x = x/32768.0
 											hop_length = 256
 											win_length = 2048
 											mu = 8

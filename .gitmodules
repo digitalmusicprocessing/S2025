@@ -46,3 +46,6 @@
 [submodule "ClassExercises/Week7/Week7_FilterDesign"]
 	path = ClassExercises/Week7/Week7_FilterDesign
 	url = https://github.com/ursinus-cs372-s2023/Week7_FilterDesign.git
+[submodule "Assignments/HW4_RhythmAnalysis/HW4_Rhythm"]
+	path = Assignments/HW4_RhythmAnalysis/HW4_Rhythm
+	url = https://github.com/ursinus-cs372-s2023/HW4_Rhythm.git
