@@ -113,7 +113,7 @@ Chroma Features, Shepard Tones
 LECTURE
 Audio Fingerprints / The Shazam Algorithm
 
-<ul><li><a href = "https://www.princeton.edu/~cuff/ele201/files/Wang03-shazam.pdf">The original Shazam Paper</a></li><li><a href = "https://slideslive.com/38917442/characterizing-musical-correlates-of-largescale-discovery-behavior?ref=speaker-19235">Blair Kaneshiro Talk</a></li><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li>
+<ul><li><a href = "https://www.princeton.edu/~cuff/ele201/files/Wang03-shazam.pdf">The original Shazam Paper</a></li><li><a href = "https://github.com/ursinus-cs372-s2023/pyshazam">Our Python Implementation of Shazam</a></li><li><a href = "https://slideslive.com/38917442/characterizing-musical-correlates-of-largescale-discovery-behavior?ref=speaker-19235">Blair Kaneshiro Talk</a></li><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li>
 LECTURE
 Harmonic-Percussive Source Separation
 

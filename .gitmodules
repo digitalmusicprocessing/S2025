@@ -52,3 +52,6 @@
 [submodule "ClassExercises/Week9/Week9_MFCC/Week9_MFCC"]
 	path = ClassExercises/Week9/Week9_MFCC/Week9_MFCC
 	url = https://github.com/ursinus-cs372-s2023/Week9_MFCC.git
+[submodule "ClassExercises/Week9/Week9_Shazam/pyshazam"]
+	path = ClassExercises/Week9/Week9_Shazam/pyshazam
+	url = https://github.com/ursinus-cs372-s2023/pyshazam.git
