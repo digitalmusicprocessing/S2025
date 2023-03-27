@@ -117,7 +117,7 @@ Audio Fingerprints / The Shazam Algorithm
 LECTURE
 Harmonic-Percussive Source Separation, Matrix Multiplication for Audio Activations
 
-<ul><li><a href = "https://www.researchgate.net/profile/Derry-Fitzgerald/publication/254583990_HarmonicPercussive_Separation_using_Median_Filtering/links/00b495396ef03235af000000/Harmonic-Percussive-Separation-using-Median-Filtering.pdf">FitzGerald 2010 Paper</a></li></ul>
+<ul><li><a href = "../Modules/Module18/Video0">Class notes on HPSS</a></li><li><a href = "https://www.researchgate.net/profile/Derry-Fitzgerald/publication/254583990_HarmonicPercussive_Separation_using_Median_Filtering/links/00b495396ef03235af000000/Harmonic-Percussive-Separation-using-Median-Filtering.pdf">FitzGerald 2010 Paper</a></li></ul>
 LECTURE
 Source Separation via Nonnegative matrix factorization
 
