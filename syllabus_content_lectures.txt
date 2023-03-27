@@ -85,7 +85,7 @@ Convolution/multiplication duality
 LECTURE
 The Z-Transform, Lowpass Filters / Highpass Filters, frequency analysis of comb filters
 
-
+<ul><li><a href = "https://learningsynths.ableton.com/filters/filters-in-the-real-world">Ableton: Filters in The Real World</a></li></ul>
 SECTION
 <a name = "classical">Unit 3: Classical Machine Learning / AI For Digital Music Processing</a>
 Now that we have frequency domain tools down, we're going to build things on top of it to address several higher level problems, including: <ul><li>Tempo estimation and beat tracking</li><li>Timbre and pitch modeling for audio classification</li><li>The "Shazam algorithm" for audio fingerprinting</li><li>Hierarchical music structure estimation</li><li>Cross-version comparison and time warping</li><li>"Un-mixing" audio, or separating audio into its tracks</li></ul>All of these problems can be accomplished with straightforward mathematical algorithms built on top of the Short-Time Fourier Transform (STFT).
@@ -115,17 +115,17 @@ Audio Fingerprints / The Shazam Algorithm
 
 <ul><li><a href = "https://www.princeton.edu/~cuff/ele201/files/Wang03-shazam.pdf">The original Shazam Paper</a></li><li><a href = "https://github.com/ursinus-cs372-s2023/pyshazam">Our Python Implementation of Shazam</a></li><li><a href = "https://slideslive.com/38917442/characterizing-musical-correlates-of-largescale-discovery-behavior?ref=speaker-19235">Blair Kaneshiro Talk</a></li><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li>
 LECTURE
-Harmonic-Percussive Source Separation
+Harmonic-Percussive Source Separation, Matrix Multiplication for Audio Activations
 
-
-LECTURE
-Matrix Multiplication for Audio Activations
-
-
+<ul><li><a href = "https://www.researchgate.net/profile/Derry-Fitzgerald/publication/254583990_HarmonicPercussive_Separation_using_Median_Filtering/links/00b495396ef03235af000000/Harmonic-Percussive-Separation-using-Median-Filtering.pdf">FitzGerald 2010 Paper</a></li></ul>
 LECTURE
 Source Separation via Nonnegative matrix factorization
 
 <ul><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
+LECTURE
+Let It Bee, Autotuners
+
+
 LECTURE
 Self-Similarity in Audio, Spectral Clustering
 
@@ -136,10 +136,6 @@ Cross-Similarity Matrices, Dynamic Time Warping
 
 LECTURE
 Dynamic Time Warping Continued
-
-
-LECTURE
-Autotuners
 
 
 SECTION
@@ -159,26 +155,26 @@ Convolutional Neural Networks
 
 
 LECTURE
-Deep beat tracking
-
-<ul><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
-LECTURE
-Deep beat tracking continued
-
-
-LECTURE
 Wavenet
 
+<ul><li><a href = "https://www.deepmind.com/blog/wavenet-a-generative-model-for-raw-audio">DeepMind WaveNet blog post</a></li></ul>
+LECTURE
+Differentiable Digital Signal Processing
 
+<ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li></ul>
 LECTURE
 Wave-U-Net for Source Separation
 
 <ul><li><a href = "https://arxiv.org/pdf/1806.03185.pdf">Wave-U-Net Paper</a></li></ul>
 LECTURE
+Deep beat tracking
+
+<ul><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
+LECTURE
 Machine Learning Meets FM Synthesis
 
 
 LECTURE
-Machine Learning Meets FM Synthesis
+Diffusion for Audio Synthesis
 
 
