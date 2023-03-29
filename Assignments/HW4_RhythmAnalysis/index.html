@@ -343,15 +343,16 @@
 
 										<h4>Example: <code>train5.wav</code></h4>
 										<p>
-											The image below shows this on <code>train5.wav</code> in the tempo dataset.  As you can see, the ACF (first plot) has many peaks at integer multiples of the first peak at index 76, while the DFT (second plot) has a peak at the first harmonic of its maximum at index 102.  If we warp the DFT (third plot) by takings its mirror image and compressing it towards the origin, then it lines up with the ACF, and we can take the point by point product, which gives us the combined plot on the bottom with the harmonics and subharmonics cancelled out.  We can now say confidently that the tempo occurs at a shift of 76 samples.  This occurred at a hop length of 256 samples at a sample rate of 44100, so this corresponds to a tempo of 
+											The image below shows this on <code>train5.wav</code> in the tempo dataset.  As you can see, the ACF (first plot) has many peaks at integer multiples of the first peak at index 76, while the DFT (second plot) has a peak at the first harmonic of its maximum at index 102.  If we warp the DFT (third plot) by takings its mirror image and compressing it towards the origin, then it lines up with the ACF, and we can take the point by point product, which gives us the combined plot on the bottom with the harmonics and subharmonics cancelled out.  We can now say confidently that the tempo occurs at a shift of 76 samples.  This occurred at a hop length of 512 samples at a sample rate of 44100.  The general equation for converting a shift <b>idx</b>
 										</p>
 
 										<h3>
-											\[ \left( \frac{ 1 \text{ beat} }{ 76 \text{ samples} } \right) \left( \frac{ (44100/512) \text{ samples}}{ 1 \text{ second}}  \right)  \left( \frac{60 \text{ seconds}}{ 1 \text{ minute}} \right) = 68 \text{beats/minute} \]
+											\[ \left(  \frac{1}{\text{idx}} \frac{\text{cycle}}{\text{shift}} \right) \left(  \frac{1}{\text{hop}} \frac{\text{shift}}{\text{samples}} \right) \left(  \text{sr} \frac{\text{samples}}{\text{sec}} \right)  \left( 60 \frac{\text{sec}}{\text{minute}} \right) \]
 										</h3>
 
 										<p>
-											which is quite close to one of the ground truth tempos of 68.5 bpm.
+											Or, in other words, <b>60*sr / (idx*hop)</b>. 
+											For <b>idx = 76, sr=44100, hop=512</b>, this is 68 bpm, which is quite close to one of the ground truth tempos of 68.5 bpm.
 										</p>
 										
 										<p>
