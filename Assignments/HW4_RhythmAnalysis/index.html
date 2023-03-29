@@ -343,7 +343,7 @@
 
 										<h4>Example: <code>train5.wav</code></h4>
 										<p>
-											The image below shows this on <code>train5.wav</code> in the tempo dataset.  As you can see, the ACF (first plot) has many peaks at integer multiples of the first peak at index 76, while the DFT (second plot) has a peak at the first harmonic of its maximum at index 102.  If we warp the DFT (third plot) by takings its mirror image and compressing it towards the origin, then it lines up with the ACF, and we can take the point by point product, which gives us the combined plot on the bottom with the harmonics and subharmonics cancelled out.  We can now say confidently that the tempo occurs at a shift of 76 samples.  This occurred at a hop length of 512 samples at a sample rate of 44100.  The general equation for converting a shift <b>idx</b>
+											The image below shows this on <code>train5.wav</code> in the tempo dataset.  As you can see, the ACF (first plot) has many peaks at integer multiples of the first peak at index 76, while the DFT (second plot) has a peak at the first harmonic of its maximum at index 102.  If we warp the DFT (third plot) by takings its mirror image and compressing it towards the origin, then it lines up with the ACF, and we can take the point by point product, which gives us the combined plot on the bottom with the harmonics and subharmonics cancelled out.  We can now say confidently that the tempo occurs at a shift of 76 samples.  This occurred at a hop length of 512 samples at a sample rate of 44100.  The general equation for converting a shift <b>idx</b> into beats per minute (bpm) is:
 										</p>
 
 										<h3>
