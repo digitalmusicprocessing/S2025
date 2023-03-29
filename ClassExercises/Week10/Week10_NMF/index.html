@@ -1,0 +1,354 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 372: Digital Music Processing, Spring 2023</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../../index.html" class="logo"><strong>Ursinus CS 372: Digital Music Processing, Spring 2023</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Week 10: Nonnegative Matrix Factorization (NMF)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a></h3>
+									</header>
+
+									<div id="page-content">
+										<h3><a href = "https://github.com/ursinus-cs372-s2023/Week10_NMF.git">Click here</a> for code that goes with these notes</h3>
+
+										<h3>Nonnegative Matrix Factorization Theory</h3>
+										<p>
+											The goal of nonnegative matrix factorization (NMF) is to approximate a matrix 𝑉 as the product of two other matrices 𝑊 and 𝐻; that is to get as close as possible to the matrix equation 𝑉 =  𝑊𝐻 being true.  Solving this problem will allow us to <b>learn</b> spectrogram templates in 𝑊 and activations in 𝐻 whose product 𝑊𝐻 approximates a spectrogram 𝑉.  
+										</p>
+
+										<p>
+											The question itself, though, should already seem a little weird, because even if 𝑊, 𝐻, and 𝑉 are 1x1 matrices (i.e. ordinary nonnegative numbers), there can be infinitely many solutions.  For instance, if I ask you how you could multiply two numbers together to get the number 12, you could do the following:
+										</p>
+
+											<ul>
+												<li>1 x 12 = 12</li>
+												<li>2 x 6 = 12</li>
+												<li>3 x 4 = 12</li>
+												<li>2.4 x 5 = 12</li>
+												<li>...</li>
+
+											</ul>
+											
+											
+										<p>
+											But surprisingly, when we do this with matrices, sometimes just finding one factorization will be quite useful.  Crucially, though, we assume that all of the entries of 𝑊, 𝐻, and 𝑉 are <b>nonnegative</b>.  This is perfect for magnitude spectrograms, since they are nonnegative!  Furthermore, this constraint allows us to devise some simple <a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">iterative algorithms to solve NMF numerically in practice</a>.  There is some great theory in the above paper to show that these algorithms converge and are related to something else we'll be talking about when we get to neural nets: <b>gradient descent</b>.  
+										</p>
+
+										<p>
+											There is also other theory that characterizes probability distributions over the entries of the matrices we expect to get based on the different algorithms we choose (<a href = "https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.184.7402&rep=rep1&type=pdf">click here</a> to see a paper about this).  This is how we can characterize the solutions that we're more likely to get over a possibly infinite set of solutions.
+										</p>
+										
+										<HR>
+										<h4><a name = "euclidean">Formulation 1: Euclidean NMF</a></h4>
+										<p>
+											We seek a  𝑊  and an  𝐻  so that we minimize the <b>loss function</b> (or what you may have called the "objective" function in Math 111)
+										</p>
+
+
+										<div style="width:250px;">
+										
+											<h3> \[ L(W, H) = \sum_{i, j} (V[i, j]-WH[i, j])^2 \]</h3>
+										</div>
+
+										<ol>
+											<li>
+												First, randomly initialize  𝑊  and  𝐻  with nonnegative numbers
+											</li>
+											<li>
+												If  𝑉  is a  𝑀𝑥𝑁  matrix, and we choose a number  𝐾  which is the "rank" of our approximate factorization
+												<ul>
+													<li>𝑊  is a  𝑀𝑥𝐾  matrix</li>
+													<li>𝐻  is a  𝐾𝑥𝑁  matrix</li>
+													<li>𝑊<SUP>𝑇</SUP>  is called the "transpose" of  𝑊 ;it's simply switching the rows for the columns. It is a  𝐾𝑥𝑀  matrix</li>
+													<li>𝐻<SUP>𝑇</SUP>  would be a  𝑁𝑥𝐾</li>
+													
+												</ul>
+											</li>
+										</ol>
+
+										
+
+										
+
+
+										<p>
+											To solve this, you'll follow the <b>multiplicative update rules</b> below in sequence; that is, swap back and forth between the first step and the second step in a loop.
+										</p>
+										<div style="width:300px;">
+											<uo>
+												<li>
+													<h3>
+														\[ H[i, j] = H[i, j] \frac{ (W^TV)[i, j] }{(W^TWH)[i, j]} \]
+													</h3>
+												</li>
+												<li>
+													<h3>
+														\[ W[i, j] = W[i, j] \frac{ (VH^T)[i, j] }{(WHH^T)[i, j]} \]
+													</h3>
+												</li>
+											</ol>
+										</div>
+											
+										<p>
+											The <a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">original paper</a> that presented this algorithm proved that the loss function only decreases at every iteration.
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: python"><![CDATA[
+											import numpy as np
+											M = 100
+											N = 1000
+											K = 10
+											np.random.seed(0) # For repeatable results
+											V = np.random.rand(M, N)
+											# Initialize two random matrices to start with
+											W = np.random.rand(M, K)
+											H = np.random.rand(K, N)
+										</script>  
+
+										
+
+										<HR>
+											<h4><a name = "kl">Formulation 2: Kullback-Liebler Divergence NMF</a></h4>
+
+											<p>
+												There are other loss functions we can use other than the sum of the squared differences of the entries of <b>V</b> and <b>WxH</b>.  One of them is called the "Kullback-Liebler" loss, and it's defined as follows
+											</p>
+
+											<div style="width:200px">
+
+												<h3>
+													\[  \sum_{i, j} \left( V[i, j] \left( \log \frac{V[i, j]}{WH[i, j]} \right) - V[i, j] + WH[i, j] \right) \]
+												</h3>
+
+											</div>
+
+
+											<p>
+												Notice how, like the Euclidean loss, this loss is 0 if <b>V = WxH</b>.  As it turns out, this loss will decrease under the following update rules
+											</p>
+
+											<div style="width:200px">
+											
+											<h3>
+												<ul>
+													<li>
+														\[ V_L[i, j] = V[i, j] / (WH)[i, j] \]
+													</li>
+													<li>
+														\[ H[i, j] = H[i, j] \left( \frac{  (W^T V_L)[i, j] }{{\sum_a}W[a, j]} \right) \]
+													</li>
+													<li>
+														\[ V_L[i, j] = V[i, j] / (WH)[i, j] \]
+													</li>
+													<li>
+														\[  W[i, j] = W[i, j] \left( \frac{  (V_L H^T)[i, j] }{{\sum_b}H[i, b]} \right) \]
+													</li>
+												</ul>
+
+
+											</h3>
+
+
+										</div>
+
+										<p>
+											Below are animations of the process on spectrograms for different numbers of components:
+										</p>
+
+										<h3>K = 3</h3>
+										<img src = "NMFKL3.gif" width="100%">
+
+										<h3>K = 5</h3>
+										<img src = "NMFKL5.gif" width="100%">
+
+
+
+                                    
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../../index.html#overview">Overview</a></li>
+												<li><a href = "../../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../../index.html#homework">Homework</a></li>
+												<li><a href = "../../../index.html#grading">Grading</a></li>
+												<li><a href = "../../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../../index.html#participation">Participation</a></li>
+												<li><a href = "../../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../../Software/index.html">Software</a></li>
+										<li><a href = "../../../webaudio-pianoroll/index.html">Piano Roll Editor</a></li>
+										<li><a href = "../../../index.html#schedule">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+												</li>
+												<li><a href = "../../../Assignments/HW3_Vocoders">HW3: Spectacular Spectrograms</a>
+												</li>
+												<li><a href = "../../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<!--
+												<li><a href = "../../../Assignments/HW5_VersionID">HW5: Audio Version Identification</a></li>
+												<li><a href = "../../../Assignments/HW6_LetItBee">HW6: Let It Bee</a>
+													<ul>
+														<li>
+															<a href = "../../../Assignments/HW6_LetItBee/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												
+												</li>!-->
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "../../../ClassExercises/Week1/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+												</li>
+												<li><a href = "../../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../ClassExercises/Week6/2DArrays/index.html">Week 6: 2D Arrays And Spectrograms</a></li>
+												<li><a href = "../../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../../ClassExercises/BeattrackNotes">Week 9: Notes on Dynamic Programming Beat Tracking</a></li>
+												<li><a href = "../../../ClassExercises/Week9/Week9_MFCC">Week 9: Mel-Frequency Cepstral Coefficients (MFCCs)</a></li>
+												<li><a href = "https://github.com/ursinus-cs372-s2023/pyshazam">Week 9: Python Implementation of Shazam</a></li>
+												<li><a href = "https://github.com/ursinus-cs372-s2023/Week10_HPSS/tree/classcode">Week 10: Harmonic/Percussive Source Separation with Median Filters</a></li>
+												<li><a href = "../../../ClassExercises/Week10/Week10_NMF">Week 10: Nonnegative Matrix Factorization for Demixing</a></li>
+												
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "../../../../Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "../../../../Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "../../../../Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "../../../../Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "../../../../Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "../../../../Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "../../../../Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../../../Modules/Module8/Video1">Module 8: Discovering The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "../../../../Modules/Module10/Video1">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties, Inverse DFT And Fast Risset</a></li>
+												<li><a href = "../../../../Modules/Module11/Video1">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "../../../../Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "../../../../Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "../../../../Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "../../../../Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "../../../../Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "../../../../Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+												<!--
+												<li><a href = "../../../../Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												!-->
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../../assets/js/jquery.min.js"></script>
+			<script src="../../../assets/js/skel.min.js"></script>
+			<script src="../../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../../assets/js/main.js"></script>
+<!-- End Scripts -->
