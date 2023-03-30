@@ -121,7 +121,7 @@ Harmonic-Percussive Source Separation, Matrix Multiplication for Audio Activatio
 LECTURE
 Source Separation via Nonnegative matrix factorization
 
-<ul><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
+<ul><li><a href = "ClassExercises/Week10/Week10_NMF">Class Notes on NMF</a></li><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
 LECTURE
 Let It Bee, Autotuners
 
