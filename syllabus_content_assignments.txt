@@ -73,6 +73,18 @@ HW3 Due
 <a href = "../Modules/Module16/Video4">Module 16: Exercise 4 Mel Spectrogram</a> Due Before Class
 
 2023-03-20
+<a href = "../Modules/Module18/Video0">Module 18: Matrix Activations for Spectral Decompositions</a> Due Before Class
+
+2023-03-29
 HW4 Due
 
 2023-04-03
+<HR><a href = "Assignments/HW5_LetItBee">HW5: Let It Bee</a> Out
+
+2023-04-03
+HW5 Due
+
+2023-04-17
+HW6: Differentiable Digital Signal Processing Out
+
+2023-04-21

@@ -119,9 +119,13 @@ Harmonic-Percussive Source Separation, Matrix Multiplication for Audio Activatio
 
 <ul><li><a href = "../Modules/Module18/Video0">Class notes on HPSS</a></li><li><a href = "https://www.researchgate.net/profile/Derry-Fitzgerald/publication/254583990_HarmonicPercussive_Separation_using_Median_Filtering/links/00b495396ef03235af000000/Harmonic-Percussive-Separation-using-Median-Filtering.pdf">FitzGerald 2010 Paper</a></li></ul>
 LECTURE
-Source Separation via Nonnegative matrix factorization
+Source Separation via Nonnegative matrix factorization (NMF)
 
 <ul><li><a href = "ClassExercises/Week10/Week10_NMF">Class Notes on NMF</a></li><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
+LECTURE
+Intermezzo: Dynamic Programming Beat Tracking
+
+<ul><li><a href = "ClassExercises/BeattrackNotes">Class notes on dynamic programming beat tracking</a></li></ul>
 LECTURE
 Let It Bee, Autotuners
 
@@ -129,13 +133,9 @@ Let It Bee, Autotuners
 LECTURE
 Self-Similarity in Audio, Spectral Clustering
 
-
+<ul><li><a href = "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=a602b8d972f68b100350c5dc54681cc44f31493a">Mcfee 2014 paper</a></li><li><a href = "https://arxiv.org/pdf/1902.01023.pdf">Tralie 2019 Paper</a></li></ul>
 LECTURE
 Cross-Similarity Matrices, Dynamic Time Warping
-
-
-LECTURE
-Dynamic Time Warping Continued
 
 
 SECTION

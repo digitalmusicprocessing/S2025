@@ -1,0 +1,532 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 372: Digital Music Processing, Spring 2023</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Ursinus CS 372: Digital Music Processing, Spring 2023</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Assignment 5: Let It Bee (40 Points)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
+									</header>
+
+									<div id="page-content">
+
+										<ul>
+											<li><a href = "#overview">Background/Logistics</a>
+												<ul>
+													<li><a href = "#objectives">Learning Objectives</a></li>
+													<li><a href = "#submit">What To Submit</a></li>
+												</ul>
+											</li>
+											<li><a href = "#programming">Programming Tasks</a>
+												<ul>
+													<li><a href = "#basics">Step 1: Basic Setup (10 Points)</a></li>
+													<li><a href = "#griffinlim">Step 2: Griffin Lim Phase Improvement (5 Points)</a></li>
+													<li><a href = "#repeatactivations">Step 3: Avoiding Repeated Activations (6 Points)</a></li>
+													<li><a href = "#simulactivations">Step 4: Restricting Simultaneous Activations (7 Points)</a></li>
+													<li><a href = "#diagonal">Step 5: Diagonal Enhancement (7 Points)</a></li>
+													<li><a href = "#statement">Musical Statement (5 Points)</a></li>
+												</ul>
+											</li>
+											
+										</ul>
+
+										<h2><a name = "overview">Background / Logistics</a></h2>
+
+										<p>
+											We saw in class that it is possible to use <a href = "../../ClassExercises/Week10/Week10_NMF/">Nonnegative Matrix Factorization</a> to decompose an audio clip into a set of <b>K</b> sonic source templates stored in an <b>win_length x K</b> matrix <b>W</b>, as well as a matrix of activations over time for each of these sources stored in a <b>K x nwin</b> matrix <b>H</b> so that the matrix multiplication <b>WH</b> approximates an absolute magnitude spectrogram <b>V</b>.  The main application we focused on was "unmixing," or separating an audio track into its different instrument components.  This is also sometimes referred to as the "cocktail party problem," since we're trying to filter out one sound from the superposition of many, just like one might try to focus on the speech coming from the person in front of them in the midst of a cacophony of sound at a cocktail party.  
+										</p>
+										<p>
+											In addition to audio unmixing and learning musical instrument templates from audio, the mathematics that were developed for NMF can also be used to create a novel instrument for musical expression.  In addition to being given a spectrogram <b>V</b>, we are also the <b>W</b> of templates, <b>which remains fixed</b>, and our job is only to learn <b>H</b>.  In this way, we can think of the problem not as one of unmixing, but of learning how to activate a set of templates we're given to best match a target <b>V</b>.  This is referred to as "musaicing" in <a href = "https://www.audiolabs-erlangen.de/content/resources/MIR/00-2015-ISMIR-LetItBee/2015_DriedgerPM_AudioMosaicingNMF_ISMIR.pdf">this paper</a>, and you will be following that paper in the assignment.  The musaicing technique in that paper is referred to as the "Let It Bee" technique, and it earned its name by showing how using <b>V</b> as the spectrogram for a clip of <a href = "https://www.youtube.com/watch?v=QDYfEBY9NM4">Let It Be</a> from The Beatles, and inputting <b>W</b> as the spectrogram of a bunch of bees buzzing
+										</p>
+
+										<h4>
+											V: Let It Be Spectrogram
+										</h4>
+										<audio controls>
+											<source src="Beatles_LetItBe.wav" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										
+										<h4>
+											W: Bees Buzzing Spectrogram
+										</h4>
+										<audio controls>
+											<source src="Bees_Buzzing.wav" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<h4>
+											Learning H and inverting W*H: Let It Bee
+										</h4>
+										<audio controls>
+											<source src="Results/result_r3_p3_c6.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											In this assignment, you will implement the "Let It Bee" pipeline step by step and then use it to create musical statements.
+										</p>
+
+
+                                        <p>
+                                            <h3><a name = "objectives">Learning Objectives</a></h3>
+                                            <ul>
+												<li>Practice numpy arrays, methods, and for loops in the service of musical applications</li>
+												<li>Modify algorithms for nonnegative matrix factorization</li>
+												<li>Programmatically promote temporal continuity in audio reconstructions</li>
+												<li>Compose music in a cutting edge style</li>
+                                            </ul>
+										</p>
+										
+										<h3><a name = "submit">What To Submit</a></h3>
+
+										<p>                                       
+                                            When you are finished, submit any python files an notebooks you created to canvas, as well as an audio file for your musical statement and all of the audio files that are needed to run your code used to create that statement.  Finally, indicate a title for your musical statement, and name/pseudonym you'd like to use in the music gallery on our class web site, and <b>indicate the names of any buddies you worked with</b>.
+										</p>
+
+
+										
+                                        
+										<HR>
+										<h2><a name = "programming">Programming Tasks</a></h2>
+										
+											<p>There is no starter code for this assignment, and you will have complete control over the code!  You may find it helpful to look back at the <a href = "../../ClassExercises/Week10/Week10_NMF">code/notes from class</a> on NMF.  I will do my best to explain the steps below, but you should also refer to the <a href = "https://www.audiolabs-erlangen.de/content/resources/MIR/00-2015-ISMIR-LetItBee/2015_DriedgerPM_AudioMosaicingNMF_ISMIR.pdf">original "Let It Bee" paper</a> for tips.</p>
+
+											<h4>Data</h4>
+											<ul>
+												<li><a href = "Bees_Buzzing.wav">Click here</a> to download a clip of the bees buzzing</li>
+												<li>
+													<a href = "Beatles_LetItBe.wav">Click here</a> to download a clip from the Beatles.
+												</li>
+											</ul>
+
+										<h2><a name = "basics">Step 1: Basic Setup (10 Points)</a></h2>
+
+										<h4>Your Task</h4>
+										<p>
+											As a first working prototype for musaicing, create a method that performs the following steps:
+											
+											<ol>
+												<li>
+													Take the STFT of templates audio (e.g. bees clip) using <code><a href = "https://librosa.org/doc/main/generated/librosa.stft.html">librosa.stft</a></code> and call this <code>WComplex</code>
+												</li>
+												<li>
+													Take the magnitude of the above and call it <code>W</code>
+												</li>
+												<li>
+													Compute the magnitude of the STFT of the target clip (e.g. Beatles clip) as <code>V</code>
+												</li>
+												<li>
+													<b>Keeping <code>W</code> fixed</b>, perform <b>L=50</b> iterations of <a href = "../../ClassExercises/Week10/Week10_NMF/index.html#kl">Kullback-Liebler Divergence NMF</a> to update an <code>H</code>.  This is the meat of the musaicing method to estimate how to activate columns of <code>W</code> (the bees buzzing) to best approximate columns of <code>V</code> (The Beatles)
+												</li>
+												<li>
+													Multipy <code>WComplex</code> by <code>H</code> to create the non-redundant spectrogram <code>S</code> for the musaic
+												</li>
+												<li>
+													Invert <code>S</code> using <code><a href = "https://librosa.org/doc/main/generated/librosa.istft.html">librosa.istft</a></code> to get your audio samples back in the time domain that you can listen to
+												</li>
+											</ol> 
+										</p>
+
+										<p>
+											The code below shows how you might set this up in a notebook:
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											win_length = 2048
+											hop_length = 512
+											L = 50 # Number of iterations
+											y1, sr = librosa.load("Beatles_LetItBe.wav")
+											S = librosa.stft(y1, win_length=win_length, hop_length=hop_length)
+											y2, sr = librosa.load("Bees_Buzzing.wav")
+											WComplex = librosa.stft(y2, win_length=win_length, hop_length=hop_length)
+											
+											## TODO: Create the musaic
+
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											The result is as follows.
+										</p>
+										<p>
+											<audio controls>
+												<source src="Results/initial.mp3" type="audio/mpeg">
+											  Your browser does not support the audio element.
+											</audio> 
+										</p>
+
+										<p>
+											This leaves a lot to be desired, so we will be improving it step by step in the assignment.  
+										
+										</p>
+
+										
+										<h2><a name = "griffinlim">Step 2: Griffin Lim Phase Improvement (5 Points)</a></h2>
+
+										<p>
+											One problem with a simple nonnegative matrix factorization for musaicing is that each window is treated independently in the objective function.  Furthermore, the activations are only learned for the magnitudes <code>W</code>, and we're reconstructing a sound with the complex STFT <code>WComplex</code>, which includes phases that were completely ignored when learning <code>H</code>.  To improve phase continuity from one window to the next, we can perform several iterations of the <a href = "../HW3_Vocoders/index.html#griffinlim">Griffin Lim</a> algorithm on the spectrogram <code>S = WComplex.dot(H)</code> before returning the audio, rather than just doing a straight inverse STFT.
+										</p>
+
+										<h4>Your Task</h4>
+										<p>
+											Look back at what you did on <a href = "../HW3_Vocoders/index.html#griffinlim">assignment 3</a>, and use similar code with <code><a href = "https://librosa.org/doc/main/generated/librosa.stft.html">librosa.stft</a></code> and <code><a href = "https://librosa.org/doc/main/generated/librosa.istft.html">librosa.istft</a></code> to perform 10 iterations of Griffin-Lim before doing the final inverse STFT.  Once you've done this, the result will improve slightly, as shown below
+										</p>
+										<audio controls>
+											<source src="Results/gl.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										<p></p>
+										
+
+										<hr><h2><a name = "repeatactivations">Step 3: Avoiding Repeated Activations (6 Points)</a></h2>
+										<p>
+											One of the issues with the above sound is we hear a "jitter" or "echo" that occurs when the same source window is activated multiple time instants in a row.  To show an isolated example of this, here's what we get when we do nonnegative matrix factorization on "When Doves Cry" and activate only the first component for 20 frames
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											H = np.zeros((K, 20))
+											H[0, :] = 1 # First component activated at all times
+											# All others are 0
+											y = griffinLimInverse(W.dot(H2), win_length, hop_length)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<p>
+											The window by itself sounds like this
+										</p>
+
+										<audio controls>
+											<source src="Results/prince_instrument.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											And the repeated activations of it from the code above sound like this
+										</p>
+
+										<audio controls>
+											<source src="Results/prince_instrument_repeated.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										<p></p>
+
+										<h4>Your Task</h4>
+
+										<p>
+											Make sure that there aren't any chunks of similar values anywhere in a particular row of <code>H</code> <i>during each iteration</i>.  To do this, preserve all values that are the maximum of every value in a window of length <code>r</code> around them, and "shrink" those values that aren't local maxes some factor.  In particular, after the KL iteration, do the following update to <code>H</code>:
+										</p>
+
+										<h3>
+											\[ H[i, j] = \left\{ \begin{array}{cc} H[i, j] & H[i, j] == \max(H[i, j-r:j+r]) \\  \left(1 - \frac{n}{L} \right) H[i, j] & \text{otherwise} \end{array} \right\} \]
+										</h3>
+
+										<p>
+											where <code>n</code> is the iteration number and <code>L</code> is the total number of iterations, and <code>r</code> is half of the length of a horizontal window in which to look for a max for every element of <code>H</code>.  In other words, as time goes on, make the horizontal local maxes stand out more and more, and by the end, the surrounding elements should be 0.  If this works properly, you should hear the following for <code>r=3</code>:
+										</p>
+										
+
+										<audio controls>
+											<source src="Results/repeated3.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p></p>
+										<p>And here's an example with <code>r = 7</code>:</p>
+
+										<audio controls>
+											<source src="Results/repeated7.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										
+										<p></p>
+
+
+										<h4>Hint</h4>
+										<p>
+											You might want to make use of the method <a href = "https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.maximum_filter.html">scipy.ndimage.filters.maximum_filter</a>, which will return a matrix where every pixel is replaced by its max in some horizontal window.  We've used this trick before with <a href = "../HW3_Vocoders/index.html#beepytunes">beepy tunes</a> and <a href = "../HW4_RhythmAnalysis/index.html#anf">superflux</a>. 
+										</p>
+
+										<hr><h2><a name = "simulactivations">Step 4: Restricting Simultaneous Activations (7 Points)</a></h2>
+										<p>
+											In addition to constraints that we put in the rows of <code>H</code>, we can also put a <a href = "http://ufldl.stanford.edu/tutorial/unsupervised/SparseCoding/">sparsity</a> constraint on the columns.  This is because we want to limit the number of possible sound grains that are taken from the source at any point in time.  If we take too many sounds at once, then they may mix together to form a new timbre that is different from the original timbre of the sources (perhaps too many bees together really do sound like a piano).  
+										</p>
+
+										<h4>Your Task</h4>
+										<p>
+											To follow conventions in the paper, let's say that we want at most <code>p</code> simultaneous activations at any point in time.  Ensure that that each element is within the <code>p</code> largest elements in its column of <code>H</code>.  If it is smaller than that, then shrink it by a factor of <b>(1-n/L)</b>, just as with the repeated activations.  Add code that does this directly after the repeated activations code.
+										</p>
+
+										<p>
+											Here's an example where we allow 10 simultaneous activations
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											y = create_musaic(S, WComplex, win_length, hop_length, L=50, r=3, p=10)
+											ipd.Audio(y, rate=sr)
+										</script>
+										
+
+										<audio controls>
+											<source src="Results/gl_r3_p10.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											Here's an example where we allow only 3 simultaneous activations
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											y = create_musaic(S, WComplex, win_length, hop_length, L=50, r=3, p=3)
+											ipd.Audio(y, rate=sr)
+										</script>
+										
+
+										<audio controls>
+											<source src="Results/gl_r3_p3.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<hr><h2><a name = "diagonal">Step 5: Diagonal Enhancement (7 Points)</a></h2>
+
+										<p>
+											One last observation we make is that the window lengths are quite short relative to the length of natural sounds that can be found in the sources.  For example, at a sample rate of 22050 and for a window length of 2048, each window only captures about 100 milliseconds of audio.  As we saw in <a href = "../HW2_DigitalInstruments">the digital instruments assignment</a>, the attack/sustain/decay/release can take longer than that to fully evolve a timbre, so we might like to encourage the algorithm to choose longer chunks from the source. 
+										</p>
+										<p>
+											Since the sound templates in <b>W</b> happened to be obtained from the windowed spectrogram of source audio, adjacent columns of <b>W</b> store spectrogram magnitudes of adjacent windows from the source audio.  This means that adjacent rows in <b>H</b> store activations of time-adjacent source elements.  Therefore, we can encourage the algorithm to pick contiguous sequences of windows, and hence longer sounds from the source, by enhancing diagonal lines in the <b>H</b> matrix according to the following equation, where <b>c</b> refers to half of the length of the window in which diagonal elements are summed
+										</p>
+
+										<h3>
+											\[ H[i, j] = \sum_{k = -c}^{c} H[i+k, j+k] \]
+										</h3>
+
+										<h4>Your Task</h4>
+										<p>
+											Implement the above equation in your code after restricting simultaneous activations.  Be careful not to go out of bounds.
+										</p>
+
+										<p>
+											Below are a few examples 
+										</p>
+
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											y = create_musaic(V, W, win_length, hop_length, L=50, r=3, p=3, c=6)
+											ipd.Audio(y, rate=sr)
+										</script>
+										
+
+										<audio controls>
+											<source src="Results/result_r3_p3_c6.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+                                    
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											y = create_musaic(V, W, win_length, hop_length, L=50, r=3, p=10, c=3)
+											ipd.Audio(y, rate=sr)
+										</script>
+										
+
+										<audio controls>
+											<source src="Results/result_r3_p10_c3.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											y = create_musaic(V, W, win_length, hop_length, L=50, r=3, p=10, c=6)
+											ipd.Audio(y, rate=sr)
+										</script>
+										
+
+										<audio controls>
+											<source src="Results/result_r3_p10_c6.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										
+										<hr><h2><a name = "statement">Musical Statement (5 Points)</a></h2>
+										<p>
+											Now that you've created the musaicing system, use it to create your own novel compositions!  Come up with some sound sources and a target, and go to town.  Be sure to tweak the parameters as necessary to get the best quality sounds.  I can't wait to hear what you come up with!
+										</p>
+
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../index.html#overview">Overview</a></li>
+												<li><a href = "../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../index.html#homework">Homework</a></li>
+												<li><a href = "../../index.html#grading">Grading</a></li>
+												<li><a href = "../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../index.html#participation">Participation</a></li>
+												<li><a href = "../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../Software/index.html">Software</a></li>
+										<li><a href = "../../webaudio-pianoroll/index.html">Piano Roll Editor</a></li>
+										<li><a href = "../../index.html#schedule">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+												</li>
+												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Spectacular Spectrograms</a>
+												</li>
+												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../Assignments/HW5_LetItBee">HW5: Let It Bee</a>
+												</li>
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "../../ClassExercises/Week1/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+												</li>
+												<li><a href = "../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../ClassExercises/Week6/2DArrays/index.html">Week 6: 2D Arrays And Spectrograms</a></li>
+												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../ClassExercises/BeattrackNotes">Week 9: Notes on Dynamic Programming Beat Tracking</a></li>
+												<li><a href = "../../ClassExercises/Week9/Week9_MFCC">Week 9: Mel-Frequency Cepstral Coefficients (MFCCs)</a></li>
+												<li><a href = "https://github.com/ursinus-cs372-s2023/pyshazam">Week 9: Python Implementation of Shazam</a></li>
+												<li><a href = "https://github.com/ursinus-cs372-s2023/Week10_HPSS/tree/classcode">Week 10: Harmonic/Percussive Source Separation with Median Filters</a></li>
+												<li><a href = "../../ClassExercises/Week10/Week10_NMF">Week 10: Nonnegative Matrix Factorization for Demixing</a></li>
+												
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "../../../Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "../../../Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "../../../Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "../../../Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "../../../Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "../../../Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "../../../Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../../Modules/Module8/Video1">Module 8: Discovering The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "../../../Modules/Module10/Video1">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties, Inverse DFT And Fast Risset</a></li>
+												<li><a href = "../../../Modules/Module11/Video1">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "../../../Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "../../../Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "../../../Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "../../../Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "../../../Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "../../../Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+												<!--
+												<li><a href = "../../../Modules/Module17/Video0">Module 17: Cross-Similarity, Warping Paths, Dynamic Time Warping</a></li>
+												!-->
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>
