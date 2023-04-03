@@ -61,3 +61,6 @@
 [submodule "ClassExercises/Week10/Week10_NMF/Week10_NMF"]
 	path = ClassExercises/Week10/Week10_NMF/Week10_NMF
 	url = https://github.com/ursinus-cs372-s2023/Week10_NMF.git
+[submodule "ClassExercises/Week11/Week11_Autotuner"]
+	path = ClassExercises/Week11/Week11_Autotuner
+	url = https://github.com/ursinus-cs372-s2023/Week11_Autotuner.git

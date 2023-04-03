@@ -129,7 +129,7 @@ Intermezzo: Dynamic Programming Beat Tracking
 LECTURE
 Let It Bee, Autotuners
 
-
+<ul><li><a href = "ClassExercises/Week11">Class notes on autotuners</a></li><li><a href = "https://www.youtube.com/watch?v=879vLYX02U8">Video on autotuners</a></li></ul>
 LECTURE
 Self-Similarity in Audio, Spectral Clustering
 
