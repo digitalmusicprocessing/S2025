@@ -82,6 +82,9 @@ HW4 Due
 <HR><a href = "Assignments/HW5_LetItBee">HW5: Let It Bee</a> Out
 
 2023-04-03
+<a href = "../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a> Due Before Class
+
+2023-04-05
 HW5 Due
 
 2023-04-17
