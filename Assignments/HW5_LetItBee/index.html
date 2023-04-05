@@ -41,7 +41,7 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-                                        <h2>Assignment 5: Let It Bee (40 Points)</h2>
+                                        <h2>Assignment 5: Let It Bee (45 Points)</h2>
                                         <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
 									</header>
 
@@ -60,7 +60,7 @@
 													<li><a href = "#griffinlim">Step 2: Griffin Lim Phase Improvement (5 Points)</a></li>
 													<li><a href = "#repeatactivations">Step 3: Avoiding Repeated Activations (6 Points)</a></li>
 													<li><a href = "#simulactivations">Step 4: Restricting Simultaneous Activations (7 Points)</a></li>
-													<li><a href = "#diagonal">Step 5: Diagonal Enhancement (7 Points)</a></li>
+													<li><a href = "#diagonal">Step 5: Diagonal Enhancement (12 Points)</a></li>
 													<li><a href = "#statement">Musical Statement (5 Points)</a></li>
 												</ul>
 											</li>
@@ -323,7 +323,7 @@
 										  Your browser does not support the audio element.
 										</audio> 
 
-										<hr><h2><a name = "diagonal">Step 5: Diagonal Enhancement (7 Points)</a></h2>
+										<hr><h2><a name = "diagonal">Step 5: Diagonal Enhancement (12 Points)</a></h2>
 
 										<p>
 											One last observation we make is that the window lengths are quite short relative to the length of natural sounds that can be found in the sources.  For example, at a sample rate of 22050 and for a window length of 2048, each window only captures about 100 milliseconds of audio.  As we saw in <a href = "../HW2_DigitalInstruments">the digital instruments assignment</a>, the attack/sustain/decay/release can take longer than that to fully evolve a timbre, so we might like to encourage the algorithm to choose longer chunks from the source. 
@@ -339,6 +339,10 @@
 										<h4>Your Task</h4>
 										<p>
 											Implement the above equation in your code after restricting simultaneous activations.  Be careful not to go out of bounds.
+										</p>
+
+										<p>
+											<b>NOTE:</b> For full credit on this, you should avoid a triply-nested loop, which takes time proportional to the size of <b>H</b> times <b>2c-1</b>.  Instead, your method should take time proportional to the number of elements of <b>H</b> only.  You can accomplish this by using cumulative sums.  You may want to refer back to how we did this to <a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">add up zero crossings</a> in a window.
 										</p>
 
 										<p>

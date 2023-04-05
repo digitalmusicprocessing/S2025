@@ -64,3 +64,6 @@
 [submodule "ClassExercises/Week11/Week11_Autotuner"]
 	path = ClassExercises/Week11/Week11_Autotuner
 	url = https://github.com/ursinus-cs372-s2023/Week11_Autotuner.git
+[submodule "ClassExercises/Week11/Week11_SSM/Week11_SSM"]
+	path = ClassExercises/Week11/Week11_SSM/Week11_SSM
+	url = https://github.com/ursinus-cs372-s2023/Week11_SSM.git
