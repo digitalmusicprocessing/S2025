@@ -44,7 +44,7 @@ Comb Filters
 
 SECTION
 <a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a>
-We are now ready to introduce one of the most important tools in this class: the Discrete Fourier Transform (DFT).  As it turns out, every possible sound can be represented as a sum of sines and cosines at different frequencies!  If we examine the amplitudes of these sines/cosines instead of the audio samples directly, this can give us a lot more insight into what's actually going on.  This is because, as we observed last semester, we perceive anything "periodic" (that repeats itself in time) as a pitch, and sines/cosines are the fudamental building blocks of any periodic signal.  Hence, the DFT gives us numbers that are much closer to what we perceive about the audio.
+We are now ready to introduce one of the most important tools in this class: the Discrete Fourier Transform (DFT).  As it turns out, every possible sound can be represented as a sum of sines and cosines at different frequencies!  If we examine the amplitudes of these sines/cosines instead of the audio samples directly, this can give us a lot more insight into what's actually going on.  This is because, as we observed last semester, we perceive anything "periodic" (that repeats itself in time) as a pitch, and sines/cosines are the fudamental building blocks of any periodic signal.  Hence, the DFT describes audio with numbers that are much closer to what we perceive about the audio than the raw audio samples.
 
 LECTURE
 Discovering The Discrete Fourier Transform (DFT)
@@ -133,21 +133,21 @@ Let It Bee, Autotuners
 LECTURE
 Self-Similarity in Audio, Spectral Clustering
 
-<ul><li><a href = "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=a602b8d972f68b100350c5dc54681cc44f31493a">Mcfee 2014 paper</a></li><li><a href = "https://arxiv.org/pdf/1902.01023.pdf">Tralie 2019 Paper</a></li></ul>
+<ul><li><a href = "https://dl.acm.org/doi/pdf/10.1145/319463.319472">Foote 1999 Paper: Visualizing music and audio using self-similarity</a></a></li><li><a href = "https://en.wikipedia.org/wiki/Arthur_Lintgen">Arthur Lintgen bio</a></li><li><a href = "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=a602b8d972f68b100350c5dc54681cc44f31493a">Mcfee 2014 paper</a></li><li><a href = "https://arxiv.org/pdf/1902.01023.pdf">Tralie 2019 Paper</a></li></ul>
 LECTURE
 Cross-Similarity Matrices, Dynamic Time Warping
 
 
 SECTION
-<a name = "neuralnets">Unit 4: Neural Networks for Digital Music Processing</a>
+<a name = "neuralnets">Unit 4: Data Driven Digital Music Processing</a>
+<p>In the prior unit, we built on spectrograms to do a variety of tasks using <b>hand-crafted models</b> to pick up on different audio attributes.  In this unit, we will talk about modern methods for <b>data-driven</b> audio analysis.  Rather than going in with too many preconceived notions about what we need to do to pick up on particular audio attributes, we will work to collect labeled data that captures what we want the computer to be able to do.  For instance, we will gather a large collection of notes being played on bass guitar, and we will learn how to synthesize bass notes from this data.  We will also discuss how to do beat tracking by learning from a large collection of audio clips where the beats are annotated.</p><p>In general, the approach of learning to generalize from labeled data examples is known as <a href = "https://www.ibm.com/topics/supervised-learning">supervised learning</a>.  Though there are a variety of techniques to do this, we will focus primarily on <b>deep neural networks</b>, as they have shown the most promise for audio analysis and synthesis over the past few years.  As such, this is the most "cutting edge" unit in the course.</p>
+
+LECTURE
+Logistic Regression, Introduction To pytorch
 
 
 LECTURE
-Introduction To Neural Networks
-
-
-LECTURE
-Deep Learning
+Neural Networks And Deep Learning
 
 
 LECTURE
@@ -163,18 +163,18 @@ Differentiable Digital Signal Processing
 
 <ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li></ul>
 LECTURE
-Wave-U-Net for Source Separation
-
-<ul><li><a href = "https://arxiv.org/pdf/1806.03185.pdf">Wave-U-Net Paper</a></li></ul>
-LECTURE
 Deep beat tracking
 
 <ul><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
 LECTURE
-Machine Learning Meets FM Synthesis
+Wave-U-Net for Source Separation
 
-
+<ul><li><a href = "https://arxiv.org/pdf/1806.03185.pdf">Wave-U-Net Paper</a></li></ul>
 LECTURE
 Diffusion for Audio Synthesis
 
+LECTURE
+Deep version identification
+
+<ul><li><a href = "https://github.com/furkanyesiler/move">Yeslier 2020</a>: Musically-Motivated Version Embeddings</a></li></ul>
 
