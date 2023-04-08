@@ -133,29 +133,33 @@ Let It Bee, Autotuners
 LECTURE
 Self-Similarity in Audio, Spectral Clustering
 
-<ul><li><a href = "https://dl.acm.org/doi/pdf/10.1145/319463.319472">Foote 1999 Paper: Visualizing music and audio using self-similarity</a></a></li><li><a href = "https://en.wikipedia.org/wiki/Arthur_Lintgen">Arthur Lintgen bio</a></li><li><a href = "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=a602b8d972f68b100350c5dc54681cc44f31493a">Mcfee 2014 paper</a></li><li><a href = "https://arxiv.org/pdf/1902.01023.pdf">Tralie 2019 Paper</a></li></ul>
+<ul><li><a href = "https://dl.acm.org/doi/pdf/10.1145/319463.319472">Foote 1999 Paper: Visualizing music and audio using self-similarity</a></a></li><li><a href = "https://en.wikipedia.org/wiki/Arthur_Lintgen">Arthur Lintgen bio</a></li><li><a href = "https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=a602b8d972f68b100350c5dc54681cc44f31493a">Mcfee 2014 paper</a></li><li><a href = "https://arxiv.org/pdf/1902.01023.pdf">Tralie 2019 Paper</a></li><li><a href = "http://www.covers1000.net/GraphDitty/">Graph Ditty</a></li></ul>
 LECTURE
-Cross-Similarity Matrices, Dynamic Time Warping
+Cross-Similarity Matrices, Beat-Synchronous Version Alignment
+
+<ul><li><a href = "https://www.covers1000.net/demo.html">Cover Song Alignment Demo</a></li></ul>
+LECTURE
+Dynamic Time Warping
 
 
 SECTION
 <a name = "neuralnets">Unit 4: Data Driven Digital Music Processing</a>
-<p>In the prior unit, we built on spectrograms to do a variety of tasks using <b>hand-crafted models</b> to pick up on different audio attributes.  In this unit, we will talk about modern methods for <b>data-driven</b> audio analysis.  Rather than going in with too many preconceived notions about what we need to do to pick up on particular audio attributes, we will work to collect labeled data that captures what we want the computer to be able to do.  For instance, we will gather a large collection of notes being played on bass guitar, and we will learn how to synthesize bass notes from this data.  We will also discuss how to do beat tracking by learning from a large collection of audio clips where the beats are annotated.</p><p>In general, the approach of learning to generalize from labeled data examples is known as <a href = "https://www.ibm.com/topics/supervised-learning">supervised learning</a>.  Though there are a variety of techniques to do this, we will focus primarily on <b>deep neural networks</b>, as they have shown the most promise for audio analysis and synthesis over the past few years.  As such, this is the most "cutting edge" unit in the course.</p>
+<p>In the prior unit, we built on spectrograms to do a variety of tasks using <b>hand-crafted models</b> to pick up on different audio attributes.  In this unit, we will talk about modern methods for <b>data-driven</b> audio analysis.  Rather than going in with too many preconceived notions about what we need to do to pick up on particular audio attributes, we will work to collect labeled data that captures what we want the computer to be able to do, and then we will let the computer tell us what patterns exist in the data that allow us to do certain tasks.  For instance, we will gather a large collection of notes being played on bass guitar, and we will learn how to synthesize bass notes from this data.  We will also discuss how to do beat tracking by learning from a large collection of audio clips where the beats are annotated.</p><p>In general, the approach of learning to generalize from labeled data examples is known as <a href = "https://www.ibm.com/topics/supervised-learning">supervised learning</a>.  Though there are a variety of techniques to do this, we will focus primarily on <b>deep neural networks</b>, as they have shown the most promise for audio analysis and synthesis over the past few years.  As such, this is the most "cutting edge" unit in the course.</p>
 
 LECTURE
-Logistic Regression, Introduction To pytorch
+Logistic Regression, Introduction To pytorch and data loaders
 
-
+<ul><li><a href = "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html">PyTorch Datasets & DataLoaders Documentation</a></li></ul>
 LECTURE
 Neural Networks And Deep Learning
 
+<ul><li><a href = "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3Blue1Brown Intro To Neural Nets</a></li></ul>
+LECTURE
+Channels, Convolutional Neural Networks
+
 
 LECTURE
-Convolutional Neural Networks
-
-
-LECTURE
-Wavenet
+Linear Predictive Coding (LPC), Wavenet
 
 <ul><li><a href = "https://www.deepmind.com/blog/wavenet-a-generative-model-for-raw-audio">DeepMind WaveNet blog post</a></li></ul>
 LECTURE
@@ -172,6 +176,7 @@ Wave-U-Net for Source Separation
 <ul><li><a href = "https://arxiv.org/pdf/1806.03185.pdf">Wave-U-Net Paper</a></li></ul>
 LECTURE
 Diffusion for Audio Synthesis
+
 
 LECTURE
 Deep version identification

@@ -67,3 +67,6 @@
 [submodule "ClassExercises/Week11/Week11_SSM/Week11_SSM"]
 	path = ClassExercises/Week11/Week11_SSM/Week11_SSM
 	url = https://github.com/ursinus-cs372-s2023/Week11_SSM.git
+[submodule "ClassExercises/Week11/Week11_DTW/Week11_DTW"]
+	path = ClassExercises/Week11/Week11_DTW/Week11_DTW
+	url = https://github.com/ursinus-cs372-s2023/Week11_DTW.git
