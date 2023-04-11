@@ -141,7 +141,7 @@ Cross-Similarity Matrices, Beat-Synchronous Version Alignment
 LECTURE
 Dynamic Time Warping
 
-
+<ul><li><a href = "http://www.ctralie.com/Research/linmdtw/">Linear memory dynamic time warping</a></li></ul>
 SECTION
 <a name = "neuralnets">Unit 4: Data Driven Digital Music Processing</a>
 <p>In the prior unit, we built on spectrograms to do a variety of tasks using <b>hand-crafted models</b> to pick up on different audio attributes.  In this unit, we will talk about modern methods for <b>data-driven</b> audio analysis.  Rather than going in with too many preconceived notions about what we need to do to pick up on particular audio attributes, we will work to collect labeled data that captures what we want the computer to be able to do, and then we will let the computer tell us what patterns exist in the data that allow us to do certain tasks.  For instance, we will gather a large collection of notes being played on bass guitar, and we will learn how to synthesize bass notes from this data.  We will also discuss how to do beat tracking by learning from a large collection of audio clips where the beats are annotated.</p><p>In general, the approach of learning to generalize from labeled data examples is known as <a href = "https://www.ibm.com/topics/supervised-learning">supervised learning</a>.  Though there are a variety of techniques to do this, we will focus primarily on <b>deep neural networks</b>, as they have shown the most promise for audio analysis and synthesis over the past few years.  As such, this is the most "cutting edge" unit in the course.</p>
@@ -159,7 +159,7 @@ Channels, Convolutional Neural Networks
 
 
 LECTURE
-Linear Predictive Coding (LPC), Wavenet
+Autoregressive Coding, Wavenet
 
 <ul><li><a href = "https://www.deepmind.com/blog/wavenet-a-generative-model-for-raw-audio">DeepMind WaveNet blog post</a></li></ul>
 LECTURE
