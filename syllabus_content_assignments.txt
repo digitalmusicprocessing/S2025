@@ -85,9 +85,12 @@ HW4 Due
 <a href = "../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a> Due Before Class
 
 2023-04-05
-<a href = "../Modules/Module20/Video1">Module 20: Intro To Supervised Learning</a> Due Before Class
+<a href = "../Modules/Module20/Video1">Module 20 Parts 1-3</a> Due Before Class
 
 2023-04-12
+<a href = "../Modules/Module20/Video3">Rest of Module 20</a> Due Before Class
+
+2023-04-14
 HW5 Due
 
 2023-04-17
