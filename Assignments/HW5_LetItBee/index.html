@@ -243,12 +243,13 @@
 											<source src="Results/prince_instrument_repeated.mp3" type="audio/mpeg">
 										  Your browser does not support the audio element.
 										</audio> 
-										<p></p>
+
+										<p>To avoid this, we want to avoid having the same activations within some window of each other.</p>
 
 										<h4>Your Task</h4>
 
 										<p>
-											Make sure that there aren't any chunks of similar values anywhere in a particular row of <code>H</code> <i>during each iteration</i>.  To do this, preserve all values that are the maximum of every value in a window of length <code>r</code> around them, and "shrink" those values that aren't local maxes some factor.  In particular, after the KL iteration, do the following update to <code>H</code>:
+											Suppress all values in <code>H</code> that are not the maximum of the <b>2r+1</b> values in a window centered on them.  In particular, after the KL iteration, do the following update to <code>H</code>:
 										</p>
 
 										<h3>
