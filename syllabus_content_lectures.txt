@@ -151,23 +151,23 @@ Logistic Regression, Introduction To pytorch and data loaders
 
 <ul><li><a href = "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html">PyTorch Datasets & DataLoaders Documentation</a></li></ul>
 LECTURE
+Logistic Regression: Separating Square Waves from Sawtooth Waves
+
+
+LECTURE
 Neural Networks And Deep Learning
 
 <ul><li><a href = "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3Blue1Brown Intro To Neural Nets</a></li></ul>
 LECTURE
-Channels, Convolutional Neural Networks
+LPC, Autoregressive Coding, Wavenet
 
-
-LECTURE
-Autoregressive Coding, Wavenet
-
-<ul><li><a href = "https://www.deepmind.com/blog/wavenet-a-generative-model-for-raw-audio">DeepMind WaveNet blog post</a></li></ul>
+<ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Notes on Linear Predictive Coding</a></li><li><a href = "https://www.deepmind.com/blog/wavenet-a-generative-model-for-raw-audio">DeepMind WaveNet blog post</a></li></ul>
 LECTURE
 Differentiable Digital Signal Processing
 
 <ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li></ul>
 LECTURE
-Deep beat tracking
+2D Convolutional Networks, Deep beat tracking
 
 <ul><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
 LECTURE

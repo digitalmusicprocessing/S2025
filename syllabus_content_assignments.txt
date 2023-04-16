@@ -91,9 +91,12 @@ HW4 Due
 <a href = "../Modules/Module20/Video3">Rest of Module 20</a> Due Before Class
 
 2023-04-14
-HW5 Due
+<a href = "../Modules/Module21/Video0">Module 21: Neural Networks/a> Due Before Class
 
 2023-04-17
-HW6: Differentiable Digital Signal Processing Out
+HW5 Due
+
+2023-04-21
+<HR>HW6: Differentiable Digital Signal Processing Out
 
 2023-04-21
