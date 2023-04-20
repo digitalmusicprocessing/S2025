@@ -73,3 +73,6 @@
 [submodule "ClassExercises/Week12/Week12_LogisticSquareSawtooth/Week12_LogisticSquareSawtooth"]
 	path = ClassExercises/Week12/Week12_LogisticSquareSawtooth/Week12_LogisticSquareSawtooth
 	url = https://github.com/ursinus-cs372-s2023/Week12_LogisticSquareSawtooth.git
+[submodule "ClassExercises/Week13/Week13_NSynthClassify/Week13_NSynthClassify"]
+	path = ClassExercises/Week13/Week13_NSynthClassify/Week13_NSynthClassify
+	url = https://github.com/ursinus-cs372-s2023/Week13_NSynthClassify.git

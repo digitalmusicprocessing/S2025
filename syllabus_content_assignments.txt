@@ -94,7 +94,10 @@ HW4 Due
 <a href = "../Modules/Module21/Video0">Module 21: Neural Networks/a> Due Before Class
 
 2023-04-17
-HW5 Due
+<a href = "../Modules/Module22/Video1">Module 22: Multiclass Classification, Convolutional Neural Networks, And Overfitting</a> Due Before Class
+
+2023-04-21
+<HR>HW5 Due
 
 2023-04-21
 <HR>HW6: Differentiable Digital Signal Processing Out
