@@ -76,3 +76,12 @@
 [submodule "ClassExercises/Week13/Week13_NSynthClassify/Week13_NSynthClassify"]
 	path = ClassExercises/Week13/Week13_NSynthClassify/Week13_NSynthClassify
 	url = https://github.com/ursinus-cs372-s2023/Week13_NSynthClassify.git
+[submodule "Assignments/HW6_StringAlong/HW6_StringAlong"]
+	path = Assignments/HW6_StringAlong/HW6_StringAlong
+	url = https://github.com/ursinus-cs372-s2023/HW6_StringAlong.git
+[submodule "ClassExercises/Week13/Week13_NsynthAutoencoder/Week13_NSynthAutoencoder"]
+	path = ClassExercises/Week13/Week13_NsynthAutoencoder/Week13_NSynthAutoencoder
+	url = https://github.com/ursinus-cs372-s2023/Week13_NSynthAutoencoder.git
+[submodule "ClassExercises/Week13/Week13_DigitsAutoencoder/Week13_DigitsAutoencoder"]
+	path = ClassExercises/Week13/Week13_DigitsAutoencoder/Week13_DigitsAutoencoder
+	url = https://github.com/ursinus-cs372-s2023/Week13_DigitsAutoencoder.git

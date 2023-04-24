@@ -159,7 +159,11 @@ Neural Networks And Deep Learning
 
 <ul><li><a href = "https://www.youtube.com/playlist?list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi">3Blue1Brown Intro To Neural Nets</a></li></ul>
 LECTURE
-LPC, Autoregressive Coding, Wavenet
+Convolutional Neural Networks, Data Augmentation
+
+
+LECTURE
+Autoencoders, LPC, Autoregressive Coding
 
 <ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Notes on Linear Predictive Coding</a></li><li><a href = "https://www.deepmind.com/blog/wavenet-a-generative-model-for-raw-audio">DeepMind WaveNet blog post</a></li></ul>
 LECTURE
@@ -167,17 +171,13 @@ Differentiable Digital Signal Processing
 
 <ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li></ul>
 LECTURE
-2D Convolutional Networks, Deep beat tracking
-
-<ul><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
-LECTURE
 Wave-U-Net for Source Separation
 
 <ul><li><a href = "https://arxiv.org/pdf/1806.03185.pdf">Wave-U-Net Paper</a></li></ul>
 LECTURE
-Diffusion for Audio Synthesis
+2D Convolutional Networks: CREPE (Fundamental Frequency) And Deep beat tracking
 
-
+<ul><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
 LECTURE
 Deep version identification
 
