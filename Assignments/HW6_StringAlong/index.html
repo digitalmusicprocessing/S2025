@@ -213,16 +213,7 @@
 											The first step is to gather training data and put it into a torch <a href = "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html"><code>Dataset</code></a> so that it's convenient to collate into batches in a training loop.  This is also where we will perform the encoding steps of <b>loudness</b> and <b>pitch</b> for raw audio.  
 										</p>
 										<p>
-											In this assignment, we'll be creating a violin model using the same setup that the original paper used; namely, <a href = "https://musopen.org/music/13574-violin-partita-no-1-bwv-1002/">5 Bach violin partitas (II. Double, III. Corrente, IV. Double Presto, VI. Double, VIII. Double), as performed by John Garner</a>.  I have concatenated them together into a <b>16khz mono</b> clip <code>data.wav</code>, as shown below
-										</p>
-
-										<audio controls>
-											<source src="https://ursinus-cs372-s2023.github.io/HW6_StringAlong/data.wav" type="audio/wav">
-										  Your browser does not support the audio element.
-										</audio> 
-
-										<p>
-											You can load this as follows
+											In this assignment, we'll be creating a violin model using the same setup that the original paper used; namely, <a href = "https://musopen.org/music/13574-violin-partita-no-1-bwv-1002/">5 Bach violin partitas (II. Double, III. Corrente, IV. Double Presto, VI. Double, VIII. Double), as performed by John Garner</a>.  I have concatenated them together into a <b>16khz mono</b> clip <code>data.wav</code>.  You can load this as follows
 										</p>
 
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
@@ -460,10 +451,10 @@
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											def get_num_parameters(self):
-											total = 0
-											for p in self.parameters():
-												total += np.prod(p.shape)
-											return total
+												total = 0
+												for p in self.parameters():
+													total += np.prod(p.shape)
+												return total
 										</script>
 										<p>
 											If you have <code>n_units=512, n_harmonics=100, n_bands=65, reverb_len=sr</code>, then your network should have <b>4837670</b> parameters with the above setup.
