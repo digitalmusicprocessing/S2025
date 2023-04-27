@@ -1,0 +1,767 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 372: Digital Music Processing, Spring 2023</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Ursinus CS 372: Digital Music Processing, Spring 2023</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Assignment 6: String Along (65 Points)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
+									</header>
+
+									<div id="page-content">
+
+										<ul>
+											<li><a href = "#overview">Background/Logistics</a>
+												<ul>
+													<li><a href = "#objectives">Learning Objectives</a></li>
+													<li><a href = "#submit">What To Submit</a></li>
+												</ul>
+											</li>
+											<li><a href = "#programming">Programming Tasks</a>
+												<ul>
+													<li><a href = "#starter">Starter Code</a></li>
+													<li><a href = "#paper">DDSP Paper</a></li>
+													<li><a href = "#data">Part 1: Data Loader (10 Points)</a></li>
+													<li><a href = "#decoder">Part 2a: Decoder Architecture (15 Points)</a>
+													<li>
+														<a href = "#decoder">Part 2b: Synthesizer (10 Points)</a>
+													</li>
+													<li>
+														<a href = "#loss">Part 3: Loss Function (8 Points)</a>
+													</li>
+													<li>
+														<a href = "#test">Part 4: Example Loading/Generation (7 Points)</a>
+													</li>
+													<li>
+														<a href = "#train">Part 5: Training Loop (10 Points)</a>
+													</li>
+													<li>
+														<a href = "#statement">Part 6: Musical Statement (5 Points)</a>
+													</li>
+
+												</ul>
+											</li>
+											
+										</ul>
+
+										<h2><a name = "overview">Background</a></h2>
+
+										<p>
+											We have reached the grand finale of the course!  For this, you will implement a fusion of new and old techniques known as <a href = "https://magenta.tensorflow.org/ddsp">Differentiable Digital Signal Processing</a> to learn how to synthesize monophonic (single instrument) music sounds from example audio.  By using pre-defined things we learned in other parts of the course (spectrograms, loudness computation, pitch tracking, instantaneous frequency generation), we will be able to significantly reduce the data and training requirements of this pipeline.  All in all, we'll be able to create a reasonable bowed violin synth with only 13 minutes of training data and about 2-3 hours of training.  By contrast, <a href = "https://www.deepmind.com/blog/wavenet-a-generative-model-for-raw-audio">wavenet</a>, another popular neural network-based audio synthesis technique, may require tens or hundreds of hours of training data and several days of training.
+										</p>
+
+										<p>
+											Perhaps most excitingly of all, we will be to do <i>cross-synthesis</i>/vocoder, in which we use the loudness and pitch of a completely different instrument to drive the decoder.  Among other things, this allows us to turn singing voice into a violin.  For example, suppose we start with the following clip from Adele:
+										</p>
+										<audio controls>
+											<source src="HW6_StringAlong/adele.wav" type="audio/wav">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											We can then turn her into a violin as follows (note that I've moved the encoded pitch up by one octave):
+										</p>
+										<audio controls>
+											<source src="Results/adele256.wav" type="audio/wav">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											For yet another example, here is a clip from Marvin Gaye:
+										</p>
+										<audio controls>
+											<source src="HW6_StringAlong/marvin.wav" type="audio/wav">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											And here is what he sounds like as a violin
+										</p>
+										<audio controls>
+											<source src="Results/marvin256.wav" type="audio/wav">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											As a side benefit, since this model includes a learnable reverberation <a href = "../../../Modules/Module7/Video1">impulse response</a>, we can hear what it would sound like if we clapped in the room in which the audio was recorded, as shown below:
+										</p>
+										<audio controls>
+											<source src="Results/reverb256.wav" type="audio/wav">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											By the end of this assignment, you will be able to replicate these examples and go further with your own!
+										</p>
+
+                                        <p>
+                                            <h3><a name = "objectives">Learning Objectives</a></h3>
+                                            <ul>
+												<li>Implement a full pipeline for supervised learning including data curation, model definition, loss function specification, and training loop</li>
+												<li>Practice tensor-wise operations in pytorch</li>
+												<li>Explore the integration of classical domain knowledge (spectrograms, windowing, impulse responses, instantaneous frequency, loudness, subtractive/additive synthesis) with modern machine learning techniques (deep neural networks)</li>
+												<li>Practice training neural networks</li>
+												<li>Compose music in a cutting edge style</li>
+                                            </ul>
+										</p>
+										
+										<h3><a name = "submit">What To Submit</a></h3>
+
+										<p>                                       
+                                            When you are finished, submit the notebook you created to canvas, and the following audio clips:
+											<ul>
+												<Li>An example of a 4 second clip from the training data encoded and decoded with your fully trained network</Li>
+												<li>
+													The provided examples (Adele, Marvin Gaye) encoded and decoded with your fully trained network
+												</li>
+												<li>
+													Your musical statement
+												</li>
+											</ul> 
+											Finally, indicate a title for your musical statement, and name/pseudonym you'd like to use in the music gallery on our class web site, and <b>indicate the names of any buddies you worked with</b>.
+										</p>
+
+
+										
+                                        
+										<HR>
+										<h2><a name = "programming">Programming Tasks</a></h2>
+
+										<h4><a name = "starter">Starter Code</a></h4>
+										<p>
+											The starter notebook for this can be obtained at <a href = "https://github.com/ursinus-cs372-s2023/HW6_StringAlong">https://github.com/ursinus-cs372-s2023/HW6_StringAlong</a>.  You'll want to load this into <a href = "https://colab.research.google.com/">Google Colab</a>.  Be sure to change your runtime to <b>GPU</b>:
+										</p>
+
+										<img src = "runtime.png" width="40%">
+
+										<p>
+											This is crucial for the training to run at a reasonable pace.  It also means that you'll have to move your model and all of the tensors over the GPU before using them.  Here are a few examples of how to do this:
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											device = 'cuda'
+											X = X.to(device)
+											model = model.to(device)
+											Y = Y.to(X) # This will put Y on the same device as X
+										</script>
+										
+
+										<h4><a name = "paper">DDSP Paper</a></h4>
+
+										<p>
+											<a href = "https://openreview.net/forum?id=B1x1ma4tDr">Click here</a> to access the paper on DDSP.  I will do my best to explain what needs to be done as we go along, but it may be helpful to have this as a reference.  You can also see <a href = "https://magenta.tensorflow.org/ddsp">Google's press release / landing page</a> here.  We will be implementing the "supervised encoder" and decoder in this assignment.  We'll encode using <a href = "https://github.com/maxrmorrison/torchcrepe">torchcrepe</a> for pitch and a frequency-based method for loudness, and then we'll implement a decoder with additive synthesis, subtractive synthesis, and reverb.
+										</p>
+											
+
+
+										<h4>What Now?</h4>
+
+										<p>
+											In what follows, you will walk through the steps for supervised learning that I outlined in <a href = "../../../Modules/Module20/Video1">module 20</a> in this context: 
+											<ol>
+												<li>Gather data</li>
+												<li>Define a model (the encoder and decoder) to fix the space of possible functions to transform an input to an output</li>
+												<li>
+													Devise a scoring function for how well your learned model fits the data
+												</li>
+											</ol> 
+										</p>
+										<p>
+											Then, you will implement a training loop to put it all together, using backpropagation on the loss function to tweak the model's parameters until it fits the data we have.
+										</p>
+
+										<h2><a name = "data">Part 1: Data Loader (10 Points)</a></h2>
+
+										<p>
+											The first step is to gather training data and put it into a torch <a href = "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html"><code>Dataset</code></a> so that it's convenient to collate into batches in a training loop.  This is also where we will perform the encoding steps of <b>loudness</b> and <b>pitch</b> for raw audio.  
+										</p>
+										<p>
+											In this assignment, we'll be creating a violin model using the same setup that the original paper used; namely, <a href = "https://musopen.org/music/13574-violin-partita-no-1-bwv-1002/">5 Bach violin partitas (II. Double, III. Corrente, IV. Double Presto, VI. Double, VIII. Double), as performed by John Garner</a>.  I have concatenated them together into a <b>16khz mono</b> clip <code>data.wav</code>, as shown below
+										</p>
+
+										<audio controls>
+											<source src="https://ursinus-cs372-s2023.github.io/HW6_StringAlong/data.wav" type="audio/wav">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											You can load this as follows
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											x, sr = librosa.load("data.wav", sr=16000)
+										</script>
+
+										<h4>Your Task</h4>
+										<p>
+											Create a <a href = "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html"><code>Dataset</code></a> object called <code>InstrumentData</code>.  Do the following pre-computations in the constructor:
+										</p>
+										<ol>
+											<li>Pass along an audio clip <code>x</code>, a sample rate <code>sr</code>, a <code>hop_length</code>, and a parameter <code>samples_per_batch</code> to the constructor and store them away as member variables (e.g. <code>self.x = x</code>).  The <code>samples_per_batch</code> can be treated as a length, and a good default value for the violin data is 5000.</li>
+
+											<li>
+												Extract the loudness of <code>x</code> using the provided <code>extract_loudness</code> method.  Compute its mean and standard deviation and save them as member variables.  Then, subtract off the mean and divide by the standard deviation, and store the resulting normalized loudness array as a member variable.
+											</li>
+
+											<li>
+												Extract the fundamental frequency estimation using <code><a href = "https://github.com/maxrmorrison/torchcrepe">torchcrepe</a></code> (this is installed and imported in the first cell of the notebook), and save it as a member variable.  
+
+												<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													pitch = torchcrepe.predict(torch.from_numpy(x).view((1, x.size)),sr,hop_length,
+													50,2000,'full',batch_size=2048,device=device).flatten()
+												</script>
+											</li>
+											<li>
+												Crop the <code>pitch</code> and <code>loudness</code> arrays down to have the minimum number of samples between the two.  Crop the audio down so that it has this number of samples times the <code>hop_length</code>
+											</li>
+										</ol>
+
+										<p>
+											Then, in the <code>__getitem__</code> method, extract a random 4 second clip from the dataset, and reshape it so that it's a column vector in torch; e.g.
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												x = torch.from_numpy(x).view(x.size, 1)
+											</script>
+
+											Then, slice out the corresponding sections of pitch and loudness and reshape them to be column vectors, and return the three from the dataset.
+										</p>
+
+										<p>
+											Before you proceed to the next step, construct the dataset, pull out a few elements, and make sure they look right.
+										</p>
+
+										<h4>Tips</h4>
+										<ul>
+											<li>You may want to review the <a href = "../../../Modules/Module20/Video4">class notes on datasets in torch</a></li>
+											<li>
+												I've provided an example data loader in the code that creates random FM plucked strings as an example to help with debugging.  This is yet another example you can reference.
+											</li>
+										</ul>
+
+										
+										<h2><a name = "decoder">Part 2a: Decoder Architecture (15 Points)</a></h2>
+										
+										<p>
+											In this section, you will create the decoder architecture, as described in section B.2 of <a href = "https://openreview.net/forum?id=B1x1ma4tDr">the DDSP paper</a>
+										</p>
+
+										<h3>
+											Your Task
+										</h3>
+
+										<h4><a name = "mlp">MLP (5 points)</a></h4>
+
+										<img src = "ddsp_mlp.png" width="70%">
+
+										<p>
+											First, create an <code><a href = "https://www.youtube.com/watch?v=dtMesafhSYI">MLP</a></code> class for a "multilayer perceptron" that inherits from <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"><code>nn.module</code></a>.  As shown in Figure 10 of the DDSP paper, this consists of the following sequence, repeated three times:
+											<ol>
+												<li>
+													<a href = "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html#torch.nn.Linear">nn.Linear</a>
+												</li>
+												<li>
+													<a href = "https://pytorch.org/docs/stable/generated/torch.nn.LayerNorm.html">nn.LayerNorm</a>
+												</li>
+												<li>
+													<a href = "https://www.tensorflow.org/api_docs/python/tf/keras/layers/LeakyReLU">nn.LeakyReLU</a> (this tends to work a bit better than the plain ReLU they originally suggested)
+												</li>
+											</ol>
+										</p>
+
+										<p>
+											Have one parameter to the constructor for the initial input size into the first linear input layer, and another parameter for the output size of the first linear layer.  This is the input/output size used for all other layers, which we can refer to as the "hidden dimension."
+										</p>
+
+										<p>
+											It's a good idea to store these layers as a member variable with the layers wrapped into a <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Sequential.html">nn.Sequential</a>.  
+										</p>
+
+										<p>
+											Before you proceed, make sure that you can send in a tensor of the appropriate shape and it comes back with the right shape, according to your size parameters.
+										</p>
+
+										<h4><a name = "decoder">Decoder (10 Points)</a></h4>
+										<img src = "ddsp_decoder.png" width="80%">
+										
+
+										<p>
+											Create a class <code>DDSPDecoder</code> that inherits from <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"><code>nn.module</code></a>, and which has the following parameters to the constructor:
+										</p>
+										<ul>
+											<li>
+												<code>n_units</code>: The number of units in each multilayer perceptron
+											</li>
+											<li>
+												<code>sr</code>: The same rate
+											</li>
+											<li>
+												<code>n_harmonics</code>: The number of harmonic amplitudes to output to use in the additive synthesizer
+											</li>
+											<li>
+												<code>n_bands</code>: The number of bands to use in the noise filter for subtractive synthesis
+											</li>
+
+											<li>
+												<code>reverb_len</code>: The length of the reverberation <a href = "../../../Modules/Module7/Video1">impulse response</a>, in samples
+											</li>
+										</ul>
+
+										<p>
+											The last three parameters will be related to the parts of the decoder that control the additive synthesizer, the subtractive synthesis, and the reverberation, respectively.
+										</p>
+
+										<p>
+											Based on all of these parameters, construct the following layers and store them as member variables (this may look daunting, but it's basically just following through each line by line);
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											self.layer = ...
+										</script>
+										<ol>
+											<li>An MLP layer that takes 1 channel input and uses <code>n_units</code> units in the hidden layers, which will be used as the first module to encode pitch</li>
+											<li>Another MLP layer that takes 1 channel input and uses <code>n_units</code> units in the hidden layers, which will be used as the first module to encode loudness</li>
+											<li>
+												A <a href = "https://towardsdatascience.com/understanding-gru-networks-2ef37df6c9be">gated recurrent unit</a> (<code><a href = "https://pytorch.org/docs/stable/generated/torch.nn.GRU.html">nn.GRU</a></code>) with an <code>input_size</code> of <code>n_units*2</code>, a <code>hidden_size</code> of <code>n_units</code>, and <code>batch_first=True</code>
+											</li>
+											<li>Another MLP layer that takes <code>3*n_units</code> channel inputs and uses <code>n_units</code> units in the hidden layers, which will be used to jointly transform the outputs of the first two MLPs and the GRU's output</li>
+											<li>
+												<b>Harmonics decoder</b>: A <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html#torch.nn.Linear">Linear</a> layer with <code>n_units</code> inputs and <code>n_harmonics</code> outputs, which will be used to create the distribution of harmonics for the notes in the additive synthesizer
+											</li>
+											<li>
+												<b>Amplitude decoder</b>: A <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html#torch.nn.Linear">Linear</a> layer with <code>n_units</code> inputs and a single output, which will be used to create the overall amplitude of the notes in the additive synthesizer
+											</li>
+											<li>
+												<b>Subtractive filter decoder:</b> A <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html#torch.nn.Linear">Linear</a> layer with <code>n_units</code> inputs and <code>n_bands</code> outputs, which will be used to create the frequency domain transfer function for the subtractive synthesizer
+											</li>
+											<li>
+												A set of learnable parameters for the impulse response of the reverb, which you can initialize as 
+												<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													self.reverb = nn.Parameter(torch.rand(reverb_len)*1e-4-0.5e-4)
+												</script>
+												this is not a "layer" per se, but each element of the impulse response is treated as a parameter that can be updated during training
+											</li>
+										</ol>
+
+										<p>
+											Once you have all of these layers, implement the <code>forward</code> method to take in a tensor of pitches <code>F</code> and a tensor of loudness values <code>L</code>, and flow them through the network as follows:
+										</p>
+										<ol>
+											<li>
+												Send <code>F</code> through the first MLP
+											</li>
+											<li>
+												Send <code>L</code> through the second MLP
+											</li>
+											<li>
+												<a href = "https://pytorch.org/docs/stable/generated/torch.cat.html#torch.cat">Concatenate</a> the outputs of the above two MLPs along axis 2, and pass them through the GRU
+											</li>
+											<li>
+												Pass the outputs of the <code>F</code> and <code>L</code> MLP with the output of the GRU, and send them through the third MLP.
+											</li>
+											<li>
+												Send the output of the last step through the harmonics, amplitude, and subtractive filter decoders to get tensors <code>C</code>, <code>A</code>, and <code>S</code>, respectively.  <b>Based on the input frequency, zero out the elements in the harmonics tensor <code>C</code> that are above the Nyquist rate (sr/2) to avoid aliasing during training.</b>  Then, normalize the remaining frequencies as follows:
+												<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													C = C/(1e-8+torch.sum(C, axis=2, keepdims=True))
+												</script>
+												(this is not a detail they mentioned in the paper, but it's important)
+											</li>
+											<li>
+												Send <code>C</code>, <code>A</code>, and <code>S</code> through a <code>modified_sigmoid</code>, which is described in the paper section 3.2, and which I've provided for you.  This keeps the outputs nonnegative, which is important
+											</li>
+											<li>
+												Finally, send the current reverb parameters through a hyperbolic tangent (<a href = "https://pytorch.org/docs/stable/generated/torch.tanh.html"><code>torch.tanh</code></a>), and return <code>A</code>, <code>C</code>, <code>S</code>, and the transformed reverb from the <code>forward</code> method
+											</li>
+										</ol>
+
+										<h4>Tip #1: Shapes</h4>
+										<p>
+											Before you go any further, you should make sure all of your shapes are working out in the network.  You can make a <code>DataLoader</code> to collate some input data together and send them through an example network
+										</p>
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											loader = DataLoader(data, batch_size=16, shuffle=True)
+											X, F, L = next(iter(loader))
+											print("X.shape", X.shape)
+											print("F.shape", F.shape)
+											print("L.shape", L.shape)
+										</script>
+
+										<p>
+											At this point, assuming 4 seconds of audio at a 16000hz sample rate with a <code>hop_length</code> of 160:
+											<ul>
+												<li>
+													<code>X</code> is a <code>16x64000x1</code> tensor holding the audio samples for 16 clips
+												</li>
+												<li>
+													<code>F</code> is a <code>16x400x1</code> tensor holding the pitch estimates for the corresponding clips (100 per second at a hop length of 160)
+												</li>
+												<li>
+													<code>L</code> is a <code>16x400x1</code> tensor holding the loudness estimates for the corresponding clips
+												</li>
+											</ul>
+										</p>
+
+										<p>
+											From here forward, all of the tensors we will be dealing with will be 3D, with the first dimension indicating the batch (this is why we had to say <code>batch_first=True</code> for the GRU), the second dimension indicating the time axis, and the third dimension indicating the channel.
+										</p>
+
+										<p>
+											If we send the bach frequency and loudness inputs through a decoder object
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
+											decoder = decoder.to(device)
+											A, C, S, reverb = decoder(F.to(device), L.to(device))
+										</script>
+
+										<p>
+											then we should see that <code>A</code> is <code>16 x 400 x 1</code>, <code>C</code> is <code>16 x 400 x n_harmonics</code>, <code>S</code> is <code>16 x 400 x n_bands</code>, and <code>reverb</code> is a flat array of <code>reverb_len</code> samples
+										</p>
+
+										<h4>Tip #2: Trainable Parameters</h4>
+										<p>
+											One common bug is to not have all of the parameters registered with the class.  Before you proceed, throw this method into your <code>DDSPDecoder</code> class:
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											def get_num_parameters(self):
+											total = 0
+											for p in self.parameters():
+												total += np.prod(p.shape)
+											return total
+										</script>
+										<p>
+											If you have <code>n_units=512, n_harmonics=100, n_bands=65, reverb_len=sr</code>, then your network should have <b>4837670</b> parameters with the above setup.
+										</p>
+
+									<h2><a name = "decoder">Part 2b: Synthesizer (10 Points)</a></h2>
+									<p>
+										Now the we have the learnable "AI" part of the model, it's time to setup the fixed part of the decoder that uses DSP elements.
+									</p>
+
+									<h4>Your Task</h4>
+									<p>
+										Create a method <code>synthesize</code> that takes in the pitches <code>F</code> and the outputs from the neural network <code>C</code>, <code>A</code>, <code>S</code>, and <code>reverb</code>, and which creates audio waveforms using these parameters.  This process is as follows:
+									</p>
+									<ol>
+										<li>
+											Upsample <code>C</code>, <code>A</code>, and <code>F</code> to audio sample rate using the <code>upsample_time</code> method I provided.
+											<p></p>
+										</li>
+										<li>
+											Use <code>C</code>, <code>A</code>, and <code>F</code> to create a set of harmonics at the appropriate amplitudes, and sum them together for the additive synthesis audio components.  <b>You should do this completely without loops using methods like <code>torch.cumsum</code>, <code>torch.sum</code>, <code>torch.arange</code>, and <code><a href = "https://pytorch.org/docs/stable/tensor_view.html">view</a></code></b>.  Otherwise, the backpropagation in the training will be very slow later.
+											<p></p>
+										</li>
+										<li>
+											Perform subtractive synthesis by sending along <code>S</code> and the <code>hop_length</code> to the <code>subtractive_synthesis</code> method I provided
+											<p></p>
+										</li>
+										<li>
+											Sum together the additive and subtractive synthesis components, and apply the impulse response with a fast convolution using the <code>fftconvolve</code> method I provided.  Here, it's convenient to get rid of the singleton dimension at the end of <code>Y</code> by passing along <code>Y.squeeze()</code> to the method.  You will also want to reshape the reverb to be <b>1xtime</b>.
+										</li>
+									</ol>
+
+									<h4>Tips</h4>
+									<p>
+										The shapes are tricky here.  Be sure to test it with example batches and network outputs before you move on, even if they're noisy.  In particular, make sure you know how to listen to audio that's outputted from this method
+									</p>
+
+
+									<h2><a name = "loss">Part 3: Loss Function (8 Points)</a></h2>
+									<p>
+										We have to create a unique loss function called the <b>multi-scale spectral loss</b> (MSS), which is described in section 4.2.1 of the DDSP paper.  Rather than using something off the shelf like logistic loss or cross-entropy loss, we're instead going to sum up the absolute differences between the spectrograms of <code>X</code> and the spectrograms of <code>Y</code> at different scales.  According to the paper, this captures our perception of similarity well, while not being sensitive to phase offsets, which we are not sensitive to.
+									</p>
+
+									<h4>Your Task</h4>
+									<p>
+										Create a method <code>mss_loss</code> which takes in the ground truth audio <code>X</code> and the reconstructed audio <code>Y</code>, and which computes the following sum:
+										<ul>
+											<li>For each STFT window length in [64, 128, 256, 512, 1024, 2048], compute the absolute value of the STFT (<code><a href = "https://pytorch.org/docs/stable/generated/torch.stft.html">torch.abs(torch.stft(..., return_complex=True))</a></code>), using a <a href = "https://pytorch.org/docs/stable/generated/torch.hann_window.html">hann window</a>.  Then, accumulate the mean of the absolute differences between corresponding elements of the two STFTs, as well as mean of the absolute difference between the log of each.  Add 1e-7 to the input of the log to avoid NaNs</li>
+										</ul>
+									</p>
+
+
+
+									<h2><a name = "test">Part 4: Example Loading/Generation (7 Points)</a></h2>
+									<p>
+										We are almost ready to train now.  But first we should setup some code to help extract pitch and normalized loudness from other examples like Adele and Marvin Gaye that we will use to cross-synthesize later.  We can monitor these examples as we go along to see how training is going.
+									</p>
+
+									<h4>Your Task</h4>
+									<p>
+										Create a method <code>get_example</code> which takes in a path to an audio file (e.g. "marvin.wav"), a sample rate, a hop_length, the data object you constructed, and a pitch shift.  Load in the audio, extract the pitch and the loudness, then subtract the mean loudness from the data object and divide by the data object's loudness standard deviation.  Then, crop the pitch and loudness so that they're the same length <b>N</b>, shape them to be <b>1xNx1</b>, and return them.
+									</p>
+									<p>
+										You should be able to pass the outputs from this method directly to the network to obtain the synthesis parameters, and you can use those results, along with the pitch, to synthesize audio.
+									</p>
+
+
+									<h2><a name = "train">Part 5: Training Loop (10 Points)</a></h2>
+									<p>
+										We are finally ready to train!  First, take a quick moment to review the training loop in torch at <a href = "../../../Modules/Module20/Video5">this link</a>.  Then, proceed as follows:
+									</p>
+
+									<h4>Your Task</h4>
+									<ol>
+										<li>
+											<p>
+												Initialize your strings dataset with <code>sr=16000, hop_length=160</code>.  Create a decoder with 
+											</p>
+											<p>
+												<code>n_units=512, n_harmonics=50, n_bands=65, reverb_len=sr</code>
+											</p>
+											<p>
+												Then, setup a training loop with an <code>Adam</code> optimizer over the model's parameters with an initial learning rate of <code>1e-3</code>.  Use the backpropagation on the multi-scale spectral loss function to update the parameters.
+											</p>
+										</li>
+
+										<li>
+											You will have to add one embellishment that we haven't done before: we need the learning rate to decay exponentially over time so that the model settles gradually into a min.  You can do this by instantiating a <a href = "https://pytorch.org/docs/stable/generated/torch.optim.lr_scheduler.StepLR.html"><code>StepLR</code></a> object before the training loop:
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10000/len(data), gamma=0.98)
+											</script>
+											<p>
+												At the end of each epoch, call <code>scheduler.step()</code> to update the learning rate appropriately
+											</p>
+										</li>
+
+										<li>
+											<p>
+												You should train for at least 100 epochs cycling through batches of 16 elements in a <code>DataLoader</code> in the inner loop, though you might want to train even longer for really good results for the musical statement.  As a rule of thumb, the average loss of a batch should be around or below <b>6.5</b> after 100 epochs, though this is not a guarantee.
+											</p>
+											<p>
+												Luckily, if this is working properly, you'll hear reasonable results even during the first 10 iterations, which only take a few minutes.
+											</p>
+										</li>
+									</ol>
+
+
+
+
+									<h4>Tips</h4>
+									<ul>
+										<li>
+											Each epoch should take about a minute at most.  If it takes significantly longer, you may need to fine tune some of your code in part 2
+										</li>
+										<li>
+											Be sure to print out the loss at the end of every epoch and make sure it's trending down over time!  If it doesn't, then there's probably something wrong with your model or your data
+										</li>
+										<li>
+											It will also be very helpful to display audio that your model generates at the end of each epoch so you can track its progress.  See how it does on the training data, but also on Adele and Marvin Gaye.  To print out an audio clip to the console in your cell as a loop is running, use the following line of code:
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												ipd.display(ipd.Audio(y, rate=sr))
+											</script>
+										</li>
+										<li>
+											<p>
+												Take advantage of the the <code>plot_stft_comparison</code> method I provided to compare the ground truth audio <code>X</code> to the synthesized audio from your network <code>Y</code>.  For example, here's what I got when I called this method after 200 epochs:
+											</p>
+											<img src = "Results/Epoch200.png" width="70%">
+											<p>
+												As you can see, the synthesized is quite similar to the ground truth at this point!
+											</p>
+										</li>
+										<li>
+											You may want to save your model every few epochs just in case google colab crashes or you want to close it and pick up the training later.  Have a look at the <a href = "https://pytorch.org/tutorials/beginner/saving_loading_models.html">saving and loading models page</a> on the pytorch web site, as well as <a href = "https://colab.research.google.com/notebooks/io.ipynb">Google's documentation</a> on saving and loading files between colab and Google drive. 
+										</li>
+
+										
+									</ul>
+
+
+									<h2><a name = "statement">Part 6: Musical Statement (5 Points)</a></h2>
+									<p>
+										It's time for the last musical statement of the course!  Celebrate your hard work by making something really cool!  You can use any input to the string model, but you can also train a new model on audio from any harmonic instrument that you want!  As long as the audio you have is of a single instrument and it was recorded in the same environment (since we assume the same reverb impulse response for every clip), then you should be able to get away with only 15-20 minutes of audio for a good model.
+									</p>
+
+									<p>
+										Note also that you can choose to ignore the reverb term when you go to resynthesize to imagine what your sounds would sound like in an <a href = "https://www.cnn.com/style/article/anechoic-chamber-worlds-quietest-room/index.html">anechoic chamber</a>.  Alternatively, you could apply a different reverb term when you go to synthesize to imagine what your sound would sound like in any environment!
+									</p>
+
+									<p>
+										I can't wait to see what you come up with!
+									</p>
+
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../index.html#overview">Overview</a></li>
+												<li><a href = "../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../index.html#homework">Homework</a></li>
+												<li><a href = "../../index.html#grading">Grading</a></li>
+												<li><a href = "../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../index.html#participation">Participation</a></li>
+												<li><a href = "../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../Software/index.html">Software</a></li>
+										<li><a href = "../../webaudio-pianoroll/index.html">Piano Roll Editor</a></li>
+										<li><a href = "../../index.html#schedule">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+												</li>
+												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Spectacular Spectrograms</a>
+												</li>
+												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../Assignments/HW5_LetItBee">HW5: Let It Bee</a></li>
+												<li><a href = "../../Assignments/HW6_StringAlong">HW6: String Along</a></li>
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "../../ClassExercises/Week1/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+												</li>
+												<li><a href = "../../ClassExercises/Week4/Week4_DFT/index.html">Week 4: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../ClassExercises/Week6/2DArrays/index.html">Week 6: 2D Arrays And Spectrograms</a></li>
+												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../ClassExercises/BeattrackNotes">Week 9: Notes on Dynamic Programming Beat Tracking</a></li>
+												<li><a href = "../../ClassExercises/Week9/Week9_MFCC">Week 9: Mel-Frequency Cepstral Coefficients (MFCCs)</a></li>
+												<li><a href = "https://github.com/ursinus-cs372-s2023/pyshazam">Week 9: Python Implementation of Shazam</a></li>
+												<li><a href = "https://github.com/ursinus-cs372-s2023/Week10_HPSS/tree/classcode">Week 10: Harmonic/Percussive Source Separation with Median Filters</a></li>
+												<li><a href = "../../ClassExercises/Week10/Week10_NMF">Week 10: Nonnegative Matrix Factorization for Demixing</a></li>
+												<li><a href = "../../ClassExercises/Week11/">Week 11: Fundamental Frequency Tracking And Autotuners</a></li>
+												<li><a href = "../../../Modules/Module21/Video0">Week 12: Linear Separability of Phase-Shifted Triangle/Square Waves</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "../../../Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "../../../Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "../../../Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "../../../Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "../../../Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "../../../Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "../../../Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../../Modules/Module8/Video1">Module 8: Discovering The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "../../../Modules/Module10/Video1">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties, Inverse DFT And Fast Risset</a></li>
+												<li><a href = "../../../Modules/Module11/Video1">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "../../../Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "../../../Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "../../../Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "../../../Modules/Module15/Video0">Module 15: The Z Transform</a></li>
+												<li><a href = "../../../Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "../../../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a></li>
+												<li><a href = "../../../Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+												<li><a href = "../../../Modules/Module19/Video0">Module 19: Self-Similarity Matrices</a></li>
+												<li><a href = "../../../Modules/Module20/Video1">Module 20: Intro To Supervised Learning, Logistic Regression, Gradient Descent, And PyTorch</a></li>
+												<li><a href = "../../../Modules/Module21/Video0">Module 21: Neural Networks</a></li>
+												<li><a href = "../../../Modules/Module22/Video1">Module 22: Multiclass Classification, Convolutional Neural Networks, And Overfitting</a></li>
+											</ul>
+										</li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>

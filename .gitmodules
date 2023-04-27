@@ -85,3 +85,6 @@
 [submodule "ClassExercises/Week13/Week13_DigitsAutoencoder/Week13_DigitsAutoencoder"]
 	path = ClassExercises/Week13/Week13_DigitsAutoencoder/Week13_DigitsAutoencoder
 	url = https://github.com/ursinus-cs372-s2023/Week13_DigitsAutoencoder.git
+[submodule "ClassExercises/Week14/Week14_CREPEPitch/Week14_CREPEPitch"]
+	path = ClassExercises/Week14/Week14_CREPEPitch/Week14_CREPEPitch
+	url = https://github.com/ursinus-cs372-s2023/Week14_CREPEPitch.git
