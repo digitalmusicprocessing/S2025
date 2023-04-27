@@ -120,7 +120,7 @@
 										</audio> 
 
 										<p>
-											As a side benefit, since this model includes a learnable reverberation <a href = "../../../Modules/Module7/Video1">impulse response</a>, we can hear what it would sound like if we clapped in the room in which the audio was recorded, as shown below:
+											As a side benefit, since this model includes a learnable reverberation <a href = "../../../Modules/Module7/Video1">impulse response</a>, we can hear what it would sound like if we clapped in the room in which the training audio was recorded, as shown below:
 										</p>
 										<audio controls>
 											<source src="Results/reverb256.wav" type="audio/wav">
@@ -132,13 +132,13 @@
 										</p>
 
                                         <p>
-                                            <h3><a name = "objectives">Learning Objectives</a></h3>
+                                            <h3><a name = "objectives">Learning Goals/Objectives</a></h3>
                                             <ul>
-												<li>Implement a full pipeline for supervised learning including data curation, model definition, loss function specification, and training loop</li>
-												<li>Practice tensor-wise operations in pytorch</li>
-												<li>Explore the integration of classical domain knowledge (spectrograms, windowing, impulse responses, instantaneous frequency, loudness, subtractive/additive synthesis) with modern machine learning techniques (deep neural networks)</li>
-												<li>Practice training neural networks</li>
-												<li>Compose music in a cutting edge style</li>
+												<li>Goal 1: Implement a full pipeline for supervised learning including data curation, model definition, loss function specification, and training loop</li>
+												<li>Goal 2: Explore the integration of classical domain knowledge (spectrograms, windowing, impulse responses, instantaneous frequency, loudness, subtractive/additive synthesis) with modern machine learning techniques (deep neural networks)</li>
+												<li>Objective 1: Practice tensor-wise operations in pytorch</li>
+												<li>Objective 2: Practice training neural networks</li>
+												<li>Objective 3: Compose music in a cutting edge style</li>
                                             </ul>
 										</p>
 										
@@ -587,6 +587,20 @@
 											<p>
 												As you can see, the synthesized is quite similar to the ground truth at this point!
 											</p>
+											<p>
+												It's also good to listen to the audio corresponding to these images.  Below is the original audio corresponding to the spectrogram on the left:
+											</p>
+											<audio controls>
+												<source src="Results/Epoch200Orig.wav" type="audio/wav">
+											  Your browser does not support the audio element.
+											</audio> 
+											<p>
+												Below is the audio synthesized from our network:
+											</p>
+											<audio controls>
+												<source src="Results/Epoch200Synth.wav" type="audio/wav">
+											  Your browser does not support the audio element.
+											</audio> 
 										</li>
 										<li>
 											You may want to save your model every few epochs just in case google colab crashes or you want to close it and pick up the training later.  Have a look at the <a href = "https://pytorch.org/tutorials/beginner/saving_loading_models.html">saving and loading models page</a> on the pytorch web site, as well as <a href = "https://colab.research.google.com/notebooks/io.ipynb">Google's documentation</a> on saving and loading files between colab and Google drive. 
