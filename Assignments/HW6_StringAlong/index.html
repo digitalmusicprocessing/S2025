@@ -591,6 +591,9 @@
 										<li>
 											You may want to save your model every few epochs just in case google colab crashes or you want to close it and pick up the training later.  Have a look at the <a href = "https://pytorch.org/tutorials/beginner/saving_loading_models.html">saving and loading models page</a> on the pytorch web site, as well as <a href = "https://colab.research.google.com/notebooks/io.ipynb">Google's documentation</a> on saving and loading files between colab and Google drive. 
 										</li>
+										<li>
+											If you're still having a lot of trouble training, try to fall back to synthetic plucked string data from the <code>FMDataset</code> I provided instead of Josh Garner's real violin audio.  The FM dataset is substantially simpler, and you should at least be able to train on that, so this will help you flush out bugs.
+										</li>
 
 										
 									</ul>
