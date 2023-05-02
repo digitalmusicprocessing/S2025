@@ -88,3 +88,6 @@
 [submodule "ClassExercises/Week14/Week14_CREPEPitch/Week14_CREPEPitch"]
 	path = ClassExercises/Week14/Week14_CREPEPitch/Week14_CREPEPitch
 	url = https://github.com/ursinus-cs372-s2023/Week14_CREPEPitch.git
+[submodule "ClassExercises/Week15/Week15_UNet/Week15_WaveUNet"]
+	path = ClassExercises/Week15/Week15_UNet/Week15_WaveUNet
+	url = https://github.com/ursinus-cs372-s2023/Week15_WaveUNet.git
