@@ -41,119 +41,411 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-                                        <h1><a href = "index.html">Assignment 3: Vocoders</a></h1>
+                                        <h1><a href = "index.html">Assignment 3: Spectacular Spectrograms</a></h1>
                                         <h2>Musical Statements</h2>
 									</header>
 
 									<div id="page-content">
 
 
-										<h2>"One Dance" / "Tralie Inverted"</h2>
-										<h3>by tommytreflip</h3>
+										<h2>"Comb-tuned (Da ba dee)"</h2>
+										<h3>by anonymous</h3>
 
 										<audio controls>
-											<source src="Statements/Statement_oneDance.wav" type="audio/wav">
+											<source src="statements/blue.mp3" type="audio/mp3">
 										  Your browser does not support the audio element.
 										  </audio>
 
-										<iframe src = "Statements/TraliesInverted.html" width="800" height="800"></iframe>
+										  <script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											0 8
+											1 4
+											-7 4
+											-2 4
+											1 4
+											3 4
+											-4 4
+											0 4
+											1 8
+											-2 4
+											1 4
+											5 4
+											6 4
+											-2 4
+											5 4
+											3 4
+											1 4
+											-7 4
+											-2 4
+											1 4
+											3 4
+											-4 4
+											0 4
+											1 8
+											-2 4
+											1 4
+											5 4
+											6 4
+											-2 4
+											5 4
+											3 4
+											1 4
+											-7 4
+											-2 4
+											1 4
+											3 4
+											-4 4
+											0 4
+											1 8
+											-2 4
+											1 4
+											5 4
+											6 4
+											-2 4
+											5 4
+											3 4
+											1 4
+											-7 4
+											-2 4
+											1 4
+											0 4
+											-9 4
+											-4 4
+											-2 8
+											-9 4
+											-4 4
+											-2 8
+											nan 4
+										</script>
 
 										<HR>
-										<h2>"Cursed Sandstorm"</h2>
-										<h3>by Liz</h3>
+
+										<h2>"Rosie"</h2>
+										<h3>by "not shark"</h3>
 
 										<audio controls>
-											<source src="Statements/cursed_sandstorm.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
+											<source src="statements/rosie.mp3" type="audio/mp3">
+										  Your browser does not support the audio element.
+										  </audio>
+										  <p></p>
+										<img src = "statements/rosie.png">
 
-									<HR>
-										<h2>"Come Hang Out"</h2>
-										<h3>by Alexa</h3>
-
-										<h4>V1</h4>
-										<audio controls>
-											<source src="Statements/comehangout.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
-										
-										<h4>V2</h4>
-										<audio controls>
-											<source src="Statements/comehangout2.0.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
-
-									<HR>
-										<h2>"Blue Da Boo Dee"</h2>
-										<h3>by Ron Burgandy</h3>
-										<audio controls>
-											<source src="Statements/Blue.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
-
-									<HR>
-										<h2>"what r those"</h2>
-										<h3>by Griffin McMann</h3>
-										<audio controls>
-											<source src="Statements/whatrthose.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
-
-									<HR>
-										<h2>"Untitled"</h2>
-										<h3>by Anonymous</h3>
-										<audio controls>
-											<source src="Statements/untitled.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
-
-									<HR>
-										<h2>"Horrifying Birthday"</h2>
-										<h3>by Mike Sicilia</h3>
-										<audio controls>
-											<source src="Statements/horrifyingbirthday.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
-
-									<HR>
-										<h2>"Future" / "Drum"</h2>
-										<h3>by David Singleton</h3>
-										<audio controls>
-											<source src="Statements/future.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
-
-										<iframe src = "Statements/Drum.html" width="800" height="800"></iframe>
-
-									<HR>
-										<h2>"Tiger Comb"</h2>
-										<h3>by Manning</h3>
-										<audio controls>
-											<source src="Statements/tigercomb.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
-
-
-									<HR>
-										<h2>"Buy U A Drank" / "This Will Be Stuck in Your Head"</h2>
-										<h3>by Mike Tecce</h3>
-
-										<audio controls>
-											<source src="Statements/BUAD.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio>
 										<p>
-											<audio controls>
-												<source src="Statements/Mii.mp3" type="audio/mpeg">
-												Your browser does not support the audio element.
-												</audio>
+											My statement is a spectrogram image.
+											It uses an image of Rosemary Walten from The Walten Files (with inverted colors because it looks better on the spectrogram).  The code used to generate it is as follows:
+
+
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											w = 4198
+											h = 1024
+											y = im2sound("RosieInvert.png", w, h, hann_window, 10)
+											ipd.Audio(y, rate=sr)
+										</script>
+										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
 										</p>
 
+										<iframe src = "statements/rosie.html" width="80%" height=700></iframe>
+
+
+										</p>
 	
+										<HR>
 
+										<h2>"Tralie"</h2>
+										<h3>by "bentdoug"</h3>
 
-
+										<audio controls>
+											<source src="statements/tralie.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
 										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
+										</p>
+
+										<iframe src = "statements/tralie.html" width="80%" height=800></iframe>
+
+
+										</p>
+
+
+										<HR>
+
+										<h2>"Avicii"</h2>
+										<h3>by Mike E</h3>
+
+										<audio controls>
+											<source src="statements/avicii.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
+										</p>
+
+										<iframe src = "statements/avicii.html" width="80%" height=500></iframe>
+
+
+										</p>
+										
+										<HR>
+										<h2>"Let's Groove"</h2>
+										<h3>by Diane</h3>
+
+										<audio controls>
+											<source src="statements/ewf.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												-1 6
+												2 2
+												4 4
+												2 4
+												1 6
+												6 4
+												4 2
+												6 4
+												-1 6
+												2 2
+												4 4
+												2 4
+												1 6
+												6 4
+												4 2
+												6 4
+											</script>
+
+
+										<HR>
+
+										<h2>"Alien Suisei" (Art by kento @imarandomartist)</h2>
+										<h3>by Dylan</h3>
+
+										<audio controls>
+											<source src="statements/aliensuisei.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
+										</p>
+
+										<iframe src = "statements/aliensuisei.html" width="80%" height=680></iframe>
+
+
+										</p>
+
+
+										<HR>
+
+										<h2>"Fallen CS372Guru"</h2>
+										<h3>by CS372Guru</h3>
+
+										<audio controls>
+											<source src="statements/cs372guru.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
+										</p>
+
+										<iframe src = "statements/cs372guru.html" width="80%" height=680></iframe>
+
+
+
+									<HR>
+
+										<h2>"The Very Best"</h2>
+										<h3>by Hannah</h3>
+
+										<audio controls>
+											<source src="statements/poke.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
+										</p>
+
+										<iframe src = "statements/poke.html" width="80%" height=600></iframe>
+
+									<HR>
+
+										<h2>Not <a href = "https://www.youtube.com/watch?v=kGEG4JiOqew">4'33"</a> </h2>
+										<h3>by Kacey</h3>
+
+										<audio controls>
+											<source src="statements/Not433.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
+										</p>
+
+										<iframe src = "statements/Not433.html" width="80%" height=670></iframe>
+
+
+									<HR>
+										<h2>"Monster Call"</h2>
+										<h3>by PANDA</h3>
+
+										<audio controls>
+											<source src="statements/monstercall.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+
+											<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+												6 1
+												5 1
+												0 1
+												3 1
+												2 1
+												2 1
+												nan -1
+												0 1
+												2 1
+												2 1
+												nan -1
+												0 1
+												nan 1
+												0 1
+												2 1
+											</script>
+
+
+
+										<HR>
+
+											<h2>"Song of The Robot"</h2>
+											<h3>by Anonymous</h3>
+	
+											<audio controls>
+												<source src="statements/songofrobot.mp3" type="audio/mp3">
+												Your browser does not support the audio element.
+												</audio>
+												<p></p>
+											
+											<p>
+												I thought it'd be fun to mess around with DALL-E, the AI art generator, to make a png to make a tune from. I made a prompt along the lines of "Robot performs for alien planet of robots" and ended up with this image, which I converted to grayscale and passed into the im2sound algorithm. I thought the resulting "song" sounded quite alien/robotic. I like the idea that this is considered a masterpiece to alien/robot ears
+											</p>
+
+											<p>
+												Unfortunately, mp3 compression cuts off the head, which is in the high frequencies that are lost
+											</p>
+											<iframe src = "statements/songofrobot.html" width="80%" height=670></iframe>
+
+											<p>
+												Original image here:
+											</p>
+											<img src = "statements/songofrobot.png" width="40%">
+
+										<HR>
+
+										<h2>"Usher-ified Cough"</h2>
+										<h3>by Abby</h3>
+
+										<audio controls>
+											<source src="statements/ushercough.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+										
+
+										<HR>
+											<h2>"Mystery Beeps"</h2>
+											<h3>by Anonymous</h3>
+	
+											<audio controls>
+												<source src="statements/mysterybeeps.mp3" type="audio/mp3">
+												Your browser does not support the audio element.
+												</audio>
+												<p></p>
+
+										<HR>
+
+											<h2>"Lucky"</h2>
+											<h3>by Anonymous</h3>
+
+											<audio controls>
+												<source src="statements/lucky.mp3" type="audio/mp3">
+												Your browser does not support the audio element.
+												</audio>
+												<p></p>
+
+										<HR>
+
+										<h2>"Vocoder Vocoded"</h2>
+										<h3>by Sean Sharo</h3>
+
+										<p>
+											I found a clipart model of a vocoder online and had the Phase retrieval use that picture to create a noise for it
+										</p>
+
+										<audio controls>
+											<source src="statements/vocodervocoded.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
+										</p>
+
+										<iframe src = "statements/vocodervocoded.html" width="80%" height=670></iframe>
+
+										<HR>
+										<h2>"Dog"</h2>
+										<h3>by Anonymous</h3>
+
+										<audio controls>
+											<source src="statements/dog.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+										
+										<p>
+											Using the default parameters in librosa after mp3-compressing, we get this:
+										</p>
+
+										<iframe src = "statements/dog.html" width="80%" height=670></iframe>
+
+									<HR>
+										<h2>"Tralie Sig"</h2>
+										<h3>by James</h3>
+
+										<audio controls>
+											<source src="statements/traliesig.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+
+										<iframe src = "statements/traliesig.html" width="80%" height=500></iframe>
+
+
+									<HR>
+										<h2>"Mystery Beeps"</h2>
+										<h3>by Anonymous</h3>
+
+										<audio controls>
+											<source src="statements/mysterybeeps.mp3" type="audio/mp3">
+											Your browser does not support the audio element.
+											</audio>
+											<p></p>
+
+
                                 </div>
 						</div>
 					</div>
