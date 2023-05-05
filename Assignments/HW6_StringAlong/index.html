@@ -388,7 +388,7 @@
 											<li>
 												Send the output of the last step through the harmonics, amplitude, and subtractive filter decoders to get tensors <code>C</code>, <code>A</code>, and <code>S</code>, respectively.  <b>Based on the input frequency, zero out the elements in the harmonics tensor <code>C</code> that are above the Nyquist rate (sr/2) to avoid aliasing during training.</b>  Then, normalize the remaining frequencies as follows:
 												<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-													C = C/(1e-8+torch.sum(C, axis=2, keepdims=True))
+													C = C/(1e-8+torch.sum(C, axis=2, keepdim=True))
 												</script>
 												(this is not a detail they mentioned in the paper, but it's important)
 											</li>
