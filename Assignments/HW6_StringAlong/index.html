@@ -383,7 +383,14 @@
 												<a href = "https://pytorch.org/docs/stable/generated/torch.cat.html#torch.cat">Concatenate</a> the outputs of the above two MLPs along axis 2, and pass them through the GRU
 											</li>
 											<li>
-												Pass the outputs of the <code>F</code> and <code>L</code> MLP with the output of the GRU, and send them through the third MLP.
+												Pass the outputs of the <code>F</code> and <code>L</code> MLP with the output of the GRU, and send them through the third MLP.  
+
+												<p>
+													<b>NOTE: </b> The output of the GRU is actually a tuple, and you only want the first element; that is, say something like:
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+														output = gru(input)[0]
+													</script>
+												</p>
 											</li>
 											<li>
 												Send the output of the last step through the harmonics, amplitude, and subtractive filter decoders to get tensors <code>C</code>, <code>A</code>, and <code>S</code>, respectively.  <b>Based on the input frequency, zero out the elements in the harmonics tensor <code>C</code> that are above the Nyquist rate (sr/2) to avoid aliasing during training.</b>  Then, normalize the remaining frequencies as follows:
