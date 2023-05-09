@@ -383,7 +383,7 @@
 												<a href = "https://pytorch.org/docs/stable/generated/torch.cat.html#torch.cat">Concatenate</a> the outputs of the above two MLPs along axis 2, and pass them through the GRU
 											</li>
 											<li>
-												Pass the outputs of the <code>F</code> and <code>L</code> MLP with the output of the GRU, and send them through the third MLP.  
+												Concatenate the outputs of the <code>F</code> and <code>L</code> MLP with the output of the GRU, and send them through the third MLP.  
 
 												<p>
 													<b>NOTE: </b> The output of the GRU is actually a tuple, and you only want the first element; that is, say something like:
