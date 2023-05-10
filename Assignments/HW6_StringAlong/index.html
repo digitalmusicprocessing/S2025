@@ -393,19 +393,28 @@
 												</p>
 											</li>
 											<li>
-												Send the output of the last step through the harmonics, amplitude, and subtractive filter decoders to get tensors <code>C</code>, <code>A</code>, and <code>S</code>, respectively.  <b>Based on the input frequency, zero out the elements in the harmonics tensor <code>C</code> that are above the Nyquist rate (sr/2) to avoid aliasing during training.</b>  Then, normalize the remaining frequencies as follows:
-												<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-													C = C/(1e-8+torch.sum(C, axis=2, keepdim=True))
-												</script>
-												(this is not a detail they mentioned in the paper, but it's important)
+												Send the output of the last step through the harmonics, amplitude, and subtractive filter decoders to get tensors <code>C</code>, <code>A</code>, and <code>S</code>, respectively.   
 											</li>
 											<li>
 												Send <code>C</code>, <code>A</code>, and <code>S</code> through a <code>modified_sigmoid</code>, which is described in the paper section 3.2, and which I've provided for you.  This keeps the outputs nonnegative, which is important
 											</li>
 											<li>
+												Normalize the harmonics to sum to 1
+												<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													C = C/(1e-8+torch.sum(C, axis=2, keepdim=True))
+												</script>
+												(this is not a detail they mentioned in the paper, but it can help with training)
+												<p></p>
+											</li>
+											<li>
 												Finally, send the current reverb parameters through a hyperbolic tangent (<a href = "https://pytorch.org/docs/stable/generated/torch.tanh.html"><code>torch.tanh</code></a>), and return <code>A</code>, <code>C</code>, <code>S</code>, and the transformed reverb from the <code>forward</code> method
 											</li>
 										</ol>
+
+										<h4>Extra Credit (+2)</h4>
+										<p>
+											Based on the input frequency, zero out the elements in the harmonics tensor <code>C</code> that are above the Nyquist rate (sr/2) to avoid aliasing during training, right before you normalize in step 7.  This will also help the training to go better, particularly if you decide to use 100 harmonics instead of 50, which will capture the lower notes better.
+										</p>
 
 										<h4>Tip #1: Shapes</h4>
 										<p>
@@ -482,7 +491,7 @@
 											<p></p>
 										</li>
 										<li>
-											Use <code>C</code>, <code>A</code>, and <code>F</code> to create a set of harmonics at the appropriate amplitudes, and sum them together for the additive synthesis audio components.  <b>You should do this completely without loops using methods like <code>torch.cumsum</code>, <code>torch.sum</code>, <code>torch.arange</code>, and <code><a href = "https://pytorch.org/docs/stable/tensor_view.html">view</a></code></b>.  Otherwise, the backpropagation in the training will be very slow later.
+											Use <code>C</code>, <code>A</code>, and <code>F</code> to create a set of harmonics at the appropriate amplitudes, and sum the harmonics together for the additive synthesis audio components.  <b>You should do this completely without loops using methods like <code>torch.cumsum</code>, <code>torch.sum</code>, <code>torch.arange</code>, and <code><a href = "https://pytorch.org/docs/stable/tensor_view.html">view</a></code></b>.  Otherwise, the backpropagation in the training will be very slow later.
 											<p></p>
 										</li>
 										<li>
