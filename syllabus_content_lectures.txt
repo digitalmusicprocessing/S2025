@@ -69,7 +69,7 @@ The Short-Time Fourier Transform (STFT), Spectrograms
 LECTURE
 Complex Numbers Review, Euler's Formula, Complex Definition of DFT And Phase
 
-
+<ul><li><a href = "https://www.youtube.com/watch?v=Ffka-hPzug0">The Other Square Wave</a> (i.e. how we don't pereceive constant phase offsets)</li></ul>
 LECTURE
 Phasor Mirroring, Aliasing, Inverse DFT
 
