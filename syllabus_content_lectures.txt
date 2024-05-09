@@ -115,6 +115,14 @@ Audio Fingerprints / The Shazam Algorithm
 
 <ul><li><a href = "https://www.princeton.edu/~cuff/ele201/files/Wang03-shazam.pdf">The original Shazam Paper</a></li><li><a href = "https://github.com/ursinus-cs372-s2023/pyshazam">Our Python Implementation of Shazam</a></li><li><a href = "https://slideslive.com/38917442/characterizing-musical-correlates-of-largescale-discovery-behavior?ref=speaker-19235">Blair Kaneshiro Talk</a></li><li><a href = "https://www.youtube.com/watch?v=puVYtkh-LO4">Cinco Midi Organiser</a></li>
 LECTURE
+Fundamental Frequency Estimation, Autotuners
+
+<ul><li><a href = "ClassExercises/Week11">Class notes on autotuners</a></li><li><a href = "https://www.youtube.com/watch?v=879vLYX02U8">Video on autotuners</a></li><li><a href = "https://www.justinsalamon.com/news/replace-your-favourite-singer-with-a-robot">Justin Salamon: Replace Your Favorite Singer With a Robot</a></li></ul>
+LECTURE
+LPC, Autoregressive Coding
+
+<ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Notes on Linear Predictive Coding</a></li></ul>
+LECTURE
 Harmonic-Percussive Source Separation, Matrix Multiplication for Audio Activations
 
 <ul><li><a href = "../Modules/Module18/Video0">Class notes on HPSS</a></li><li><a href = "https://www.researchgate.net/profile/Derry-Fitzgerald/publication/254583990_HarmonicPercussive_Separation_using_Median_Filtering/links/00b495396ef03235af000000/Harmonic-Percussive-Separation-using-Median-Filtering.pdf">FitzGerald 2010 Paper</a></li></ul>
@@ -122,14 +130,6 @@ LECTURE
 Source Separation via Nonnegative matrix factorization (NMF)
 
 <ul><li><a href = "ClassExercises/Week10/Week10_NMF">Class Notes on NMF</a></li><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
-LECTURE
-Intermezzo: Dynamic Programming Beat Tracking
-
-<ul><li><a href = "ClassExercises/BeattrackNotes">Class notes on dynamic programming beat tracking</a></li></ul>
-LECTURE
-Fundamental Frequency Estimation, Autotuners
-
-<ul><li><a href = "ClassExercises/Week11">Class notes on autotuners</a></li><li><a href = "https://www.youtube.com/watch?v=879vLYX02U8">Video on autotuners</a></li><li><a href = "https://www.justinsalamon.com/news/replace-your-favourite-singer-with-a-robot">Justin Salamon: Replace Your Favorite Singer With a Robot</a></li></ul>
 LECTURE
 Self-Similarity in Audio, Spectral Clustering
 
@@ -167,17 +167,17 @@ Autoencoders Sneak Preview, Differentiable Digital Signal Processing
 
 <ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li></ul>
 LECTURE
-2D Convolutional Networks: CREPE (Fundamental Frequency) And Deep beat tracking
+2D Convolutional Networks, Deep beat tracking
 
-<ul><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
+<ul><li><a href = "https://ofai.at/~jan.schlueter/pubs/2014_icassp.pdf">Schlüter/Böck 2014: "Improved Musical Onset Detection with Convolutional Neural Networks</a></li><li><a href = "https://www.eurasip.org/Proceedings/Eusipco/eusipco2019/Proceedings/papers/1570533824.pdf">Davies/Böck 2019: Temporal Convolutional Neural Networks for Musical Audio Beat Tracking</a></li></ul>
 LECTURE
-Autoencoders, LPC, Autoregressive Coding
+CREPE And Pesto
 
-<ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Notes on Linear Predictive Coding</a></li><li><a href = "https://www.deepmind.com/blog/wavenet-a-generative-model-for-raw-audio">DeepMind WaveNet blog post</a></li></ul>
+<ul><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li></ul>
 LECTURE
-Wave-U-Net for Demixing
+Demucs: A User's Guide
 
-<ul><li><a href = "https://arxiv.org/pdf/1806.03185.pdf">Wave-U-Net Paper</a></li><li><a href = "https://github.com/ursinus-cs372-s2023/Week15_WaveUNet/blob/main/WaveUNetSol.ipynb">Code from class</a></li></ul>
+
 LECTURE
 Ethics Discussion: Music in The Era of Generative AI
 
