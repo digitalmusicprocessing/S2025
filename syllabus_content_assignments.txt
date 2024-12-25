@@ -61,7 +61,7 @@ Assignment 2 Due
 HW3 Due
 
 2025-03-20
-<a href = "../Modules/Module16/Video0">Module 16: Exercise 1 Audi Onsets/oFfsets</a> Due Before Class
+<a href = "../Modules/Module16/Video0">Module 16: Exercise 1 Audio Onsets/Offsets</a> Due Before Class
 
 2025-03-19
 <a href = "../Modules/Module16/Video2">Module 16: Exercise 2 Autocorrelation and 3 Matrix Multiplication</a> Due Before Class
@@ -73,22 +73,28 @@ HW3 Due
 <a href = "../Modules/Module16/Video4">Module 16: Exercise 4 Mel Spectrogram</a> Due Before Class
 
 2025-03-24
+<a href = "../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a> Due Before Class
+
+2025-03-26
+Module 17.5: Fundamental Frequency / pYin Due Before Class
+
+2025-03-28
 <a href = "../Modules/Module18/Video0">Module 18: Matrix Activations for Spectral Decompositions</a> Due Before Class
 
-2025-04-04
-Module 16.5: Fundamental Frequency / pYin Due Before Class
+2025-04-02
+Module 18.5: Linear Predictive Coding (LPC) Due Before Class
 
-2025-03-31
+2025-04-04
 HW4 Part 1 Due
 
 2025-04-01
 HW4 Due
 
 2025-04-07
-<HR><a href = "Assignments/HW5_LetItBee">HW5: Let It Bee</a> Out
+<HR><a href = "Assignments/HW5_LetItBee">HW5: The Concatenator</a> Out
 
 2025-04-07
-<a href = "../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a> Due Before Class
+Module 19: Self-Similarity Matrices Due Before Class
 
 2025-04-09
 <a href = "../Modules/Module20/Video1">Module 20 Parts 1-3</a> Due Before Class
@@ -97,15 +103,15 @@ HW4 Due
 <a href = "../Modules/Module20/Video3">Rest of Module 20</a> Due Before Class
 
 2025-04-18
-<a href = "../Modules/Module21/Video0">Module 21: Neural Networks/a> Due Before Class
+<a href = "../Modules/Module21/Video0">Module 21: Neural Networks</a> Due Before Class
 
 2025-04-21
+HW5 Due
+
+2025-04-25
+<HR><a href = "Assignments/HW6_StringAlong">HW6: String Along</a> Out
+
+2025-04-25
 <a href = "../Modules/Module22/Video1">Module 22: Multiclass Classification, Convolutional Neural Networks, And Overfitting</a> Due Before Class
-
-2025-04-25
-<HR>HW5 Due
-
-2025-04-25
-<a href = "Assignments/HW6_StringAlong">HW6: String Along</a> Out
 
 2025-04-28
