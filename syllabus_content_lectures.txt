@@ -23,13 +23,13 @@ Finish Pythagorean Tuning, Chirps, Vibrato, Frequency Sonification
 
 
 LECTURE
+Square Wave Tunes, Risset Beats with Phase Aggregation
+
+<ul><li><a href = "Assignments/HW1_RissetBeats/HappyBirthdaySquareWaves.html">Happy Birthday Square Waves</a></li><li><a href = "Assignments/HW1_RissetBeats/PhaseAggregation.html">Phase Aggregation (Part 2) Notes</a></li> </ul>
+LECTURE
 Zero Crossings, Consonant/Vowel Filtering, Dynamics, Intensity, Loudness
 
 
-LECTURE
-HW1: Risset Beats Q&A, Work Day
-
-<ul><li><a href = "Assignments/HW1_RissetBeats/HappyBirthdaySquareWaves.html">Happy Birthday Square Waves</a></li><li><a href = "Assignments/HW1_RissetBeats/PhaseAggregation.html">Phase Aggregation (Part 2) Notes</a></li> </ul>
 LECTURE
 Timbre, FM Synthesis, ADSR
 
@@ -86,9 +86,13 @@ LECTURE
 The Z-Transform, Lowpass Filters / Highpass Filters, frequency analysis of comb filters
 
 <ul><li><a href = "https://learningsynths.ableton.com/filters/filters-in-the-real-world">Ableton: Filters in The Real World</a></li></ul>
+LECTURE
+LPC, Autoregressive Coding, LPC-Based Cross-Synthesis
+
+<ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Hyunk-Suk Kim's Notes on Linear Predictive Coding</a></li></ul>
 SECTION
 <a name = "classical">Unit 3: Classical Algorithms For Digital Music Processing</a>
-Now that we have frequency domain tools down, we're going to build things on top of it to address several higher level problems, including: <ul><li>Tempo estimation and beat tracking</li><li>Fundamental frequency tracking</li><li>The "Shazam algorithm" for audio fingerprinting</li><li>Segment boundary detection in music</li><li>Cross-version comparison and time warping</li><li>"Un-mixing" audio, or separating audio into its tracks</li></ul>All of these problems can be accomplished with straightforward mathematical algorithms built on top of the Short-Time Fourier Transform (STFT).
+Now that we have frequency domain tools down, we're going to build things on top of it to address a wide variety of higher level problems, including: <ul><li>Tempo estimation and beat tracking</li><li>Fundamental frequency tracking</li><li>The "Shazam algorithm" for audio fingerprinting</li><li>Segment boundary detection in music</li><li>Cross-version comparison and time warping</li><li>"Un-mixing" audio, or separating audio into its tracks</li></ul>All of these problems can be accomplished with straightforward mathematical algorithms built on top of the Short-Time Fourier Transform (STFT).
 
 LECTURE
 Rhythm, Beats, And Audio novelty functions
@@ -122,10 +126,6 @@ LECTURE
 Source Separation via Nonnegative matrix factorization (NMF)
 
 <ul><li><a href = "ClassExercises/Week10/Week10_NMF">Class Notes on NMF</a></li><li><a href = "https://papers.nips.cc/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf">Original Lee/Seung Paper on NMF</a></li></ul>
-LECTURE
-LPC, Autoregressive Coding, LPC-Based Cross-Synthesis
-
-<ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Hyunk-Suk Kim's Notes on Linear Predictive Coding</a></li></ul>
 LECTURE
 Audio Fingerprints / The Shazam Algorithm
 
@@ -175,10 +175,11 @@ Demucs: A User's Guide
 
 <ul><li><a href = "https://github.com/facebookresearch/demucs/tree/v2">Facebook research demucs link</a></li></ul>
 LECTURE
-Stable Audio: A User's Guide
+Rave: A User's Guide
 
 
 LECTURE
-Ethics Discussion: Generative Music in The Current Wave of AI
+Stable Audio: A User's Guide
+
 
 
