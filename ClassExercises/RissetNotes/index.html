@@ -41,208 +41,117 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-                                        <h1><a href = "index.html">Assignment 1: Risset Beats</a></h1>
-                                        <h2>Musical Statements</h2>
+                                        <h2>Notes on Risset Beats</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
 									</header>
 
 									<div id="page-content">
+										<p>
+											As we saw in our <a href = "../../ClassExercises/Week2/Week2_BeatPhase">class exercise</a>, it is possible to control where the peaks of beat frequencies occur by shifting their component cosines in time.  We can also make sure a beat occurs only once over an interval of time by choosing the right beat frequency.  For example, let's say that we have 5 seconds of audio (called <code>tune_length</code> in the code), and we want to make a beat with a 330hz frequency that occurs at halfway through at 2.5 seconds.  For it to occur only once, we'll want the period <code>T</code> of the beat to be 5 seconds, which means the beat frequency <code>f</code> should be <b>0.2hz</b> (recall that <code>f = 1/T</code>).  So choosing 329.8hz or 330.2 hz would be an appropriate choice.  A function that makes this happens is this
+										</p>
 
+										<h3>
+											\[ y(t) = \cos(2 \pi * 330 (t - 2.5)) + \cos(2 \pi * 330.2 (t - 2.5)) \]
+										</h3>
 
-										<h2>"Contrary Tone"</h2>
-										<h3>by Josh</h3>
+										<p>
+											Below is the audio we get from this
+										</p>
 
-										<audio controls>
-											<source src="statements/contrarytone.wav" type="audio/wav">
-										  Your browser does not support the audio element.
-										  </audio> 
+										<table>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/330beat1.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td><img src = "Examples/330beat1.png"></td>
+											</tr>
+										</table>
+										<p>
+											One thing that's a little unfortunate about this from a music making perspective is that the onset is very gradual.  It would be even worse if we were making a much longer tune.  To make the note stand out more over a shorter period of time, we can create more beats nearby.  For example, if we put together 329.6hz, 329.8hz, 330hz, 330.2hz, and 330.4 hz, we get the following:
+										</p>
 
-										<HR>
-										<h2>"Result44100sr500fpn"</h2>
-										<h3>by Ethan</h3>
+										<h3>
+											\[ y(t) = \sum_{f = 329.6, 329.8, 330, 330.2, 330.4} \cos(2 \pi f (t - 2.5)) \] 
+										</h3>
+										
+										<table>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/330beat2.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td><img src = "Examples/330beat2.png"></td>
+											</tr>
+										</table>
+										
 
-										<audio controls>
-											<source src="statements/Result44100sr500fpn.mp3" type="audio/mp3">
-										Your browser does not support the audio element.
-										</audio> 
+										<p>
+											This definitely seems to stand out more against the background, but why does this happen?  To see this, we note that there are now beats all over the place!  In fact, we will have <b>N*(N-1)/2</b> beats for N frequencies.  In this example, we have 4 beats at 0.2hz, but also 3 beats at double that frequency, 2 beats at triple that frequency, and one beat at quadruple that frequency, for a total of 10 beats:
+											
+										<table>
+											<tr><td>Beats at 0.2hz (Period 5)</td><td>329.6, 329.8</td><td>329.8, 340</td><td>340, 340.2</td><td>340.2, 340.4</td></tr>
+											<tr><td>Beats at 0.4hz (Period 5/2)</td><td>329.6, 340</td><td>329.8, 340.2</td><td>340, 340.4</td></tr>
+											<tr><td>Beats at 0.6hz (Period 5/3)</td><td>329.6, 340.2</td><td>329.8, 330.4</td></tr>
+											<tr><td>Beats at 0.8hz (Period 5/4)</td><td>329.6, 340.4</td></tr>
+										</table>
+										</p>
 
-										<HR>
-											<h2>"W00t"</h2>
-											<h3>by Ben</h3>
-	
-											<audio controls>
-												<source src="statements/w00t.wav" type="audio/mp3">
-											Your browser does not support the audio element.
-											</audio> 
+										<p>
+											These higher frequency "harmonic beats" will reach peaks in more places than the base beat, but they do all reach peaks at the chosen time offset, where they work constructively together to make a much stronger onsets.  In other places, they make these "side lobes."  But we can cut down on these if we use more frequencies.  For example, if we take 21 frequencies in intervals of 0.2 between 328hz and 332 hz, we get the following
+										</p>
 
-										<HR>
-											<h2>"Slow Shuffle"</h2>
-											<h3>by Mike</h3>
-	
-											<audio controls>
-												<source src="statements/slowShuffle.mp3" type="audio/mp3">
-											Your browser does not support the audio element.
-											</audio> 
+										<h3>
+											\[ y(t) = \sum_{f = 328, 328.2, ..., 331.8, 332} \cos(2 \pi f (t - 2.5)) \] 
+										</h3>
 
+										<table>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/330beat3.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td><img src = "Examples/330beat3.png"></td>
+											</tr>
+										</table>
 
-										<HR>
-											<h2>"Stella Stella" (By Hoshimachi Suisei)</h2>
-											<h3>by Dylan</h3>
-	
-											<audio controls>
-												<source src="statements/stellaStella.mp3" type="audio/mp3">
-											Your browser does not support the audio element.
-											</audio> 
+										<p>
+											Now we're getting somewhere!  This note is highly localized to 2.5 seconds in time now.  If we took this a step further, we could also put two notes together in this fashion.  Let's say, for example, that we wanted to put a note that's 287hz (a D) right before this note at t = 1.  We could then simply add these two together
+										</p>
 
+										<h3>
+											\[ y(t) = \sum_{f = 328, 328.2, ..., 331.8, 332} \cos(2 \pi f (t - 2.5)) + \sum_{f = 285, 285.2, ..., 288.8, 289} \cos(2 \pi f (t - 1)) \]
+										</h3>
 
-										<HR>
-											<h2>"Mymstat"</h2>
-											<h3>by Connor</h3>
-	
-											<audio controls>
-												<source src="statements/Mymstat.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
+										<table>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="Examples/2beats.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td><img src = "Examples/2beats.png"></td>
+											</tr>
+										</table>
 
-										<HR>
-											<h2>"The Solitary Reflection"</h2>
-											<h3>by JavascriptGuru2022</h3>
-	
-											<audio controls>
-												<source src="statements/WG_Musical_Statement-2.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<!--<HR>
-											<h2>"Space To Grow"</h2>
-											<h3>by Diane</h3>
-	
-											<audio controls>
-												<source src="statements/diane.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-										!-->
-
-										<HR>
-											<h2>"The Pokemon Theme Song: Challenged Accepted and Succeeded"</h2>
-											<h3>by Hannah Jeffers</h3>
-	
-											<audio controls>
-												<source src="statements/pokemonthemesong.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<HR>
-											<h2>"Clocks Intro"</h2>
-											<h3>by David</h3>
-	
-											<audio controls>
-												<source src="statements/clocks_intro.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<HR>
-											<h2>"Spooks"</h2>
-											<h3>by Kacey</h3>
-	
-											<audio controls>
-												<source src="statements/spooks.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-
-										<HR>
-											<h2>"Mary's Lamb"</h2>
-											<h3>by Emily Musgrove</h3>
-	
-											<audio controls>
-												<source src="statements/MaryHadALittleLamb.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<HR>
-											<h2>"Mario"</h2>
-											<h3>by Abby</h3>
-	
-											<audio controls>
-												<source src="statements/mario.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<HR>
-											<h2>"Pantheon Champion Theme from <a href = "https://youtu.be/9Zub8agQjrw">League of Legends</a>"</h2>
-											<h3>by Brenden</h3>
-	
-											<audio controls>
-												<source src="statements/Pantheon.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<HR>
-											<h2>"Buddy Holly"</h2>
-											<h3>by A</h3>
-	
-											<audio controls>
-												<source src="statements/buddy.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-
-										<HR>
-											<h2>"SSTune"</h2>
-											<h3>by Anonymous</h3>
-	
-											<audio controls>
-												<source src="statements/SSTune.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<HR>
-											<h2>"Creepy circus intro"</h2>
-											<h3>by Roger</h3>
-	
-											<audio controls>
-												<source src="statements/creepycircus.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-
-										<HR>
-											<h2>"Kaleidoscope"</h2>
-											<h3>by Anonymous</h3>
-	
-											<audio controls>
-												<source src="statements/kaleidascope.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<HR>
-											<h2>"Matt Wallace"</h2>
-											<h3>by Matt Wallace</h3>
-	
-											<audio controls>
-												<source src="statements/MattWallace.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-
-
-										<HR>
-											<h2>"Megalovania"</h2>
-											<h3>by James</h3>
-	
-											<audio controls>
-												<source src="statements/megalovania.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
-
-										<HR>
-											<h2>"Early Morning Quiet"</h2>
-											<h3>by Henry</h3>
-	
-											<audio controls>
-												<source src="statements/EarlyMorningQuiet.wav" type="audio/wav">
-											Your browser does not support the audio element.
-											</audio> 
+										<p>
+											As you can imagine, it's possible to make an entire composition this way, and the code to do so will be particularly short with the help of loops.  So that's what we'll be doing in <a href = "../../Assignments/HW1_RissetBeats/">assignment 1</a>!
+										</p>
 										
                                     
                                 </div>
