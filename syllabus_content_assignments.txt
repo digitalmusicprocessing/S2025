@@ -55,7 +55,7 @@ Assignment 1 Submission 1 Due
 Assignment 2 Submission 2 Due
 
 2025-02-24
-<HR>Assignment 3: Spectacular Spectrograms Out
+<HR><a href = "Assignments/HW3_Vocoders/index.html">Assignment 3: Spectacular Spectrograms</a> Out
 
 2025-02-24
 <a href = "../Modules/Module13/Video1.html">Module 13: Aliasing / Inverse Complex DFT</a> Due Before Class
@@ -76,7 +76,7 @@ Assignment 3 Submission 1 Due
 Assignment 3 Submission 2 Due
 
 2025-03-21
-<HR><a href = "Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a> Out
+<HR>HW4: Tempo Estimation And Beat Tracking Out
 
 2025-03-21
 <a href = "../Modules/Module16/Video2">Module 16: Exercise 2 Autocorrelation and 3 Matrix Multiplication</a> Due Before Class
@@ -121,7 +121,7 @@ Module 19: Self-Similarity Matrices Due Before Class
 HW5 Due
 
 2025-04-25
-<HR><a href = "Assignments/HW6_StringAlong">HW6: String Along</a> Out
+<HR>HW6: String Along Out
 
 2025-04-25
 <a href = "../Modules/Module22/Video1">Module 22: Multiclass Classification, Convolutional Neural Networks, And Overfitting</a> Due Before Class
