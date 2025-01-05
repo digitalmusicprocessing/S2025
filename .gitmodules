@@ -1,0 +1,9 @@
+[submodule "Assignments/HW1_RissetBeats/HW1_RissetBeats"]
+	path = Assignments/HW1_RissetBeats/HW1_RissetBeats
+	url = https://github.com/digitalmusicprocessing/HW1_RissetBeats.git
+[submodule "Assignments/HW3_Vocoders/HW3_Vocoders"]
+	path = Assignments/HW3_Vocoders/HW3_Vocoders
+	url = https://github.com/digitalmusicprocessing/HW3_Vocoders.git
+[submodule "ClassExercises/Week1/Week1_AudioReverseGame"]
+	path = ClassExercises/Week1/Week1_AudioReverseGame
+	url = https://github.com/digitalmusicprocessing/Week1_AudioReverseGame.git

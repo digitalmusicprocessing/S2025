@@ -47,7 +47,11 @@
 
 									<div id="page-content">
 										<p>
-											As we saw in our <a href = "../../ClassExercises/Week2/Week2_BeatPhase">class exercise</a>, it is possible to control where the peaks of beat frequencies occur by shifting their component cosines in time.  We can also make sure a beat occurs only once over an interval of time by choosing the right beat frequency.  For example, let's say that we have 5 seconds of audio (called <code>tune_length</code> in the code), and we want to make a beat with a 330hz frequency that occurs at halfway through at 2.5 seconds.  For it to occur only once, we'll want the period <code>T</code> of the beat to be 5 seconds, which means the beat frequency <code>f</code> should be <b>0.2hz</b> (recall that <code>f = 1/T</code>).  So choosing 329.8hz or 330.2 hz would be an appropriate choice.  A function that makes this happens is this
+											One can create a musical note sequence synthesizer with a very unique <a href = "https://en.wikipedia.org/wiki/Timbre">timbre</a> based on something called a <b>Risset beat</b>, as invented by the French composer <a href = "https://en.wikipedia.org/wiki/Jean-Claude_Risset">Jean-Claude Risset</a>.  A Risset beat is a series of <a href = "../../../Modules/Module2/Video4">beat frequencies</a> that all line up at the same time to make a pitch that stands out.  In a nutshell, it's possible to write down a mathematical function that's just a sum of sines and cosines which plays an entire tune, which repeats itself infinitely!
+										</p>
+
+										<p>
+											As we saw in a <a href = "../../ClassExercises/Week2/Week2_BeatPhase">class exercise</a>, it is possible to control where the peaks of beat frequencies occur by shifting their component cosines in time.  We can also make sure a beat occurs only once over an interval of time by choosing the right beat frequency.  For example, let's say that we have 5 seconds of audio (called <code>tune_length</code> in the code), and we want to make a beat with a 330hz frequency that occurs at halfway through at 2.5 seconds.  For it to occur only once, we'll want the period <code>T</code> of the beat to be 5 seconds, which means the beat frequency <code>f</code> should be <b>0.2hz</b> (recall that <code>f = 1/T</code>).  So choosing 329.8hz or 330.2 hz would be an appropriate choice.  A function that makes this happens is this
 										</p>
 
 										<h3>
@@ -149,11 +153,198 @@
 											</tr>
 										</table>
 
+										<h3><a name = "composition">Basic Algorithm for Making Compositions</a></h3>
+
 										<p>
-											As you can imagine, it's possible to make an entire composition this way, and the code to do so will be particularly short with the help of loops.  So that's what we'll be doing in <a href = "../../Assignments/HW1_RissetBeats/">assignment 1</a>!
+											As you can imagine, it's possible to make an entire composition this way, and the code to do so will be particularly short with the help of loops.  So that's what we'll be doing in <a href = "../../Assignments/HW1_RissetBeats/">assignment 1</a>!  Below is a video explaining the math that follows, for those who prefer that modality:
 										</p>
+
+										<iframe width="560" height="315" src="https://www.youtube.com/embed/0hTsop3EM70" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+										<P>
+											To make this concrete, let's recall the example from above
+										</P>
+
+										<h3>
+											\[ y(t) = \sum_{f = 328, 328.2, ..., 331.8, 332} \cos(2 \pi f (t - 2.5)) + \sum_{f = 285, 285.2, ..., 288.8, 289} \cos(2 \pi f (t - 1)) \]
+										</h3>
+
+										<p>
+											This can can be written as a two nested loops.  The loop on the outside goes through the center frequencies of <b>330</b> and <b>287</b>.  But for each of these, we also need to add a bunch of other frequencies together.  So the inner loop can do that for both <b>330</b> and <b>287</b>.
+										</p>
+
+										<img src = "LoopStructure.svg" width = 700 height = 150>
+
+										<p>
+											Below are a few examples with more than two notes showing you what you should hear in <a href = "../../Assignments/HW1_RissetBeats/">assignment 1</a> if this is working properly
+										</p>
+
 										
+
+
+										<table>
+											<tr>
+												<td><h4>2.5 Second Arpeggio, 25 freqs per note</h4></td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 2.5
+													freqs_per_note = 25
+													sr = 8000
+													x = do_risset_slow("Tunes/arpeggio.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="../../Assignments/HW1_RissetBeats/Examples/arpeggio2.5_25.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
+										<table>
+											<tr>
+												<td><h4>10 Second Arpeggio, 25 freqs per note</h4></td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 10
+													freqs_per_note = 25
+													sr = 8000
+													x = do_risset_slow("Tunes/arpeggio.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="../../Assignments/HW1_RissetBeats/Examples/arpeggio10_25.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
+										<table>
+											<tr>
+												<td><h4>10 Second Arpeggio, 100 freqs per note</h4>Notice how this one has stronger onsets than the other one with more frequencies</td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 10
+													freqs_per_note = 25
+													sr = 8000
+													x = do_risset_slow("Tunes/arpeggio.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="../../Assignments/HW1_RissetBeats/Examples/arpeggio10_100.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
+										<table>
+											<tr>
+												<td><h4>Birthday 10 Seconds, 100 Freqs</h4></td>
+											</tr>
+											<tr>
+												<td>
+													<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+													tune_length = 10
+													freqs_per_note = 100
+													sr = 8000
+													x = do_risset_slow("Tunes/birthday.txt", tune_length, freqs_per_note, sr)
+													ipd.Audio(x, rate=sr)]]></script>
+													
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<audio controls>
+														<source src="../../Assignments/HW1_RissetBeats/Examples/birthday_10_100.mp3" type="audio/mp3">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+
                                     
+										<h3><a name = "faster">A Faster Implementation with Phase Aggregation Tricks</a></h3>
+
+										<p>
+											The above code certainly works, but it doesn't scale particularly well.  Let's say we stretched the audio out over 70 seconds and we used 500 frequencies per note to keep the onsets strong.  On my machine, this takes about 4 seconds per note.  But for any reasonable tune, this can be unbearably slow.   There's an example with an <a href = "Tunes/wanna.txt">excerpt</a> from Michael Jackson's <a href = "https://www.youtube.com/watch?v=1XMvPTFzgVU">Wanna Be Startin Something</a> that has almost 200 notes in it, so it would take almost 15 minutes to generate a mere 70 second clip!  This would make it difficult to debug and tweak.  
+										</p>
+
+										<p>
+											Luckily, there is a mathematical trick to play so that we only need a sine and a cosine for each unique note that's played, regardless of how many times it's played.  For this, we must turn to a trig identity:
+										</p>
+
+										<h3>
+											\[ \cos(A+B) = \cos(A)\cos(B) - \sin(A)\sin(B) \]
+										</h3>
+
+										What this means is that if we have a sinusoid
+										<h3>
+											\[ y(t) = \cos(2 \pi f t - \phi) \]
+										</h3>
+
+										then, using the fact that cosine is an even function and sine is an odd function, we can write it equivalently as 
+
+										<h3>
+											\[ y(t) = \cos(\phi) \cos(2 \pi f t) + \sin(\phi) \sin(2 \pi f t) \]
+										</h3>
+
+										Let's now imagine that we had a bunch of the same sinusoid at different phases added together
+
+										<h3>
+											\[ y(t) = \sum_{i = 1}^N \cos(2 \pi f t + \phi_i) \]
+										</h3>
+
+										In the naive scheme, we would need to add together N cosines.  But with the above trick, we can reduce it to just a single sine and cosine as follows:
+
+										<h3>
+											\[ y(t) = \left( \sum_{i = 1}^N \cos(\phi_i) \right) \cos(2 \pi f t) + \left( \sum_{i = 1}^N \sin(\phi_i) \right) \sin(2 \pi f t)\]
+										</h3>
+
+										<p>
+											In other words, sum up the cosine of all of the phases and use that as the amplitude of a pure cosine wave at the chosen frequency, and sum up the sines of all of the phases and use them as the amplitude of a pure sine wave.  <a href = "PhaseAggregation.html">Click here</a> for some notes of an example
+										</p>
+
+
+
+										<h5><a name = "dictionary">Python Dictionaries</a></h5>
+										<p>
+											One way (not the only way) to tackle this in code is by using a <a href = "https://www.w3schools.com/python/python_dictionaries.asp">dictionary</a> in python, which is like an array where the indices, or "keys," are arbitrary types, not numbers in a list index sequence.  For example, here's a map where the keys are frequencies and the values hold the amplitudes of the frequencies
+										</p>
+										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sin_amps = {}
+											# The first time we see a frequency, we need to add it to the dictionary
+											# with an amplitude of 0
+											if 330 not in sin_amps:
+												sin_amps[330] = 0
+											sin_amps[300] += blah # Whatever sin(phi) was for this note
+										
+											#... (Loop through and add more frequencies)
+
+
+											for f in sin_amps: #Loop through all frequencies
+												sinAmp = sin_amps[f] # Pull out amplitude of each frequency
+										</script>
+
                                 </div>
 						</div>
 					</div>
