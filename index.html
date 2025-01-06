@@ -392,8 +392,17 @@
 
 											<h3><a name = "preclass">Pre-Class Modules</a></h3>
 											<p>
-												Since the material from this class is so different from an ordinary CS class, I want students to have thought about it a bit before coming to class so we can answer deeper questions and do more interesting exercises.  Therefore, I will be following a largely flipped model with 2-3 modules per week that walk you through concepts with videos I made, followed by autograded python/numpy exercises.  I worked hard on these, so I hope you enjoy them, and I hope it's an opportunity for you to study at your own pace!
+												Since there is so much <b>domain specific content knowledge</b> in addition to programming knowledge, this is different from an ordinary CS course.  Hence, I want students to have thought about it a bit before coming to class so we can answer deeper questions and do more interesting exercises.  <i>You have the space to do this since it's a 4 credit course with only 150 minutes of contact hours per week</i>.  Therefore, I will be following a largely flipped model with 2-3 modules per week that walk you through concepts with videos I made, followed by autograded python/numpy exercises.  
 											</p>
+											
+											<p>
+												<b>To further incentivize close study of these modules, I will be having an in class pen/paper midterm on units 1/2 and a pen/paper final on all 4 units</b>.   
+											</p>
+
+											<p>
+												I worked hard on these modules, so I hope you enjoy them, and I hope it's an opportunity for you to study at your own pace!
+											</p>
+
 
 											<p>
 												<b>NOTE: </b> These modules are meant to be low stakes compared to the assignments, so please reach out to me or post on discord to the rest of the class if you get stuck on anything.  I'm looking forward to some lively discussions as students work through them!
@@ -482,6 +491,7 @@
 </td></tr>
 <tr><td colspan = "5"><h2><b><a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a></b></h2><p>We are now ready to introduce one of the most important tools in this class: the Discrete Fourier Transform (DFT).  As it turns out, every possible sound can be represented as a sum of sines and cosines at different frequencies!  If we examine the amplitudes of these sines/cosines instead of the audio samples directly, this can give us a lot more insight into what's actually going on.  This is because, as we observed last semester, we perceive anything "periodic" (that repeats itself in time) as a pitch, and sines/cosines are the fudamental building blocks of any periodic signal.  Hence, the DFT describes audio with numbers that are much closer to what we perceive about the audio than the raw audio samples.</p></td></tr>
 <tr><td>11</td><td>Fri 2/14/2025</td><td>Discovering The Discrete Fourier Transform (DFT)</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module8/Video1">Module 8: Discovering The Fourier Transform</a> Due Before Class 
+<HR><a href = "../Modules/Module7/Exercise2">Module 7: Musical Statement</a> Due 
 </td></tr>
 <tr><td>12</td><td>Mon 2/17/2025</td><td>Real-Valued DFT Definition, Amplitude/Phase Shifts</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a> Due Before Class 
 <HR>Assignment 2 Submission 1 Due
@@ -505,12 +515,12 @@
 <tr><td>--</td><td>Mon 3/10/2025</td><td>Spring Break</td><td></td><td>No CS 372 Class.  Enjoy the break!</td></tr>
 <tr><td>--</td><td>Wed 3/12/2025</td><td>Spring Break</td><td></td><td>No CS 372 Class.  Enjoy the break!</td></tr>
 <tr><td>--</td><td>Fri 3/14/2025</td><td>Spring Break</td><td></td><td>No CS 372 Class.  Enjoy the break!</td></tr>
-<tr><td>21</td><td>Mon 3/17/2025</td><td>LPC, Autoregressive Coding, LPC-Based Cross-Synthesis</td><td><ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Hyunk-Suk Kim's Notes on Linear Predictive Coding</a></li></ul></td><td bgcolor=#f4e6e7><a href = "../Modules/Module15/Video0">Module 15: Z-Transform And Linear Predictive Coding</a> Due Before Class
+<tr><td>21</td><td>Mon 3/17/2025</td><td>LPC, Autoregressive Coding, LPC-Based Cross-Synthesis<p>Begin Audio Novelty (continue after midterm)</p></td><td><ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Hyunk-Suk Kim's Notes on Linear Predictive Coding</a></li></ul></td><td bgcolor=#f4e6e7><a href = "../Modules/Module15/Video0">Module 15: Z-Transform And Linear Predictive Coding</a> Due Before Class
 </td></tr>
+<tr><td>22</td><td>Wed 3/19/2025</td><td><b>Midterm Exam on Units 1/2</b></td><td></td><td></td></tr>
 <tr><td colspan = "5"><h2><b><a name = "classical">Unit 3: Classical Algorithms For Digital Music Processing</a></b></h2><p>Now that we have frequency domain tools down, we're going to build things on top of it to address a wide variety of higher level problems, including: <ul><li>Tempo estimation and beat tracking</li><li>Fundamental frequency tracking</li><li>The "Shazam algorithm" for audio fingerprinting</li><li>Segment boundary detection in music</li><li>Cross-version comparison and time warping</li><li>"Un-mixing" audio, or separating audio into its tracks</li></ul>All of these problems can be accomplished with straightforward mathematical algorithms built on top of the Short-Time Fourier Transform (STFT).</p></td></tr>
-<tr><td>22</td><td>Wed 3/19/2025</td><td>Rhythm, Beats, And Audio novelty functions</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module16/Video0">Module 16: Exercise 1 Audio Onsets/Offsets</a> Due Before Class
-</td></tr>
-<tr><td>23</td><td>Fri 3/21/2025</td><td>Audio novelty functions And Autocorrelation</td><td></td><td bgcolor=#f4e6e7>Assignment 3 Submission 2 Due
+<tr><td>23</td><td>Fri 3/21/2025</td><td>Rhythm, Beats, And Audio novelty functions</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module16/Video0">Module 16: Exercise 1 Audio Onsets/Offsets</a> Due Before Class
+<HR>Assignment 3 Submission 2 Due
 <HR>HW4: Tempo Estimation And Beat Tracking Out
 </td></tr>
 <tr><td>24</td><td>Mon 3/24/2025</td><td>Matrix Multiplication, Dynamic Programming Beat Tracking</td><td><ul><li><a href = "ClassExercises/BeattrackNotes">Notes on dynamic programming beat tracking</a></li></ul></td><td bgcolor=#f4e6e7><a href = "../Modules/Module16/Video2">Module 16: Exercise 2 Autocorrelation and 3 Matrix Multiplication</a> Due Before Class
@@ -532,7 +542,7 @@
 <tr><td>31</td><td>Wed 4/9/2025</td><td>Self-Similarity in Audio, Segment Boundary Detection</td><td><ul><li><a href = "https://dl.acm.org/doi/pdf/10.1145/319463.319472">Foote 1999 Paper: Visualizing music and audio using self-similarity</a></a></li><li><a href = "https://en.wikipedia.org/wiki/Arthur_Lintgen">Arthur Lintgen bio</a></li><li><a href = "https://arxiv.org/pdf/1902.01023.pdf">Tralie 2019 Paper</a></li><li><a href = "http://www.covers1000.net/GraphDitty/">Graph Ditty</a></li></ul></td><td bgcolor=#f4e6e7>Module 19: Self-Similarity Matrices Due Before Class
 </td></tr>
 <tr><td>32</td><td>Fri 4/11/2025</td><td>When Shazam Fails: Cross-Similarity Matrices, Dynamic Time Warping</td><td><ul><li><a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module17/Video0">CS 472 Module on Dynamic Time Warping</a></li><li><a href = "https://ursinus-cs371-s2022.github.io/CoursePage/ClassExercises/DTWNotes/">CS 371 Notes on Dynamic Time Warping</a></li><li><a href = "http://www.ctralie.com/Research/linmdtw/">Linear memory dynamic time warping</a></li></ul></td><td></td></tr>
-<tr><td colspan = "5"><h2><b><a name = "neuralnets">Unit 4: Data Driven Digital Music Processing</a></b></h2><p><p>In the prior unit, we built on spectrograms to do a variety of tasks using <b>hand-crafted models</b> to pick up on different audio attributes.  In this unit, we will talk about modern methods for <b>data-driven</b> audio analysis.  Rather than going in with too many preconceived notions about what we need to do to pick up on particular audio attributes, we will work to collect labeled data that captures what we want the computer to be able to do, and then we will let the computer tell us what patterns exist in the data that allow us to do certain tasks.  For instance, we will gather a large collection of notes being played on a violin, and we will learn how to synthesize violin notes from this data.  We will also discuss how to do pitch estimation by learning from a large collection of audio clips where the pitches are annotated.  By the end of the unit, we will look at</p><p>In general, the approach of learning to generalize from labeled data examples is known as <a href = "https://www.ibm.com/topics/supervised-learning">supervised learning</a>.  Though there are a <a href = "https://scikit-learn.org/stable/supervised_learning.html#supervised-learning">variety of techniques</a> to do this, we will focus primarily on <b>deep neural networks</b>, as they have shown the most promise for audio analysis and synthesis over the past few years.  As such, this is the most "cutting edge" unit in the course.  We will take advantage of the <a href = "https://pytorch.org/">pytorch</a> library to help us do this effectively.</p></p></td></tr>
+<tr><td colspan = "5"><h2><b><a name = "neuralnets">Unit 4: Data Driven Digital Music Processing</a></b></h2><p><p>In the prior unit, we built on spectrograms to do a variety of tasks using <b>hand-crafted models</b> to pick up on different audio attributes.  In this unit, we will talk about modern methods for <b>data-driven</b> audio analysis.  Rather than going in with too many preconceived notions about what we need to do to pick up on particular audio attributes, we will work to collect labeled data that captures what we want the computer to be able to do, and then we will let the computer tell us what patterns exist in the data that allow us to do certain tasks.  For instance, we will gather a large collection of notes being played on a violin, and we will learn how to synthesize violin notes from this data.  We will also discuss how to do pitch estimation by learning from a large collection of audio clips where the pitches are annotated.  By the end of the unit, we will look at</p><p>In general, the approach of learning to generalize from labeled data examples is known as <a href = "https://www.ibm.com/topics/supervised-learning">supervised learning</a>.  Though there are a <a href = "https://scikit-learn.org/stable/supervised_learning.html#supervised-learning">variety of techniques</a> to do this, we will focus primarily on <b>deep neural networks</b>, as they have shown the most promise for audio analysis and synthesis over the past few years.  As such, this is the most "cutting edge" unit in the course.  We will take advantage of the <a href = "https://pytorch.org/">pytorch</a> library to help us do this effectively.</p><p>During the last 4 classes, we will dive into some very recent papers using deep neural networks applied to pitch tracking, demixing, instrument style transfer, and track synthesis based on a large language model.  Each student will present part of one of these papers to the class.  Because these models are computationally expensive to train, we will focus on a <b>"user's guide"</b> to running pretrained networks for each of them.</p></p></td></tr>
 <tr><td>33</td><td>Mon 4/14/2025</td><td>Logistic Regression, Introduction To pytorch and data loaders</td><td><ul><li><a href = "https://pytorch.org/tutorials/beginner/basics/data_tutorial.html">PyTorch Datasets & DataLoaders Documentation</a></li></ul></td><td></td></tr>
 <tr><td>34</td><td>Wed 4/16/2025</td><td>Logistic Regression: Separating Square Waves from Sawtooth Waves</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module20/Video1">Module 20 Parts 1-3</a> Due Before Class
 </td></tr>
@@ -546,10 +556,10 @@
 </td></tr>
 <tr><td>38</td><td>Mon 4/28/2025</td><td>Convolutional Neural Networks, Data Augmentation</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module22/Video1">Module 22: Multiclass Classification, Convolutional Neural Networks, And Overfitting</a> Due Before Class
 </td></tr>
-<tr><td>39</td><td>Wed 4/30/2025</td><td>2D Convolutional Networks, CREPE And Pesto</td><td><ul><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li></ul></td><td></td></tr>
-<tr><td>40</td><td>Fri 5/2/2025</td><td>Demucs: A User's Guide</td><td><ul><li><a href = "https://github.com/facebookresearch/demucs/tree/v2">Facebook research demucs link</a></li></ul></td><td></td></tr>
-<tr><td>41</td><td>Mon 5/5/2025</td><td>Rave: A User's Guide</td><td></td><td></td></tr>
-<tr><td>42</td><td>Wed 5/7/2025</td><td>Stable Audio: A User's Guide</td><td></td><td></td></tr>
+<tr><td>39</td><td>Wed 4/30/2025</td><td><u>A User's Guide:</u> CREPE for fundamental frequency estimation</td><td><ul><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li></ul></td><td></td></tr>
+<tr><td>40</td><td>Fri 5/2/2025</td><td><u>A User's Guide:</u> Demucs for track demixing</td><td><ul><li><a href = "https://github.com/facebookresearch/demucs/tree/v2">Facebook research demucs link</a></li></ul></td><td></td></tr>
+<tr><td>41</td><td>Mon 5/5/2025</td><td><u>A User's Guide:</u> Rave for audio to audio style transfer</td><td><ul><li><a href = "https://github.com/acids-ircam/RAVE">IRCAM Rave Page</a></li></ul></td><td></td></tr>
+<tr><td>42</td><td>Wed 5/7/2025</td><td><u>A User's Guide:</u> Stable Audio for track synthesis with a large language model</td><td><ul><li><a href = "https://arxiv.org/pdf/2407.14358">2024 Paper on stable audio</a></li></ul></td><td></td></tr>
 </td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr></td></tr><!-- End Schedule -->
 
 <tr><td></td><td>Thu 5/11/2023</td><td></td><td></td><td bgcolor=#f4e6e7>HW6: String Along Due
@@ -568,23 +578,44 @@
 											
 											<table>
 												<tr><td>Class Engagement / Pre-Class Modules</td><td>25%</td></tr>
-												<tr><td>Programming Assignments</td><td>75%</td></tr>
+												<tr><td>Programming Assignments</td><td>60%</td></tr>
+												<tr><td>Midterm Exam on Units 1/2</td><td>7%</td></tr>
+												<tr><td>Comprehensive Final Exam</td><td>8%</td></tr>
 											</table>					
 											
-											<h3><a name = "flexiblesubmission">Flexible Submission Policy</a></h3>
+											<h3><a name = "deadlines">Deadlines Policy</a></h3>
 
 											<p>
-											In the absence of <a href = "#accommodations">accommodations</a> or <a href = "#logistics">communication with me</a>, all assignments are due at 11:59PM EST on the date(s) stated on the <a href = "index.html#schedule">schedule</a>.  Students can turn in those assignments past the deadlines, and the scores will be adjusted as follows:
-											</p>
+												I have been very flexible in the past, but I have observed that this is usually to the detriment of students who let certain assignments drag on well past the deadlines and fail to move onto subsequent assignments, ultimately failing the course or getting artificially low grades that do not reflect their abilities.  Moving forward, I would like to prevent this, and I would like <b>all students to learn how to triage and submit "good enough" work on individul assignments so they can keep moving</b>, and to practice valuable <b>accountability skills</b> that will benefit them in future endeavors past Ursinus.  At the same time, I recognize that many things happen outside of the classroom that are beyond your control; <b>life is inherently difficult and unpredictable</b>, particularly for those who come from different backgrounds and who have responsiblities beyond the classroom.  Therefore, I am building an oxymoronic <b>"rigid flexibility"</b> structure into the course, <b>without exceptions outside of <a href = "#accommodations">official accommodations</a></b>.  The rules are as follows:
 
-											<ul>
-											<li>-5% for work submitted between 1 minute - 6 hours late</li>
-											<li>-10% for work submitted up to 12 hours late</li>
-											<li>-15% for work submitted up to 24 hours late</li>
-											<li>-25% for work submitted up to 48 hours late</li>
-											<li>-40% for work submitted up to 96 hours late</li>
-											<li>-50% for work submitted more than 96 hours late but before solutions are returned</li>
-											</ul>
+												<ul>
+													<li>
+														<p>
+															All programming assignments are due at 11:59PM EST on the date(s) stated on the <a href = "#schedule">schedule</a>
+														</p>
+													</li>
+													<li>
+														<p>
+															You have <b>5 free late days to use on programming assignments throughout the semester</b>.  These will go <b>down to the decimal point</b> if you submit minutes or hours after a deadline, so students don't have to fret about submitting at, e.g., 12:05 AM.  You will get extra credit for any days you do not use, but <b>no work will be accepted once the lateness days are used up</b>
+														</p>
+													</li>
+													<li>
+														<p>
+															To help you adjust to the above policy, I will <b>drop the lowest score on a mini-deadline in the assignments category</b> by the end of the semester.  For instance, HW6 has 3 mini deadlines.  If you miss the third HW6 deadline and get a 0, but you hand in both other parts of HW6 and all parts of all other assignments on time, then I will ignore the third deadline on HW6.
+														</p>
+													</li>
+													<li>
+														<p>
+															Pre-class content modules that are submitted after class will get half credit.
+														</p>
+													</li>
+												</ul>
+											
+											</p>
+											
+											<p>
+												To reiterate, you will find lots of flexiblity built into these policies, but they are designed to prevent you from getting too stuck on an individual assignment, and also to incentivize people to come prepared for lively class discussions.  I hope we will all have more positive experiences moving forward with this.
+											</p>
 
 											<h3>Letter Grades</h3>
 											<p>
@@ -914,7 +945,7 @@
 											<h3><a name = "accommodations">Accommodations</a></h3>
 
 											<p>
-												In addition to our general awareness diversity, Ursinus College is also committed to providing reasonable accommodations to students with disabilities.  Students with a disability should contact the Directory of Disability Services ASAP.  Dolly Singley is located in the Center for Academic Support in the lower level of Myrin Library.  Visit <a href = "https://www.ursinus.edu/offices/institute-for-student-success/students-with-disabilities/current-students-/">this link</a> for more information on the process.  I will do my best to accommodate your requests, and they will be kept completely confidential.
+												In addition to our general awareness diversity, Ursinus College is also committed to providing reasonable accommodations to students with disabilities.  Students with a disability should contact the Directory of Disability Services ASAP.  The office is located in Lower Wismer.  Visit <a href = "https://www.ursinus.edu/offices/disability-and-access/">this link</a> for more information on the process.  I will do my best to accommodate your requests, and they will be kept completely confidential.
 											</p>
 
 											<h3><a name = "tutoring">One on One Tutoring</a></h3>
@@ -977,7 +1008,11 @@
 												<li><a href = "index.html#overview">Overview</a></li>
 												<li><a href = "index.html#logistics">Technology Logistics</a></li>
 												<li><a href = "index.html#homework">Homework</a></li>
-												<li><a href = "index.html#grading">Grading</a></li>
+												<li><a href = "index.html#grading">Grading</a>
+													<ul>
+														<li><a href = "index.html#deadlines">Deadlines Policy</a></li>
+													</ul>
+												</li>
 												<li><a href = "index.html#environment">Classroom Environment</a></li>
 												<li><a href = "index.html#participation">Participation</a></li>
 												<li><a href = "index.html#collaboration">Collaboration Policy</a></li>

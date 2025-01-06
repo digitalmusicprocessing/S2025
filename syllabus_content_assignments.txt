@@ -37,6 +37,9 @@ Assignment 1 Submission 1 Due
 <a href = "../Modules/Module8/Video1">Module 8: Discovering The Fourier Transform</a> Due Before Class 
 
 2025-02-14
+<HR><a href = "../Modules/Module7/Exercise2">Module 7: Musical Statement</a> Due 
+
+2025-02-14
 <a href = "../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a> Due Before Class 
 
 2025-02-17
@@ -72,8 +75,8 @@ Assignment 3 Submission 1 Due
 2025-03-17
 <a href = "../Modules/Module16/Video0">Module 16: Exercise 1 Audio Onsets/Offsets</a> Due Before Class
 
-2025-03-19
-Assignment 3 Submission 2 Due
+2025-03-21
+<HR>Assignment 3 Submission 2 Due
 
 2025-03-21
 <HR>HW4: Tempo Estimation And Beat Tracking Out
