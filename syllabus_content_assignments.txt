@@ -97,9 +97,6 @@ Module 17.5: Fundamental Frequency / pYin Due Before Class
 <a href = "../Modules/Module18/Video0">Module 18: Matrix Activations for Spectral Decompositions</a> Due Before Class
 
 2025-04-02
-Module 18.5: Linear Predictive Coding (LPC) Due Before Class
-
-2025-04-04
 HW4 Part 1 Due
 
 2025-04-01

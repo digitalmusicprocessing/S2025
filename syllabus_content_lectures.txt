@@ -5,7 +5,7 @@ We will begin our foray into digital audio processing by thinking of audio as a 
 LECTURE
 Course Overview, Sneak Preview, Digital Audio Representations
 
-<ul><li><a href = "https://docs.google.com/presentation/d/1iGzlfXFMncoEZ0IIRhtumJZHFwEgrdSW-C8RH6GsBrc/edit?usp=share_link">Slides from today</a></li><li><a href = "ClassExercises/Week1/Week1_AudioReverseGame">Audio Reverse Game</a></li></ul>
+<ul><li><a href = "https://docs.google.com/presentation/d/1ZCVGhQweUCB8a_h9R-X4ZE5U4cVLXLcl1bUhcM91woY/edit?usp=sharing">Slides from today</a></li><li><a href = "ClassExercises/Week1/Week1_AudioReverseGame">Audio Reverse Game</a></li></ul>
 LECTURE
 Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch
 
