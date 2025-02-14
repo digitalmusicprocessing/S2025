@@ -7,7 +7,7 @@ Course Overview, Sneak Preview, Digital Audio Representations
 
 <ul><li><a href = "https://docs.google.com/presentation/d/1ZCVGhQweUCB8a_h9R-X4ZE5U4cVLXLcl1bUhcM91woY/edit?usp=sharing">Slides from today</a></li><li><a href = "ClassExercises/Week1/Week1_AudioReverseGame">Audio Reverse Game</a></li></ul>
 LECTURE
-Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch
+Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch, Sample Rate/Dimensional Analysis
 
 <ul><a href = "https://donsheehy.github.io/datastructures/fullbook.pdf">Sheehy</a> Ch. 2 for python intro</li></ul>
 LECTURE
@@ -42,20 +42,20 @@ LECTURE
 Comb Filters
 
 
+LECTURE
+Shepard Tones
+
+
 SECTION
 <a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a>
 We are now ready to introduce one of the most important tools in this class: the Discrete Fourier Transform (DFT).  As it turns out, every possible sound can be represented as a sum of sines and cosines at different frequencies!  If we examine the amplitudes of these sines/cosines instead of the audio samples directly, this can give us a lot more insight into what's actually going on.  This is because, as we observed last semester, we perceive anything "periodic" (that repeats itself in time) as a pitch, and sines/cosines are the fudamental building blocks of any periodic signal.  Hence, the DFT describes audio with numbers that are much closer to what we perceive about the audio than the raw audio samples.
 
 LECTURE
-Discovering The Discrete Fourier Transform (DFT)
+Discovering The Discrete Fourier Transform (DFT), Real-Valued DFT Definition
 
 
 LECTURE
-Real-Valued DFT Definition, Amplitude/Phase Shifts
-
-
-LECTURE
-Exploring The DFT on Audio Data: Pitch And Timbre, Fast(er) Risset Beats
+Amplitude/Phase Shifts, Exploring The DFT on Audio Data: Pitch And Timbre, Fast(er) Risset Beats
 
 
 LECTURE

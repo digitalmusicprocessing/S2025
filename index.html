@@ -450,7 +450,7 @@
 <tr><td colspan = "5"><h2><b><a name = "timedomain">Unit 1: Time Domain Audio Processing</a></b></h2><p>We will begin our foray into digital audio processing by thinking of audio as a big, long 1D array.  Under typical conditions, we have 44100 elements for every second of audio.  This means we have nearly a million elements in our arrays for only 20 seconds of audio!  We'll also see that the elements of this array, known as "audio samples," are a bit of a mess, but we'll be able to do a surprising amount by manipulating the samples, and we'll be able to create some cool sounds by synthesizing samples from equations.  Students will also get more comfortable with python and numpy in the stage of the course.</p></td></tr>
 <tr><td>1</td><td>Wed 1/22/2025</td><td>Course Overview, Sneak Preview, Digital Audio Representations</td><td><ul><li><a href = "https://docs.google.com/presentation/d/1ZCVGhQweUCB8a_h9R-X4ZE5U4cVLXLcl1bUhcM91woY/edit?usp=sharing">Slides from today</a></li><li><a href = "ClassExercises/Week1/Week1_AudioReverseGame">Audio Reverse Game</a></li></ul></td><td></td></tr>
 <tr><td></td><td>Thu 1/23/2025</td><td></td><td></td><td bgcolor=#f4e6e7><a href = "Assignments/Survey">Survey</a> and <a href = "https://ursinus.instructure.com/courses/15546/quizzes/21549">syllabus quiz</a> due by 11:59PM
-</td></tr><tr><td>2</td><td>Fri 1/24/2025</td><td>Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch</td><td><ul><a href = "https://donsheehy.github.io/datastructures/fullbook.pdf">Sheehy</a> Ch. 2 for python intro</li></ul></td><td bgcolor=#f4e6e7><a href = "../Modules/Module1/Video0">Module 1: Python Basics</a> Due by 11:59 PM
+</td></tr><tr><td>2</td><td>Fri 1/24/2025</td><td>Python/Numpy Basics, Slicing/Reversing Audio, Sinusoids/Pitch, Sample Rate/Dimensional Analysis</td><td><ul><a href = "https://donsheehy.github.io/datastructures/fullbook.pdf">Sheehy</a> Ch. 2 for python intro</li></ul></td><td bgcolor=#f4e6e7><a href = "../Modules/Module1/Video0">Module 1: Python Basics</a> Due by 11:59 PM
 </td></tr>
 <tr><td>3</td><td>Mon 1/27/2025</td><td>Square Waves, Triangle Waves, Sawtooth Waves, Noise, Beat Frequencies</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a> Due Before Class
 <HR><a href = "Assignments/HW1_RissetBeats">Assignment 1: Risset Beats</a> Out
@@ -470,14 +470,15 @@
 </td></tr>
 <tr><td>10</td><td>Wed 2/12/2025</td><td>Comb Filters</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a> Due Before Class 
 </td></tr>
-<tr><td colspan = "5"><h2><b><a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a></b></h2><p>We are now ready to introduce one of the most important tools in this class: the Discrete Fourier Transform (DFT).  As it turns out, every possible sound can be represented as a sum of sines and cosines at different frequencies!  If we examine the amplitudes of these sines/cosines instead of the audio samples directly, this can give us a lot more insight into what's actually going on.  This is because, as we observed last semester, we perceive anything "periodic" (that repeats itself in time) as a pitch, and sines/cosines are the fudamental building blocks of any periodic signal.  Hence, the DFT describes audio with numbers that are much closer to what we perceive about the audio than the raw audio samples.</p></td></tr>
-<tr><td>11</td><td>Fri 2/14/2025</td><td>Discovering The Discrete Fourier Transform (DFT)</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module8/Video1">Module 8: Discovering The Fourier Transform</a> Due Before Class 
-<HR><a href = "../Modules/Module7/Exercise2">Module 7: Musical Statement</a> Due 
+<tr><td>11</td><td>Fri 2/14/2025</td><td>Shepard Tones</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module7/Exercise2">Module 7: Musical Statement</a> Due 
 </td></tr>
-<tr><td>12</td><td>Mon 2/17/2025</td><td>Real-Valued DFT Definition, Amplitude/Phase Shifts</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a> Due Before Class 
-<HR>Assignment 2 Submission 1 Due
+<tr><td></td><td>Sun 2/16/2025</td><td></td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module7/Video1b">Module 7b: Shepard Tones</a> Due 
+</td></tr><tr><td></td><td>Sun 2/16/2025</td><td></td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module8/Video1">Module 8: Discovering The Fourier Transform</a> Due 
+</td></tr><tr><td colspan = "5"><h2><b><a name = "freqdomain">Unit 2: Frequency Domain Audio Processing</a></b></h2><p>We are now ready to introduce one of the most important tools in this class: the Discrete Fourier Transform (DFT).  As it turns out, every possible sound can be represented as a sum of sines and cosines at different frequencies!  If we examine the amplitudes of these sines/cosines instead of the audio samples directly, this can give us a lot more insight into what's actually going on.  This is because, as we observed last semester, we perceive anything "periodic" (that repeats itself in time) as a pitch, and sines/cosines are the fudamental building blocks of any periodic signal.  Hence, the DFT describes audio with numbers that are much closer to what we perceive about the audio than the raw audio samples.</p></td></tr>
+<tr><td>12</td><td>Mon 2/17/2025</td><td>Discovering The Discrete Fourier Transform (DFT), Real-Valued DFT Definition</td><td></td><td bgcolor=#f4e6e7>Assignment 2 Submission 1 Due
 </td></tr>
-<tr><td>13</td><td>Wed 2/19/2025</td><td>Exploring The DFT on Audio Data: Pitch And Timbre, Fast(er) Risset Beats</td><td></td><td></td></tr>
+<tr><td>13</td><td>Wed 2/19/2025</td><td>Amplitude/Phase Shifts, Exploring The DFT on Audio Data: Pitch And Timbre, Fast(er) Risset Beats</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a> Due Before Class 
+</td></tr>
 <tr><td>14</td><td>Fri 2/21/2025</td><td>Converting Frequency Units on Real Audio, Begin The Short-Time Fourier Transform (STFT)</td><td></td><td bgcolor=#f4e6e7><a href = "../Modules/Module10/Video1">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties, Inverse DFT</a> Due Before Class 
 </td></tr>
 <tr><td>15</td><td>Mon 2/24/2025</td><td>The Short-Time Fourier Transform (STFT), Spectrograms</td><td><ul><li><a href = "https://musiclab.chromeexperiments.com/spectrogram">Live spectrogram demo in the browser</a></li></ul></td><td bgcolor=#f4e6e7>Assignment 2 Submission 2 Due
@@ -990,6 +991,7 @@
 										</li>
 										<li><a href = "Software/index.html">Software</a></li>
 										<li><a href = "../webaudio-pianoroll/index.html">Piano Roll Editor</a></li>
+										<li><a href = "https://calebj0seph.github.io/spectro/">Live Spectrogram Viewer</a></li>
 										<li><a href = "index.html#schedule">Schedule</a></li>
                                         <li>
 											<span class="opener">Assignments</span>

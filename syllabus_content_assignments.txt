@@ -34,15 +34,18 @@ Assignment 1 Submission 1 Due
 <a href = "../Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a> Due Before Class 
 
 2025-02-12
-<a href = "../Modules/Module8/Video1">Module 8: Discovering The Fourier Transform</a> Due Before Class 
+<a href = "../Modules/Module7/Exercise2">Module 7: Musical Statement</a> Due 
 
 2025-02-14
-<HR><a href = "../Modules/Module7/Exercise2">Module 7: Musical Statement</a> Due 
+<a href = "../Modules/Module7/Video1b">Module 7b: Shepard Tones</a> Due 
 
-2025-02-14
+2025-02-16
+<a href = "../Modules/Module8/Video1">Module 8: Discovering The Fourier Transform</a> Due 
+
+2025-02-16
 <a href = "../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a> Due Before Class 
 
-2025-02-17
+2025-02-19
 <a href = "../Modules/Module10/Video1">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties, Inverse DFT</a> Due Before Class 
 
 2025-02-21
@@ -52,7 +55,7 @@ Assignment 1 Submission 1 Due
 <a href = "../Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a> Due Before Class
 
 2025-02-28
-<HR>Assignment 2 Submission 1 Due
+Assignment 2 Submission 1 Due
 
 2025-02-17
 Assignment 2 Submission 2 Due
