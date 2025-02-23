@@ -366,6 +366,24 @@
 										  Your browser does not support the audio element.
 										  </audio> 
 
+										<h4><a name = "eden">Sevdaliza's Eden</a></h4>
+										  <p>
+											Here's another cool example that Aleni Voskeridjian (spring 2025) discovered likely uses Karplus strong.  Below is <a href = "https://www.youtube.com/watch?v=bNg4qfWWMWA">Eden by Sevdaliza</a>
+										  </p>
+
+										  <script type="syntaxhighlighter" class="brush: py"><![CDATA[
+											sr = 44100
+											note_fn = lambda sr, note, duration: karplus_strong_note(sr, note, duration, 0.999)
+											y = make_tune("Tunes/eden.txt", 0.2, 44100, note_fn)
+											ipd.Audio(y, rate=sr)
+										</script>
+
+										<audio controls>
+											<source src="Audio/eden.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										  </audio> 
+
+
 										<HR>
 										<h2><a name = "fmcode">Part 3: FM Synthesis Framework (5 Points)</a></h2>
 

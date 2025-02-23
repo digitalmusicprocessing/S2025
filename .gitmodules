@@ -7,3 +7,6 @@
 [submodule "ClassExercises/Week1/Week1_AudioReverseGame"]
 	path = ClassExercises/Week1/Week1_AudioReverseGame
 	url = https://github.com/digitalmusicprocessing/Week1_AudioReverseGame.git
+[submodule "Assignments/HW2_DigitalInstruments/HW2_DigitalInstruments"]
+	path = Assignments/HW2_DigitalInstruments/HW2_DigitalInstruments
+	url = https://github.com/digitalmusicprocessing/HW2_DigitalInstruments.git
