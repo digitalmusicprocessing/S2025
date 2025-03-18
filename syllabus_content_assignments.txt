@@ -76,6 +76,9 @@ Assignment 3 Submission 1 Due
 <a href = "../Modules/Module15/Video0">Module 15: Z-Transform Part 1</a> Due Before Class
 
 2025-03-17
+<a href = "../Modules/Module15/Video4">Module 15: Z-Transform Part 2</a> Due Before Class
+
+2025-03-19
 <a href = "../Modules/Module16/Video0">Module 16: Exercise 1 Audio Onsets/Offsets</a> Due Before Class
 
 2025-03-21

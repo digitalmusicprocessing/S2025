@@ -35,4 +35,5 @@ def make_one(k, N):
         plt.title("k = {}, n = {}".format(k, n))
         plt.savefig("{}.png".format(n), bbox_inches='tight')
 
-make_both(6, 50)
+#make_both(6, 50)
+make_one(8, 64)
