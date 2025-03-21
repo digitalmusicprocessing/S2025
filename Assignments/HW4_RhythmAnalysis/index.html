@@ -56,15 +56,15 @@
 											</li>
 											<li><a href = "#programming">Programming Tasks</a>
 												<ul>
-													<li><a href = "#anf">Part 1: Superflux Audio Novelty Functions (8 Points)</a></li>
-													<li><a href = "#tempo">Part 2: Tempo Estimation</a>
+													<li><a href = "#anf">Part 1a: Superflux Audio Novelty Functions (8 Points)</a></li>
+													<li><a href = "#tempo">Part 1b Tempo Estimation</a>
 														<ul>
 															<li><a href = "#fouriertempo">Fourier-Based Tempo Estimation (7 Points)</li>
 															<li><a href = "#dftacf">DFT-ACF Tempo Estimation (10 Points)</a></li>
 														</ul>
 													</li>
 													<li>
-														<a href = "#beat">Part 3: Beat Tracking</a>
+														<a href = "#beat">Part 2: Beat Tracking</a>
 														<ul>
 															<li>
 																<a href = "#sonifybeats">Sonifying Beats (5 Pts)</a>
@@ -123,7 +123,7 @@
 											from beat import *
 										</script>
 
-										<h2><a name = "anf">Part 1: Superflux Audio Novelty Functions (8 Points)</a></h2>
+										<h2><a name = "anf">Part 1a: Superflux Audio Novelty Functions (8 Points)</a></h2>
 										<p>
 											There is a whole zoo of possible ways of computing audio novelty functions that pick up on rhythmic events.  For example, even all the way back in 2007, the authors of <a href = "http://www.cp.jku.at/research/papers/gouyon_etal_icassp_2007.pdf">this paper</a> experimented with 172 unique such novelty functions!   In this section, we will explore a more recent method known as <b>superflux</b> for generating superior audio functions to the versions we described in <a href = "../../../Modules/Module16/Video1">module 16</a>.  This technique is described in detail in <a href = "http://phenicx.upf.edu/system/files/publications/Boeck_DAFx-13.pdf">this paper</a> from 2013, but we will summarize the key steps below.  Before we do that, though, let's look at an example of how superflux compares to the naive technique.  Consider the following audio clip, obtained from the <a href = "https://github.com/librosa/librosa_gallery/blob/master/audio/Karissa_Hobbs_-_09_-_Lets_Go_Fishin.mp3">librosa gallery</a>.
 										</p>
@@ -228,7 +228,7 @@
 										</ol>
 
 
-										<h2><a name = "tempo">Part 2: Tempo Estimation</a></h2>
+										<h2><a name = "tempo">Part 1b Tempo Estimation</a></h2>
 										<p>
 											Now that we have clean audio novelty functions, we can estimate tempo from them with various techniques.  To evaluate the results, we will compute tempo estimates with our code on the 20 examples in the tempo dataset.  Provided with the tempo dataset are two tempos: a slow tempo and a fast tempo.  We declare that our estimated tempo is correct if it is within 8% of either of these two "ground truth" tempos.
 										</p>
@@ -379,7 +379,7 @@
 
 
 
-										<h2><a name = "beat">Part 3: Beat Tracking</a></h2>					
+										<h2><a name = "beat">Part 2: Beat Tracking</a></h2>					
 										
 										<p>
 											In this section, you will implement the dynamic programming beat tracking algorithm described at <a href = "../../ClassExercises/BeattrackNotes/">this link</a>, editing code in the <code>beat.py</code> file.  
@@ -626,8 +626,8 @@
 													</li>
 												</ul>!-->
 												</li>
-												<!--
 												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<!--
 												<li><a href = "../../Assignments/HW5_LetItBee">HW5: Let It Bee</a>
 												<ul>
 													<li>
