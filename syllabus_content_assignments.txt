@@ -100,10 +100,10 @@ Module 17.5: Fundamental Frequency / pYin Due Before Class
 <a href = "../Modules/Module18/Video0">Module 18: Matrix Activations for Spectral Decompositions</a> Due Before Class
 
 2025-04-02
-HW4 Part 1 Due
+<HR>HW4 Part 1: Tempo Due
 
 2025-03-31
-HW4 Part 2 Due
+HW4 Part 2: Beat Tracking Due
 
 2025-04-07
 <HR>HW5: The Concatenator Out
