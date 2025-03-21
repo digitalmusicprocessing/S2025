@@ -95,21 +95,21 @@ SECTION
 Now that we have frequency domain tools down, we're going to build things on top of it to address a wide variety of higher level problems, including: <ul><li>Tempo estimation and beat tracking</li><li>Fundamental frequency tracking</li><li>The "Shazam algorithm" for audio fingerprinting</li><li>Segment boundary detection in music</li><li>Cross-version comparison and time warping</li><li>"Un-mixing" audio, or separating audio into its tracks</li></ul>All of these problems can be accomplished with straightforward mathematical algorithms built on top of the Short-Time Fourier Transform (STFT).
 
 LECTURE
-Linear Predictive Coding (LPC)
-
-<ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Hyunk-Suk Kim's Notes on Linear Predictive Coding</a></li></ul>
-LECTURE
 Rhythm, Beats, And Audio novelty functions
 
 
 LECTURE
-Matrix Multiplication, Dynamic Programming Beat Tracking
+Matrix Multiplication And Mel Spectrograms, Autocorrelation for Tempo Estimation
+
+
+LECTURE
+Linear Predictive Coding (LPC)
+
+<ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Hyunk-Suk Kim's Notes on Linear Predictive Coding</a></li></ul>
+LECTURE
+Dynamic Programming Beat Tracking
 
 <ul><li><a href = "ClassExercises/BeattrackNotes">Notes on dynamic programming beat tracking</a></li></ul>
-LECTURE
-Mel Spectrograms, MFCCs
-
-
 LECTURE
 Chroma Features, Shepard Tones
 

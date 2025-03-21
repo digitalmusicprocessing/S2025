@@ -108,7 +108,7 @@
 										<HR>
 										<h2><a name = "programming">Programming Tasks</a></h2>
 										<p>
-											<a href = "https://github.com/ursinus-cs372-s2023/HW4_Rhythm/archive/refs/heads/main.zip">Click here</a> to download the starter code for this assignment.  This code includes two testing suites for tempo estimation and beat tracking from <a href = "https://www.music-ir.org/mirex/wiki/MIREX_HOME">MIREX</a>. Below are the imports you will need to test your code in jupyter:
+											<a href = "https://github.com/digitalmusicprocessing/HW4_Rhythm/archive/refs/heads/main.zip">Click here</a> to download the starter code for this assignment.  This code includes two testing suites for tempo estimation and beat tracking from <a href = "https://www.music-ir.org/mirex/wiki/MIREX_HOME">MIREX</a>. Below are the imports you will need to test your code in jupyter:
 										</p>
 										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
 											%load_ext autoreload
@@ -125,7 +125,7 @@
 
 										<h2><a name = "anf">Part 1: Superflux Audio Novelty Functions (8 Points)</a></h2>
 										<p>
-											There is a whole zoo of possible ways of computing audio novelty functions that pick up on rhythmic events.  For example, even all the way back in 2007, the authors of <a href = "http://www.cp.jku.at/research/papers/gouyon_etal_icassp_2007.pdf">this paper</a> experimented with 172 unique such novelty functions!   In this section, we will explore a more recent method known as <b>superflux</b> for generating superior audio functions to the versions we described in <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module16/Video1">module 16</a>.  This technique is described in detail in <a href = "http://phenicx.upf.edu/system/files/publications/Boeck_DAFx-13.pdf">this paper</a> from 2013, but we will summarize the key steps below.  Before we do that, though, let's look at an example of how superflux compares to the naive technique.  Consider the following audio clip, obtained from the <a href = "https://github.com/librosa/librosa_gallery/blob/master/audio/Karissa_Hobbs_-_09_-_Lets_Go_Fishin.mp3">librosa gallery</a>.
+											There is a whole zoo of possible ways of computing audio novelty functions that pick up on rhythmic events.  For example, even all the way back in 2007, the authors of <a href = "http://www.cp.jku.at/research/papers/gouyon_etal_icassp_2007.pdf">this paper</a> experimented with 172 unique such novelty functions!   In this section, we will explore a more recent method known as <b>superflux</b> for generating superior audio functions to the versions we described in <a href = "../../../Modules/Module16/Video1">module 16</a>.  This technique is described in detail in <a href = "http://phenicx.upf.edu/system/files/publications/Boeck_DAFx-13.pdf">this paper</a> from 2013, but we will summarize the key steps below.  Before we do that, though, let's look at an example of how superflux compares to the naive technique.  Consider the following audio clip, obtained from the <a href = "https://github.com/librosa/librosa_gallery/blob/master/audio/Karissa_Hobbs_-_09_-_Lets_Go_Fishin.mp3">librosa gallery</a>.
 										</p>
 
 										<p>
@@ -210,7 +210,7 @@
 												Compute the absolute magnitude spectrogram (this has been provided for you)
 											</li>
 											<li>
-												Convert the spectrogram to a <b>mel spectrogram</b> via the provided <code>get_mel_filterbank</code> method.  As described in Section 2.1 of the <a href = "http://dafx13.nuim.ie/papers/09.dafx2013_submission_12.pdf">superflux paper</a>, the mel filterbank should contain 138 bins spanning frequencies from <b>27.5 hz</b> to <b>16000hz</b>. 
+												Convert the spectrogram to a <b><a href = "../../../Modules/Module16/Video4">mel spectrogram</a></b>.  As described in Section 2.1 of the <a href = "http://dafx13.nuim.ie/papers/09.dafx2013_submission_12.pdf">superflux paper</a>, the mel filterbank should contain 138 bins spanning frequencies from <b>27.5 hz</b> to <b>16000hz</b>. 
 											</li>
 											<li>
 												Convert every element of the magnitude Mel-spectrogram <b>MS</b> to a log magnitude scale by applying the equation <b>log<SUB>10</SUB>(MS + Gamma)</b>, where <b>Gamma</b> is a provided parameter (set to 1 in the <a href = "http://phenicx.upf.edu/system/files/publications/Boeck_DAFx-13.pdf">superflux paper</a>, as shown in equation 4 on page 3).
@@ -222,7 +222,7 @@
 												Take the sum of <b>positive differences of amplitudes</b> across all frequency bins from a window to a window in the future, similarly to the naive version (recall that in the positive difference, we don't add things to the sum that are negative, so this is not the same as the absolute value).  However, the hop length in superflux is generally taken to be smaller than usual so the windows are sampled at a higher resolution, leading to a higher resolution audio novelty function.  This means that adjacent windows change less.  To compensate for this, instead of taking the difference in amplitudes for corresponding frequencies in adjacent windows, you should take differences with windows that are <code>mu</code> hops ahead in the future (as described in Section 2.1 of <a href = "http://phenicx.upf.edu/system/files/publications/Boeck_DAFx-13.pdf">the superflux paper</a>).
 
 												<p>
-													<b>Hint:</b> Be sure to review <a href = "https://ursinus-cs372-s2023.github.io/Modules/Module16/Video0">module 16 video 0 and video 1</a> to recall how to do the positive difference step.
+													<b>Hint:</b> Be sure to review <a href = "../../../Modules/Module16/Video0">module 16 video 0 and video 1</a> to recall how to do the positive difference step.
 												</p>
 											</li>
 										</ol>
@@ -306,7 +306,7 @@
 
 										<h4>Your Task</h4>
 										<p>
-											Fill in the method <code>get_acf_dft_tempo</code> in <code>tempo.py</code> to compute an improved tempo estimate, based on a combination of the autocorrelation function (ACF) and the DFT (<a href = "https://ursinus-cs472a-s2021.github.io/Modules/Module16/Video2">click here</a> to review the ACF).  In the process, you will also fill in the helper method <code>dft_warped</code>.
+											Fill in the method <code>get_acf_dft_tempo</code> in <code>tempo.py</code> to compute an improved tempo estimate, based on a combination of the autocorrelation function (aka ACF, as described in <a href = "../../../Modules/Module16/Video2">module 16</a>) and the DFT .
 										</p>
 
 										<h4>
@@ -326,7 +326,7 @@
 											</ul>
 										</p>
 										<p>
-											What this means is that we have to <i>warp</i> the domain of the DFT to coincide with the domain of the ACF.  I've provided a skeleton helper method <code>dft_warped</code> which you should fill in to do this.  In this process, higher bins of the DFT should turn into lower bins of the ACF, since period and frequency are inversely related.  Visually, this looks like taking the mirror image of the DFT and compressing it towards the origin.  Mathematically, for an audio novelty function with <b>N</b> samples, a shift <b>T</b> in the ACF corresponds to frequency index <b>N/T</b>.  So we want to create the warped dft, dftw, as the composition 
+											What this means is that we have to <i>warp</i> the domain of the DFT to coincide with the domain of the ACF.  In this process, higher bins of the DFT should turn into lower bins of the ACF, since period and frequency are inversely related.  Visually, this looks like taking the mirror image of the DFT and compressing it towards the origin.  Mathematically, for an audio novelty function with <b>N</b> samples, a shift <b>T</b> in the ACF corresponds to frequency index <b>N/T</b>.  So we want to create the warped dft, dftw, as the composition 
 										</p>
 										
 										<h3>

@@ -88,12 +88,9 @@ Assignment 3 Submission 1 Due
 <HR>HW4: Tempo Estimation And Beat Tracking Out
 
 2025-03-21
-<a href = "../Modules/Module16/Video2">Module 16: Exercise 2 Autocorrelation and 3 Matrix Multiplication</a> Due Before Class
+<a href = "../Modules/Module16/Video2">Module 16: Exercise 2, 3, and 4</a> Due Before Class
 
 2025-03-24
-<a href = "../Modules/Module16/Video4">Module 16: Exercise 4 Mel Spectrogram</a> Due Before Class
-
-2025-03-26
 <a href = "../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a> Due Before Class
 
 2025-03-28
@@ -105,8 +102,8 @@ Module 17.5: Fundamental Frequency / pYin Due Before Class
 2025-04-02
 HW4 Part 1 Due
 
-2025-04-01
-HW4 Due
+2025-03-31
+HW4 Part 2Due
 
 2025-04-07
 <HR>HW5: The Concatenator Out

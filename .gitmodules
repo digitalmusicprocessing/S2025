@@ -10,3 +10,6 @@
 [submodule "Assignments/HW2_DigitalInstruments/HW2_DigitalInstruments"]
 	path = Assignments/HW2_DigitalInstruments/HW2_DigitalInstruments
 	url = https://github.com/digitalmusicprocessing/HW2_DigitalInstruments.git
+[submodule "Assignments/HW4_RhythmAnalysis/HW4_Rhythm"]
+	path = Assignments/HW4_RhythmAnalysis/HW4_Rhythm
+	url = https://github.com/digitalmusicprocessing/HW4_Rhythm.git
