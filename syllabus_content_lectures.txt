@@ -107,13 +107,13 @@ Linear Predictive Coding (LPC)
 
 <ul><li><a href = "https://ccrma.stanford.edu/~hskim08/lpc/">Hyunk-Suk Kim's Notes on Linear Predictive Coding</a></li></ul>
 LECTURE
-Dynamic Programming Beat Tracking
-
-<ul><li><a href = "ClassExercises/BeattrackNotes">Notes on dynamic programming beat tracking</a></li></ul>
-LECTURE
 Chroma Features, Shepard Tones
 
 <ul><li><a href = "https://www.youtube.com/watch?v=YUOR7_40-dQ">Shepard Tone Visualization</a></li><li><a href = "https://www.youtube.com/watch?v=6niz-JVb_6Q">Dorian Concept - 'Toothbrush'</a></li></ul>
+LECTURE
+Dynamic Programming Beat Tracking
+
+<ul><li><a href = "ClassExercises/BeattrackNotes">Notes on dynamic programming beat tracking</a></li></ul>
 LECTURE
 Fundamental Frequency Estimation (Module), Autotuners (Class)
 

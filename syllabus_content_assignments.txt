@@ -91,10 +91,7 @@ Assignment 3 Submission 1 Due
 <a href = "../Modules/Module16/Video2">Module 16: Exercise 2, 3, and 4</a> Due Before Class
 
 2025-03-24
-<a href = "../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a> Due Before Class
-
-2025-03-28
-Module 17.5: Fundamental Frequency / pYin Due Before Class
+Module 17: Fundamental Frequency / pYin Due Before Class
 
 2025-03-31
 <a href = "../Modules/Module18/Video0">Module 18: Matrix Activations for Spectral Decompositions</a> Due Before Class
