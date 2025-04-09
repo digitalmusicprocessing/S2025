@@ -1,0 +1,464 @@
+<!DOCTYPE HTML>
+<!--
+	Editorial by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+<!-- Header !-->
+	<head>
+		<title>Ursinus CS 372: Digital Music Processing, Spring 2025</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!--[if lte IE 8]><script src="../../assets/js/ie/html5shiv.js"></script><![endif]-->
+		<link rel="stylesheet" href="../../assets/css/main.css" />
+		<!--[if lte IE 9]><link rel="stylesheet" href="../../assets/css/ie9.css" /><![endif]-->
+		<!--[if lte IE 8]><link rel="stylesheet" href="../../assets/css/ie8.css" /><![endif]-->
+        <style>
+        .image_off, #home:hover .image_on{
+           display:none
+        }
+        .image_on, #home:hover .image_off{
+           display:block
+        }
+        </style>
+	</head>
+	<body>
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<a href="../../index.html" class="logo"><strong>Ursinus CS 372: Digital Music Processing, Spring 2025</strong></a>
+								</header>
+<!-- End Header !-->
+
+							<!-- Content -->
+								<section>
+									<header class="main">
+                                        <h2>Assignment 5: The Concatenator (50 Points)</h2>
+                                        <h3><a href = "http://www.ctralie.com">Chris Tralie</a>
+									</header>
+
+									<div id="page-content">
+
+										<ul>
+											<li><a href = "#overview">Background/Logistics</a>
+												<ul>
+													<li><a href = "#objectives">Learning Objectives</a></li>
+													<li><a href = "#submit">What To Submit</a></li>
+												</ul>
+											</li>
+											<li><a href = "#programming">Programming Tasks</a>
+												<ul>
+													<li><a href = "#random">1. Mixing Random Activations (5 Points)</a></li>
+													<li><a href = "#klweighted">2. KL-Weighted Activations (10 Points)</a></li>
+													<li><a href = "#transition">3. Particles And Transition Probabilities (10 Points)</li>
+													<li><a href = "#weights">4. KL-Based Particle Weights / Resampling (10 Points)</a></li>
+													<li><a href = "#finalfit">5. Aggregate Top Activations / Do Final Fit (10 Points)</a></li>
+													<li><a href = "#statement">6. Musical Statement (5 Points)</a></li>
+												</ul>
+											</li>
+											
+										</ul>
+
+										<h2><a name = "overview">Background / Logistics</a></h2>
+
+										<p>
+											We saw in class that it is possible to use <a href = "../../ClassExercises/Week10/Week10_NMF/">Nonnegative Matrix Factorization</a> to decompose an audio clip into a set of <b>K</b> sonic source templates stored in an <b>win_length x K</b> matrix <b>W</b>, as well as a matrix of activations over time for each of these sources stored in a <b>K x nwin</b> matrix <b>H</b> so that the matrix multiplication <b>WH</b> approximates an absolute magnitude spectrogram <b>V</b>.  The main application we focused on was "unmixing," or separating an audio track into its different instrument components.  This is also sometimes referred to as the "cocktail party problem," since we're trying to filter out one sound from the superposition of many, just like one might try to focus on the speech coming from the person in front of them in the midst of a cacophony of sound at a cocktail party.  
+										</p>
+										<p>
+											In addition to audio unmixing and learning musical instrument templates from audio, the mathematics that were developed for NMF can also be used to create a novel instrument for musical expression.  In addition to being given a spectrogram <b>V</b>, we are also the <b>W</b> of templates, <b>which remains fixed</b>, and our job is only to learn <b>H</b>.  In this way, we can think of the problem not as one of unmixing, but of learning how to activate a set of templates we're given to best match a target <b>V</b>.  This is referred to as "musaicing" in <a href = "https://www.audiolabs-erlangen.de/content/resources/MIR/00-2015-ISMIR-LetItBee/2015_DriedgerPM_AudioMosaicingNMF_ISMIR.pdf">this paper</a>.  The musaicing technique in that paper is referred to as the "Let It Bee" technique, and it earned its name by showing how using <b>V</b> as the spectrogram for a clip of <a href = "https://www.youtube.com/watch?v=QDYfEBY9NM4">Let It Be</a> from The Beatles, and inputting <b>W</b> as the spectrogram of a bunch of bees buzzing
+										</p>
+
+										<p>
+											I followed up with this idea in a paper last year called <a href = "https://arxiv.org/pdf/2411.04366">"The Concatenator: A Bayesian Approach To Real Time Concatenative Musaicing"</a>, which is what you'll implement in this homework.  This addressed the problem of Driedger's technique not being able to scale to corpora more than a few minutes long.  It does this by running tons of tiny NMF problems in parallel and figuring out which ones work the best.  Have a look also at the <a href = "https://www.ctralie.com/TheConcatenator/supplementary/">supplementary material for this paper</a>, as well as my summary video below:
+										</p>
+										<iframe width="560" height="315" src="https://www.youtube.com/embed/koGyq4komXo?si=0hS_o-bYs_uK2HvU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+										<p>
+											The algorithm is a bit complex, so we will only be implementing a vanilla version of it that won't be as fast as the real thing.  Still, you will get a taste for all of the steps of the algorithm.  In every step, I'll provide examples using buzzing bees as a corpus:
+										</p>
+										<audio controls>
+											<source src="HW5_TheConcatenator/corpus/Bees_Buzzing.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										<p>
+											And The Beatles "Let It Be" as a target:
+										</p>
+										<audio controls>
+											<source src="HW5_TheConcatenator/target/Beatles_LetItBe.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										<p>
+											By the end of the assignment, you'll have a result similar to the following:
+										</p>
+
+										
+										<audio controls>
+											<source src="Examples/final_p10_P500_temp50_pd0.95_Mel100.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											The most fun part of this assignment, though, should be when students choose their own corpus/target combinations for the <a href = "#statement">musical statement</a>.
+										</p>
+
+
+
+
+                                        <p>
+                                            <h3><a name = "objectives">Learning Objectives</a></h3>
+                                            <ul>
+												<li>Practice numpy arrays, methods, and for loops in the service of musical applications</li>
+												<li>Modify algorithms for nonnegative matrix factorization</li>
+												<li>Programmatically promote temporal continuity in audio reconstructions using particle filters</li>
+												<li>Compose music in a cutting edge style</li>
+                                            </ul>
+										</p>
+										
+										<h3><a name = "submit">Getting Starter / What To Submit</a></h3>
+										<p>
+											<a href = "https://github.com/digitalmusicprocessing/HW5_TheConcatenator/archive/refs/heads/main.zip">Click here</a> to download the starter code for this assignment.  You'll be editing <code>musaic.py</code>, and you can run tests in <code>Tester.ipynb</code>
+										</p>
+										<p>                                       
+                                            When you are finished, submit <code>musaic.py</code> to canvas, as well as an audio file for your musical statement, <b>and a description of your corpus and target</b>.  Finally, indicate a title for your musical statement, and name/pseudonym you'd like to use in the music gallery on our class web site, and <b>indicate the names of any buddies you worked with</b>.
+										</p>
+
+
+										
+                                        
+										<HR>
+										<h2><a name = "programming">Programming Tasks</a></h2>
+										<p>
+											Our end goal is to mix together the best <b>p</b> windows from the corpus at every moment in time to match the target.  We're going to slowly build up in complexity, starting with a total corporal cacophony and ending with a result that matches the rhythmic aspects and pitch of the target better.
+										</p>
+										
+										
+
+										<hr><h3><a name = "random">1. Mixing Random Activations (5 Points)</a></h3>
+
+										<h4>Your Task</h4>
+										<p>
+											Loop through all of the windows in the target of window length <code>win</code>.  For each window, choose <b>p</b> random windows in the corpus.  Mix in each window with a random <b>weight</b> (i.e. scale on the amplitude) between 0 and 1, and shift-overlap add them into the result using a hann window (you can use the <code>hann_window</code> method in <code>utils.py</code> that's already been imported).  This is similar to the <a href = "../HW3_Vocoders/index.html#istft">shift-overlap-add (SOLA)</a> procedure you used in homework 3.  The animation below depicts this process:
+										</p>
+
+										https://youtube.com/shorts/0L3PN1G5sjQ?si=LU7z4iFdt6x5kF9i
+
+										<iframe width="560" height="800" src="https://www.youtube.com/embed/0L3PN1G5sjQ?si=LU7z4iFdt6x5kF9i" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+										<p>
+											Below is an example of the kind of result you should expect to get with this approach using <b>p=1 activations</b>
+										</p>
+
+										<audio controls>
+											<source src="Examples/random_p1.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										<p></p>
+
+										<p>
+											Here's an example with <b>p=5 activations</b>
+										</p>
+
+										<audio controls>
+											<source src="Examples/random_p5.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+
+										</p>
+
+										<p>
+											<b>NOTE: </b> We've completely ignored the audio in the target here, but we will start to incorporate it in the next step
+										</p>
+
+
+										<hr><h3><a name = "klweighted">2. KL-Weighted Activations (10 Points)</a></h3>
+										<p>
+											Even though we're using random activations, we can still adapt them more to the target than we currently are.
+										</p>
+										<h4>Your Task</h4>
+										<p>
+											Modify the code that you wrote in the last part to use weights based on the target instead of random weights.  To do this, run <a href = "../../ClassExercises/Week10/Week10_NMF/index.html#kl">KL-based NMF</a> on the <b>mel-spectrogram</b>, with the <b>W</b> matrix fixed to mel spectrogram of the windows that you're using in the corpus at that moment in time, and the <b>V</b> matrix as a single column corresponding to the mel spectrogram of the current target window.  Then, use the resulting entries in <b>H</b> as your weights for these corpus windows instead of the random weights from the last part.  You can use <code>get_mel_filterbank</code> in <code>utils.py</code> to construct the mel-filterbank, using the number of <code>mel_bands</code> and the frequency <code>fmax</code> passed along to the <code>musaic</code> method.  And you can use <code>do_nmf_kl</code> to perform NMF.
+										</p>
+
+
+										<p>
+											Below is an example of the kind of result you should expect to get with this approach using <b>p=1 activations</b>
+										</p>
+
+										<audio controls>
+											<source src="Examples/kl_p1.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										<p></p>
+
+										<p>
+											Here's an example with <b>p=5 activations</b>
+										</p>
+
+										<audio controls>
+											<source src="Examples/kl_p5.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p>
+											Notice that although the activations are still random and we can't hear the notes of the target, we can make out the rhythm now somewhat.
+										</p>
+
+										<hr><h3><a name = "transition">3. Particles And Transition Probabilities (10 Points)</a></h3>
+										<p>
+											Now you're going to start implementing the "particle filter," which is the main probabilistic tool I used in my paper.  In a nutshell, we're going to create tons of little "particles," each of which is a random sample of <b>p</b> windows in the corpus.  Some of these particles will be a good fit for our target at this moment in time, and some of them won't.  We'll get to figuring that out eventually, but for now, we're going to set them up in code and move them forward in time with some probability so that they agglomerate larger "grains" in the corpus.
+										</p>
+
+										<h4>Your Task</h4>
+										<p>
+											Modify your code to maintain <code>n_particles</code> different particles, each which tracks <code>p</code> windows in the corpus.  Initialize each of them randomly.  Then, in your loop that goes through each target window, compute the NMF weights <b>for each particle</b>.  Once you've gone through each particle, use the weights for the particle that achieves the minimum KL fit (using <code>get_kl_fit</code> in <code>utils.py</code>) and mix together into the output just as you did in the last step.
+										</p>
+										<p>
+											Finally, modify each window for each particle based on the parameter <b>pd</b>, which is the probability that window will move forward in the corpus.  For each window at index <b>idx</b> in the corpus:
+											<ul>
+												<li>If you draw a random number in [0, 1] that's less than pd and the window starting at <b>idx+hop</b> is still in bounds in the corpus, change the window to be <b>idx + hop</b></li>
+												<li>
+													Otherwise, jump the index to be a random offset in the corpus
+												</li>
+											</ul>
+										</p>
+
+										<p>
+											Below is an example with 100 particles and <b>pd = 0.5</b>
+										</p>
+
+										<audio controls>
+											<source src="Examples/transition_p5_pd0.5.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										<p></p>
+
+										<p>
+											Below is an example with 100 particles and <b>pd = 0.99</b>
+										</p>
+
+										<audio controls>
+											<source src="Examples/transition_p5_pd0.99.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+										<p></p>
+										<p>
+											Notice how for a longer pd, we hear the same bees droning on for longer.  This is because it's more likely that corpus windows will continue to advance forward in time than to jump somewhere randomly.
+										</p>
+
+										<hr><h3><a name = "weights">4. KL-Based Particle Weights / Resampling (10 Points)</a></h3>
+										<p>
+											Coming soon...
+										</p>
+
+										<hr><h3><a name = "finalfit">5. Aggregate Top Activations / Do Final Fit (10 Points)</a></h3>
+										<p>
+											Coming soon...
+										</p>
+
+										
+										<hr><h3><a name = "statement">6. Musical Statement (5 Points)</a></h3>
+										<p>
+											Now that you've created the musaicing system, use it to create your own novel compositions!  Come up with some sound sources and a target, and go to town.  Be sure to tweak the parameters as necessary to get the best quality sounds.  You may want to up the number of particles and number of mel bins to get the best results.  
+										</p>
+										<p>
+											If you're not happy with the results of your system on the idea you're trying out, feel free to use my <a href = "https://github.com/ctralie/TheConcatenator">official implementation</a> for the best results.  It's faster and it has a few more tricks to improve the audio quality.  
+										</p>
+										<p>
+											If you're having an artistic block, have a look at the examples at the bottom of my <a href = "https://www.ctralie.com/TheConcatenator/supplementary/">supplementary material</a>.
+										</p>
+										<p>
+											I can't wait to hear what you come up with!
+										</p>
+
+                                </div>
+						</div>
+					</div>
+
+					<!--LaTeX in Javascript!-->
+					<script src="../../../../jsMath/easy/load.js"></script>
+					<!--Syntax highlighting in Javascript!-->
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shCore.js"></script>
+					<script type="text/javascript" src="../../../syntaxhighlighter/scripts/shBrushJScript.js"></script>
+                    <script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushCpp.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushXml.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushMatlabSimple.js"></script>
+					<script type="text/javascript" src="../../../../syntaxhighlighter/scripts/shBrushPython.js"></script>
+					<link type="text/css" rel="stylesheet" href="../../../../syntaxhighlighter/styles/shCoreDefault.css"/>
+					<script type="text/javascript">SyntaxHighlighter.all();</script>
+
+<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+                                        <li>
+											<span class="opener">General</span>
+											<ul>
+												<li><a href = "../../index.html#overview">Overview</a></li>
+												<li><a href = "../../index.html#logistics">Technology Logistics</a></li>
+												<li><a href = "../../index.html#homework">Homework</a></li>
+												<li><a href = "../../index.html#grading">Grading</a>
+													<ul>
+														<li><a href = "../../index.html#deadlines">Deadlines Policy</a></li>
+													</ul>
+												</li>
+												<li><a href = "../../index.html#environment">Classroom Environment</a></li>
+												<li><a href = "../../index.html#participation">Participation</a></li>
+												<li><a href = "../../index.html#collaboration">Collaboration Policy</a></li>
+												<li><a href = "../../index.html#other">Other Resources / Policies</a></li>
+											</ul> 
+										</li>
+										<li><a href = "../../Software/index.html">Software</a></li>
+										<li><a href = "../../../webaudio-pianoroll/index.html">Piano Roll Editor</a></li>
+										<li><a href = "https://calebj0seph.github.io/spectro/">Live Spectrogram Viewer</a></li>
+										<li><a href = "../../index.html#schedule">Schedule</a></li>
+                                        <li>
+											<span class="opener">Assignments</span>
+											<ul>
+												<li>
+													<a href = "../../Assignments/HW1_RissetBeats">HW1: Risset Beats</a>
+													<ul>
+														<li>
+															<a href = "../../Assignments/HW1_RissetBeats/statements.html">Musical Statements</a>
+														</li>
+													</ul>
+												</li>
+												<li><a href = "../../Assignments/HW2_DigitalInstruments">HW2: Digital Instruments</a>
+												<ul>
+													<li>
+														<a href = "../../Assignments/HW2_DigitalInstruments/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												</li>
+												<li><a href = "../../Assignments/HW3_Vocoders">HW3: Spectacular Spectrograms</a>
+												<!--<ul>
+													<li>
+														<a href = "../../Assignments/HW3_Vocoders/statements.html">Musical Statements</a>
+													</li>
+												</ul>!-->
+												</li>
+												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
+												<li><a href = "../../Assignments/HW5_TheConcatenator">HW5: The Concatenator</a>
+												<!--
+												<ul>
+													<li>
+														<a href = "../../Assignments/HW5_TheConcatenator/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												-->
+												</li>
+												<!--
+												<li><a href = "../../Assignments/HW6_StringAlong">HW6: String Along</a>
+												<ul>
+													<li>
+														<a href = "../../Assignments/HW6_StringAlong/statements.html">Musical Statements</a>
+													</li>
+												</ul>
+												
+												</li>
+												-->
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Class Exercises</span>
+											<ul>
+												<li><a href = "../../ClassExercises/Week1/Week1_AudioReverseGame/">Week 1: Audio Reverse Game</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_BeatPhase/index.html">Week 2: Beat Phase</a></li>
+												<li><a href = "../../ClassExercises/RissetNotes/index.html">Week 2: Notes on Risset Beats</a></li>
+												<li><a href = "../../ClassExercises/Week2/Week2_Harmonicity/index.html">Week 2: Harmonicity</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_ZCS_Loudness/index.html">Week 3: Zero Crossings And Loudness Perception</a></li>
+												<li><a href = "../../ClassExercises/Week3/Week3_Timbre/index.html">Week 3: Harmonics And Timbre</a></li>
+												<li><a href = "../../ClassExercises/Week4/Week4_Envelopes/index.html">Week 4: Timbral Envelopes</a></li>
+												<li>
+													<a href = "../../ClassExercises/Week4/Week4_CombFilters/index.html">Week 4: Comb Filters</a>
+												</li>
+												<li><a href = "../../ClassExercises/Week5/Week5_DFT/index.html">Week 5: The Discrete Fourier Transform</a></li>
+												<li><a href = "../../ClassExercises/Week6/2DArrays/index.html">Week 6: 2D Arrays And Spectrograms</a></li>
+												<li><a href = "../../ClassExercises/Week6/ComplexDFT/index.html">Week 6: Complex DFT</a></li>
+												<li><a href = "../../ClassExercises/Week7/Week7_STFTNoiseShaping">Week 7: STFT Noise Shaping</a></li>
+												<li><a href = "../../ClassExercises/Week8/Week8_ANF">Week 8: Audio Novelty Functions</a></li>
+												<li><a href = "../../ClassExercises/BeattrackNotes">Week 9: Notes on Dynamic Programming Beat Tracking</a></li>
+												<li><a href = "../../ClassExercises/Week9/Week9_MFCC">Week 9: Mel-Frequency Cepstral Coefficients (MFCCs)</a></li>
+												<li><a href = "https://github.com/ursinus-cs372-s2023/pyshazam">Week 9: Python Implementation of Shazam</a></li>
+												<li><a href = "https://github.com/ursinus-cs372-s2023/Week10_HPSS/tree/classcode">Week 10: Harmonic/Percussive Source Separation with Median Filters</a></li>
+												<li><a href = "../../ClassExercises/Week10/Week10_NMF">Week 10: Nonnegative Matrix Factorization for Demixing</a></li>
+												<li><a href = "../../ClassExercises/Week11/">Week 11: Fundamental Frequency Tracking And Autotuners</a></li>
+												<li><a href = "../../../Modules/Module21/Video0">Week 12: Linear Separability of Phase-Shifted Triangle/Square Waves</a></li>
+											</ul>
+										</li>
+                                        <li>
+											<span class="opener">Pre-Class Modules</span>
+											<ul>
+												<li><a href = "../../../Modules/Module1/Video0">Module 1: Digital Audio Waveforms, Python Basics</a></a></li>
+												<li><a href = "../../../Modules/Module2/Video1">Module 2: Sinusoids And Simple Numpy Tunes</a></li>
+												<li><a href = "../../../Modules/Module3/Video0">Module 3: Standing Waves And Plucked String Synthesis</a></li>
+												<li><a href = "../../../Modules/Module4/Video1">Module 4: Chirps, Instantaneous Frequency, Vibrato, Sonification</a></li>
+												<li><a href = "../../../Modules/Module5/Video1">Module 5: Zero Crossings Filtering, Loudness And Intensity / Dynamics</a></li>
+												<li><a href = "../../../Modules/Module6/Video0">Module 6: Timbre, FM Synthesis, Python Methods As Parameters</a></li>
+												<li><a href = "../../../Modules/Module7/Video1">Module 7: Echoes, Impulse Responses, And Convolution</a></li>
+												<li><a href = "../../../Modules/Module8/Video1">Module 8: Discovering The Discrete Fourier Transform</a></li>
+												<li><a href = "../../../Modules/Module9/Video0">Module 9: The Real Discrete Fourier Transform (DFT), Amplitude/Phase</a></li>
+												<li><a href = "../../../Modules/Module10/Video1">Module 10: DFT on Real Audio, DFT on Sawtooth/Square Waves, Fundamental DFT Properties, Inverse DFT And Fast Risset</a></li>
+												<li><a href = "../../../Modules/Module11/Video1">Module 11: STFT, Window Functions, Complex Numbers</a></li>
+												<li><a href = "../../../Modules/Module12/Video1">Module 12: Complex DFT And Phasors</a></li>
+												<li><a href = "../../../Modules/Module13/Video1.html">Module 13: Aliasing, Inverse DFT</a></li>
+												<li><a href = "../../../Modules/Module14/Video1">Module 14: Convolution And Multiplication Duality</a></li>
+												<li><a href = "../../../Modules/Module15/Video0">Module 15: The Z Transform And Linear Predictive Coding</a></li>
+												<li><a href = "../../../Modules/Module16/Video0">Module 16: Audio Novelty Functions, Tempo Estimation, Matrix Multiplication</a></li>
+												<li><a href = "../../../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a></li>
+												<li><a href = "../../../Modules/Module18/Video0">Module 18: Matrix Multiplication for Audio Activations</a></li>
+												<li><a href = "../../../Modules/Module19/Video0">Module 19: Self-Similarity Matrices</a></li>
+												<li><a href = "../../../Modules/Module20/Video1">Module 20: Intro To Supervised Learning, Logistic Regression, Gradient Descent, And PyTorch</a></li>
+												<li><a href = "../../../Modules/Module21/Video0">Module 21: Neural Networks</a></li>
+												<li><a href = "../../../Modules/Module22/Video1">Module 22: Multiclass Classification, Convolutional Neural Networks, And Overfitting</a></li>
+											</ul>
+										</li>
+										<li><a href = "https://docs.google.com/forms/d/e/1FAIpQLSfwkO_w_Ku-n2Ou6J7pF--i0C2-a20Ov9wf690T6cYx80ASsw/viewform?usp=sf_link">Anonymous Question</a></li>
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								<section>
+									<div class="mini-posts">
+										Announcements							
+                                    </div>
+								</section>
+
+
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; <a href = "http://www.ctralie.com">Christopher J. Tralie</a>. All rights reserved.  Contact chris.tralie@gmail.com. Design: <a href="https://html5up.net">HTML5 UP</a>.</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+			
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+            <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<!-- End Sidebar !-->
+
+<!-- Scripts -->
+			<script src="../../assets/js/jquery.min.js"></script>
+			<script src="../../assets/js/skel.min.js"></script>
+			<script src="../../assets/js/util.js"></script>
+			<!--[if lte IE 8]><script src="../../assets/js/ie/respond.min.js"></script><![endif]-->
+			<script src="../../assets/js/main.js"></script>
+<!-- End Scripts -->
+	</body>

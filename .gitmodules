@@ -13,3 +13,12 @@
 [submodule "Assignments/HW4_RhythmAnalysis/HW4_Rhythm"]
 	path = Assignments/HW4_RhythmAnalysis/HW4_Rhythm
 	url = https://github.com/digitalmusicprocessing/HW4_Rhythm.git
+[submodule "ClassExercises/Week10/Week10_HPSS/Week10_HPSS"]
+	path = ClassExercises/Week10/Week10_HPSS/Week10_HPSS
+	url = https://github.com/digitalmusicprocessing/Week10_HPSS.git
+[submodule "Assignments/HW5_TheConcatenator/HW5_TheConcatenator"]
+	path = Assignments/HW5_TheConcatenator/HW5_TheConcatenator
+	url = https://github.com/digitalmusicprocessing/HW5_TheConcatenator.git
+[submodule "ClassExercises/Week11/Week11_NMF/Week11_NMF"]
+	path = ClassExercises/Week11/Week11_NMF/Week11_NMF
+	url = https://github.com/digitalmusicprocessing/Week11_NMF.git

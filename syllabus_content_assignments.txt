@@ -91,25 +91,28 @@ Assignment 3 Submission 1 Due
 <a href = "../Modules/Module16/Video2">Module 16: Exercise 2, 3, and 4</a> Due Before Class
 
 2025-03-24
-Module 17: Fundamental Frequency / pYin Due Before Class
+<a href = "../Modules/Module17/Video0">Module 17: Sonifying Mel And Chroma Filterbanks</a> Due Before Class
 
-2025-03-31
-<a href = "../Modules/Module18/Video0">Module 18: Matrix Activations for Spectral Decompositions</a> Due Before Class
+2025-03-28
+<a href = "../Modules/Module18/Video0">Module 18: Matrix Activations for Spectral Decompositions</a> Due
 
-2025-04-02
-<HR>HW4 Part 1: Tempo Due
+2025-04-06
+HW4 Part 1: Tempo Due
 
 2025-03-31
 HW4 Part 2: Beat Tracking Due
 
 2025-04-07
-<HR>HW5: The Concatenator Out
+<HR><a href = "Assignments/HW5_TheConcatenator/index.html">HW5: The Concatenator</a> Out
 
 2025-04-07
-Module 19: Self-Similarity Matrices Due Before Class
+Module 19: Fundamental Frequency with pYin Due Before Class
 
 2025-04-09
 <a href = "../Modules/Module20/Video1">Module 20 Parts 1-3</a> Due Before Class
+
+2025-04-16
+<HR>HW3 Tasks 1-3 Due
 
 2025-04-16
 <a href = "../Modules/Module20/Video3">Rest of Module 20</a> Due Before Class
@@ -118,7 +121,7 @@ Module 19: Self-Similarity Matrices Due Before Class
 <a href = "../Modules/Module21/Video0">Module 21: Neural Networks</a> Due Before Class
 
 2025-04-21
-HW5 Due
+HW5 Tasks 3-6 Due
 
 2025-04-25
 <HR>HW6: String Along Out
