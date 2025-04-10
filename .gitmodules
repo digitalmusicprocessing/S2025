@@ -22,3 +22,6 @@
 [submodule "ClassExercises/Week11/Week11_NMF/Week11_NMF"]
 	path = ClassExercises/Week11/Week11_NMF/Week11_NMF
 	url = https://github.com/digitalmusicprocessing/Week11_NMF.git
+[submodule "ClassExercises/Week11/Week11_Shazam/pyshazam"]
+	path = ClassExercises/Week11/Week11_Shazam/pyshazam
+	url = https://github.com/digitalmusicprocessing/pyshazam.git
