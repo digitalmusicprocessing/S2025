@@ -25,3 +25,6 @@
 [submodule "ClassExercises/Week11/Week11_Shazam/pyshazam"]
 	path = ClassExercises/Week11/Week11_Shazam/pyshazam
 	url = https://github.com/digitalmusicprocessing/pyshazam.git
+[submodule "ClassExercises/Week11/Week11_Autotuner"]
+	path = ClassExercises/Week11/Week11_Autotuner
+	url = https://github.com/digitalmusicprocessing/Week11_Autotuner.git
