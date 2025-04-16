@@ -147,8 +147,8 @@
 										<p>
 											Loop through all of the windows in the target of window length <code>win</code>.  For each window, choose <b>p</b> random windows in the corpus.  Mix in each window with a random <b>weight</b> (i.e. scale on the amplitude) between 0 and 1, and shift-overlap add them into the result using a hann window (you can use the <code>hann_window</code> method in <code>utils.py</code> that's already been imported).  This is similar to the <a href = "../HW3_Vocoders/index.html#istft">shift-overlap-add (SOLA)</a> procedure you used in homework 3.  The animation below depicts this process:
 										</p>
+										
 
-										https://youtube.com/shorts/0L3PN1G5sjQ?si=LU7z4iFdt6x5kF9i
 
 										<iframe width="560" height="800" src="https://www.youtube.com/embed/0L3PN1G5sjQ?si=LU7z4iFdt6x5kF9i" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
@@ -188,6 +188,11 @@
 										<p>
 											Modify the code that you wrote in the last part to use weights based on the target instead of random weights.  To do this, run <a href = "../../ClassExercises/Week10/Week10_NMF/index.html#kl">KL-based NMF</a> on the <b>mel-spectrogram</b>, with the <b>W</b> matrix fixed to mel spectrogram of the windows that you're using in the corpus at that moment in time, and the <b>V</b> matrix as a single column corresponding to the mel spectrogram of the current target window.  Then, use the resulting entries in <b>H</b> as your weights for these corpus windows instead of the random weights from the last part.  You can use <code>get_mel_filterbank</code> in <code>utils.py</code> to construct the mel-filterbank, using the number of <code>mel_bands</code> and the frequency <code>fmax</code> passed along to the <code>musaic</code> method.  And you can use <code>do_nmf_kl</code> to perform NMF.
 										</p>
+
+										<p>
+											The image below shows a toy example pictorially:
+										</p>
+										<img src = "NMFFit.svg" width="100%">
 
 
 										<p>
