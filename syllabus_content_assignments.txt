@@ -115,18 +115,21 @@ Module 19: Autotuning Examples Due
 <a href = "../Modules/Module20/Video3">Rest of Module 20</a> Due Before Class
 
 2025-04-16
-<HR>HW5 Tasks 1-3 Due
-
-2025-04-16
 <a href = "../Modules/Module21/Video0">Module 21: Neural Networks</a> Due Before Class
 
 2025-04-18
-HW5 Tasks 4-6 Due
+<HR>HW5 Tasks 1-3 Due
 
-2025-04-25
-<HR>HW6: String Along Out
-
-2025-04-25
+2025-04-18
 <a href = "../Modules/Module22/Video1">Module 22: Multiclass Classification, Convolutional Neural Networks, And Overfitting</a> Due Before Class
 
+2025-04-25
+HW5 Tasks 4-6 Due
+
 2025-04-28
+<HR>HW6: String Along Out
+
+2025-04-28
+HW6 Part 1 Due
+
+2025-05-05
