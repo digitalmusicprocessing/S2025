@@ -101,7 +101,7 @@
 
 										
 										<audio controls>
-											<source src="Examples/final_p10_P500_temp50_pd0.95_Mel100.mp3" type="audio/mpeg">
+											<source src="Examples/final_pd0.95_temp50.mp3" type="audio/mpeg">
 										  Your browser does not support the audio element.
 										</audio> 
 
@@ -192,7 +192,7 @@
 										<p>
 											The image below shows a toy example pictorially:
 										</p>
-										<img src = "NMFFit.svg" width="100%">
+										<img src = "NMFFit.svg" width="80%">
 
 
 										<p>
@@ -225,7 +225,7 @@
 
 										<h4>Your Task</h4>
 										<p>
-											Modify your code to maintain <code>n_particles</code> different particles, each which tracks <code>p</code> windows in the corpus.  Initialize each of them randomly.  Then, in your loop that goes through each target window, compute the NMF weights <b>for each particle</b>.  Once you've gone through each particle, use the weights for the particle that achieves the minimum KL fit (using <code>get_kl_fit</code> in <code>utils.py</code>) and mix together into the output just as you did in the last step.
+											Modify your code to maintain <code>n_particles</code> different particles, each which tracks <code>p</code> windows in the corpus.  Initialize each of them randomly.  Then, in your loop that goes through each target window, compute the NMF weights <b>for each particle</b>.  Once you've gone through each particle, <b>use the weights for the particle that achieves the minimum KL fit</b> (using <code>get_kl_fit</code> in <code>utils.py</code>) and mix together into the output just as you did in the last step.
 										</p>
 										<p>
 											Finally, modify each window for each particle based on the parameter <b>pd</b>, which is the probability that window will move forward in the corpus.  For each window at index <b>idx</b> in the corpus:
@@ -238,21 +238,21 @@
 										</p>
 
 										<p>
-											Below is an example with 100 particles and <b>pd = 0.5</b>
+											Below is an example with p=5, 100 particles and <b>pd = 0.5</b>
 										</p>
 
 										<audio controls>
-											<source src="Examples/transition_p5_pd0.5.mp3" type="audio/mpeg">
+											<source src="Examples/transition_pd0.5.mp3" type="audio/mpeg">
 										  Your browser does not support the audio element.
 										</audio> 
 										<p></p>
 
 										<p>
-											Below is an example with 100 particles and <b>pd = 0.99</b>
+											Below is an example with p=5, 100 particles and <b>pd = 0.99</b>
 										</p>
 
 										<audio controls>
-											<source src="Examples/transition_p5_pd0.99.mp3" type="audio/mpeg">
+											<source src="Examples/transition_pd0.99.mp3" type="audio/mpeg">
 										  Your browser does not support the audio element.
 										</audio> 
 
@@ -263,28 +263,168 @@
 
 										<hr><h3><a name = "weights">4. KL-Based Particle Weights / Resampling (10 Points)</a></h3>
 										<p>
-											Coming soon...
+											In this step, we're going to complete the particle filter by taking into consideration how well each particle fits the target coming in at each time.  To improve performance, we'll implement a "survival of the fittest strategy" to cull particles that aren't working as well and replicate ones that are working better. 
+										</p>
+										<h4>Your Task</h4>
+										<p>
+											Create an array <code>w</code> of "weights" that is parallel to the particles.  Each element holds the "weight" of that particle.  Assuming there are <b>P</b> particles, start each weight off as <b>1/P</b>.  Then, for each target window in your loop, implement weight updates with the following steps:
+										</p>
+										<ol>
+											<li>
+												<p>
+													Let <b>F<SUB>i</SUB></b> be the KL fit of the <code>i<SUP>th</SUP></code> particle.  Given a temperature <b>&tau;</b> the "observation probability" <b>p<SUB>i</SUB></b> of the <code>i<SUP>th</SUP></code> particle as
+												</p>
+												<div style="width:100px;">
+												<h3>
+													\[ p_i = \frac{ e^{-\tau F_i} }{ \sum_{j} e^{- \tau F_j} } \]
+												</h3>
+												</div>
+												<p>
+													This is a variant of the so-called <a href = "https://en.wikipedia.org/wiki/Softmax_function">softmax function</a>, which turns the KL fits into a probability mass function over the particles.  Particles with better KL fits have higher probabilities. 
+												</p>
+											</li>
+											<li>
+												<p>
+													Multiply each weight by <b>p<SUB>i</SUB></b>.  Then, normalize the weights to that they sum to 1; that is, compute the sum of the weights, and divide each weight by this sum.  If the sum is less than <code>1e-40</code>, reset the weights to all be <b>1/P</b>
+												</p>
+											</li>
+											<li>
+												<p>
+													One problem that can happen with the above scheme is that we have "particle depletion" where one particle dominates in weight and the rest are tiny, which causes the particle filter to be saturated with mostly bad estimates.  To ameliorate this, we're going to do something called "stochastic universal sampling," which is a "survival of the fittest" strategy.  First, compute the "number of effective particles" <b>n<SUB>eff</SUB></b> as:
+												</p>
+												
+												<div style="width:100px;">
+													<h3>
+														\[ n_{\text{eff}} = \frac{1}{\sum_{i} w_i^2} \]
+													</h3>
+												</div>
+
+												<p>
+													When all of the weights are the same, this is equal to the number of particles.  If this number drops below 10% of number of particles, you should <b>resample</b> the particles.  I've provided a method <code>stochastic_universal_sample</code> to help you with this.  This method takes a list of weights and returns a list of indices of what the new particles should be.  Some particles will be sampled with duplication, which is more likely if they have higher weights.  Some particles will skipped, which is more likely if they have lower weights.  Based on what <code>stochastic_universal_sample</code> returns, create a new list of particles, each with a weight of <b>1/P</b>.  The following pictures shows an example of how resampling 5 particles might work, where the size of each particle is proportional to its weight:
+												</p>
+												<img src = "resampling.svg" width="50%">
+												<p>
+													Note how the larger weight particle got repeated a few times, while some of the lower weight particles got completely skipped.
+												</p>
+											</li>
+										</ol>
+
+										<h4>Testing</h4>
+										<p>
+											This is an intermediate step to the final result, and we're not doing anything different to the sound yet, but you can count how often you resample to make sure you're on the right track.  Generally, with a higher temperature, resampling occurs more often, because the particles that fit better get larger weights relative to the others and begin to dominate.  Also, decreasing <b>pd</b> causes the particles to jump around more, so they also need to be resampled more often.  Specifically for the bees example, I got the following:
+										</p>
+										<p>
+											With win = 1024, p = 5, <b>temperature = 50</b>, and number of particles = 100, then <b>pd = 0.5</b> resamples a majority of the time, and <b>pd = 0.95</b> resamples around half of the time.
+										</p>
+
+										<p>
+											With win = 1024, p = 5, <b>temperature = 1</b>, and number of particles = 100, then <b>pd = 0.95</b> usually resamples less than 5% of the time, and <b>pd = 0.5</b> even less than that. 
 										</p>
 
 										<hr><h3><a name = "finalfit">5. Aggregate Top Activations / Do Final Fit (10 Points)</a></h3>
 										<p>
-											Coming soon...
+											Now we're going to have all of the particles cast votes based on their weight to choose a final set of corpus windows to use.  This will be a lot more robust than simply choosing the best fit particle like we did in <a href = "#transition">step 3</a>.
 										</p>
+										<h4>Your Task</h4>
+										<p>
+											Do the following steps to get the final mix at each target window:
+										</p>
+										<ol>
+											<li>
+												<p>
+													Create an array <code>votes</code> that has an element for each possible window in the corpus, starting each value as 0. 
+												</p> 
+											</li>
+											<li>
+												<p>
+													For each corpus index in each particle, add the weight of the particle to that corpus index in <code>votes</code>.  The effect will be that corpus windows that are fitting well across multiple particles will get a lot of high weight votes.
+												</p>
+											</li>
+											<li>
+												<p>
+													Pick the corpus indices with top <b>p</b> weights, and use these as the final <b>p</b> windows for the mix at this time.  Specifically, do exactly what you did in <a href = "#klweighted">step 2</a> to use KL NMF to come up with your mixing weights for these corpus moments.
+												</p>
+												<p>
+													To find the corpus indices with the top weight, <code><a href = "https://numpy.org/doc/2.2/reference/generated/numpy.argsort.html">np.argsort</a></code> (or better yet, <a href = "https://numpy.org/doc/stable/reference/generated/numpy.argpartition.html">np.argpartition</a>) will come in handy.
+												</p>
+											</li>
+										</ol>
+										<h4>Typical Results</h4>
+										<p>
+											Below are some examples of results you should expect for a working implementation using the bees as a corpus and "Let It Be" as a target, with 100 particles, p=5, and a frequency range from 0 to 4000 with 100 mel bins:
+										</p>
+
+										<table>
+											<tr>
+												<td>
+													<h4>pd = 0.5, temperature = 1</h4>
+													<audio controls>
+														<source src="Examples/final_pd0.0.5_temp1.mp3" type="audio/mpeg">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+												<td>
+													<h4>pd = 0.5, temperature = 50</h4>
+													<audio controls>
+														<source src="Examples/final_pd0.0.5_temp50.mp3" type="audio/mpeg">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+											<tr>
+												<td>
+													<h4>pd = 0.95, temperature = 1</h4>
+													<audio controls>
+														<source src="Examples/final_pd0.95_temp1.mp3" type="audio/mpeg">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+												<td>
+													<h4>pd = 0.95, temperature = 50</h4>
+													<audio controls>
+														<source src="Examples/final_pd0.95_temp50.mp3" type="audio/mpeg">
+													  Your browser does not support the audio element.
+													</audio> 
+												</td>
+											</tr>
+										</table>
+										<p>
+											Notice how a higher temperature gives a better fit to the target with the notes, and notice how a higher pd leads to bees that drone on for longer.  Notice also how the results are all cleaner than they were in <a href = "#transition">step 3</a> for similar parameters, since we're feeding information about fit back into the particle filter.
+										</p>
+										<h4>Cheatboxing</h4>
+										<p>
+											Below is one final example that <a href = "https://encanti.com/">Encanti</a> (my co-author on the paper) calls "cheatboxing."  If we use this beatboxing as a target:
+										</p>
+										<audio controls>
+											<source src="Examples/Beatbox.m4a" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+										<p>
+											and these "<a href = "https://unison.audio/product/unison-essential-drum-loops/">unison essential drum loops</a>" as a corpus, with p=5, pd=0.95, and temperature=1, we get a result like this:
+										</p>
+										<audio controls>
+											<source src="Examples/beatbox_temp1.mp3" type="audio/mpeg">
+										  Your browser does not support the audio element.
+										</audio> 
+
+
+
 
 										
 										<hr><h3><a name = "statement">6. Musical Statement (5 Points)</a></h3>
 										<p>
-											Now that you've created the musaicing system, use it to create your own novel compositions!  Come up with some sound sources and a target, and go to town.  Be sure to tweak the parameters as necessary to get the best quality sounds.  You may want to up the number of particles and number of mel bins to get the best results.  
+											Now that you've created the musaicing system, use it to create your own novel compositions!  Come up with some sound sources and a target, and go to town.  Be sure to tweak the parameters as necessary to get the best quality sounds.  You may want to up the number of particles and number of mel bins to get the best results.  You will probably also have to adjust <b>pd</b> and the temperature.  If you're not happy with the fit to the target, move the temperature up.  If it sounds like it's jumping around too much and you want longer "grains" (contiguous chunks of windows), move <b>pd</b> closer to 1.
 										</p>
+
+										<h4>My Official Open Source Release</h4>
 										<p>
 											If you're not happy with the results of your system on the idea you're trying out, feel free to use my <a href = "https://github.com/ctralie/TheConcatenator">official implementation</a> for the best results.  It's faster and it has a few more tricks to improve the audio quality.  
 										</p>
+										<h4>Other Examples</h4>
 										<p>
 											If you're having an artistic block, have a look at the examples at the bottom of my <a href = "https://www.ctralie.com/TheConcatenator/supplementary/">supplementary material</a>.
 										</p>
-										<p>
-											I can't wait to hear what you come up with!
-										</p>
+										<h4>I can't wait to hear what you come up with!</h4>
 
                                 </div>
 						</div>
