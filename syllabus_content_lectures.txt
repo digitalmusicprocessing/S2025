@@ -159,6 +159,10 @@ SIRENs: Implicit Neural Representations with Periodic Activation Functions
 
 <ul><li><a href = "https://www.vincentsitzmann.com/siren/">Original 2020 NeurIPS paper on SIRENs</a></li></ul>
 LECTURE
+Convolutional Neural Networks, Data Augmentation
+
+
+LECTURE
 Differentiable Digital Signal Processing
 
 <ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li></ul>
@@ -166,10 +170,6 @@ LECTURE
 <u>A User's Guide:</u> CREPE for fundamental frequency estimation
 
 <ul><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li></ul>
-LECTURE
-Convolutional Neural Networks, Data Augmentation
-
-
 LECTURE
 <u>A User's Guide:</u> Demucs for track demixing
 
