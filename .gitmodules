@@ -31,3 +31,9 @@
 [submodule "ClassExercises/Week12/Week12_GradientDescent"]
 	path = ClassExercises/Week12/Week12_GradientDescent
 	url = https://github.com/digitalmusicprocessing/Week12_GradientDescent.git
+[submodule "ClassExercises/Week13/Week13_NSynthClassify"]
+	path = ClassExercises/Week13/Week13_NSynthClassify
+	url = https://github.com/digitalmusicprocessing/Week13_NSynthClassify.git
+[submodule "ClassExercises/Week13/Week13_SIREN/Week13_SIREN"]
+	path = ClassExercises/Week13/Week13_SIREN/Week13_SIREN
+	url = https://github.com/digitalmusicprocessing/Week13_SIREN.git

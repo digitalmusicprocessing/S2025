@@ -59,7 +59,7 @@
 													<li><a href = "#random">1. Mixing Random Activations (5 Points)</a></li>
 													<li><a href = "#klweighted">2. KL-Weighted Activations (10 Points)</a></li>
 													<li><a href = "#transition">3. Particles And Transition Probabilities (10 Points)</li>
-													<li><a href = "#weights">4. KL-Based Particle Weights / Resampling (10 Points)</a></li>
+													<li><a href = "#weights">4. KL-Based Particle Likelihoods / Resampling (10 Points)</a></li>
 													<li><a href = "#finalfit">5. Aggregate Top Activations / Do Final Fit (10 Points)</a></li>
 													<li><a href = "#statement">6. Musical Statement (5 Points)</a></li>
 												</ul>
@@ -267,13 +267,13 @@
 											Notice how for a longer pd, we hear the same bees droning on for longer.  This is because it's more likely that corpus windows will continue to advance forward in time than to jump somewhere randomly.
 										</p>
 
-										<hr><h3><a name = "weights">4. KL-Based Particle Weights / Resampling (10 Points)</a></h3>
+										<hr><h3><a name = "weights">4. KL-Based Particle Likelihoods / Resampling (10 Points)</a></h3>
 										<p>
 											In this step, we're going to complete the particle filter by taking into consideration how well each particle fits the target coming in at each time.  To improve performance, we'll implement a "survival of the fittest strategy" to cull particles that aren't working as well and replicate ones that are working better. 
 										</p>
 										<h4>Your Task</h4>
 										<p>
-											Create an array <code>w</code> of "weights" that is parallel to the particles.  Each element holds the "weight" of that particle.  Assuming there are <b>P</b> particles, start each weight off as <b>1/P</b>.  Then, for each target window in your loop, implement weight updates with the following steps:
+											Create an array <code>w</code> of "likelihoods" that is parallel to the particles.  Each element holds the "likelihood" of that particle.  Assuming there are <b>P</b> particles, start each likelihood off as <b>1/P</b>.  Then, for each target window in your loop, implement likelihood updates with the following steps:
 										</p>
 										<ol>
 											<li>
@@ -291,12 +291,12 @@
 											</li>
 											<li>
 												<p>
-													Multiply each weight by <b>p<SUB>i</SUB></b>.  Then, normalize the weights to that they sum to 1; that is, compute the sum of the weights, and divide each weight by this sum.  If the sum is less than <code>1e-40</code>, reset the weights to all be <b>1/P</b>
+													Multiply each likelihood by <b>p<SUB>i</SUB></b>.  Then, normalize the likelihoods to that they sum to 1; that is, compute the sum of the likelihoods, and divide each likelihood by this sum.  If the sum is less than <code>1e-40</code>, reset the likelihoods to all be <b>1/P</b>
 												</p>
 											</li>
 											<li>
 												<p>
-													One problem that can happen with the above scheme is that we have "particle depletion" where one particle dominates in weight and the rest are tiny, which causes the particle filter to be saturated with mostly bad estimates.  To ameliorate this, we're going to do something called "stochastic universal sampling," which is a "survival of the fittest" strategy.  First, compute the "number of effective particles" <b>n<SUB>eff</SUB></b> as:
+													One problem that can happen with the above scheme is that we have "particle depletion" where one particle dominates in likelihood and the rest are tiny, which causes the particle filter to be saturated with mostly bad estimates.  To ameliorate this, we're going to do something called "stochastic universal sampling," which is a "survival of the fittest" strategy.  First, compute the "number of effective particles" <b>n<SUB>eff</SUB></b> as:
 												</p>
 												
 												<div style="width:100px;">
@@ -306,18 +306,18 @@
 												</div>
 
 												<p>
-													When all of the weights are the same, this is equal to the number of particles.  If this number drops below 10% of number of particles, you should <b>resample</b> the particles.  I've provided a method <code>stochastic_universal_sample</code> to help you with this.  This method takes a list of weights and returns a list of indices of what the new particles should be.  Some particles will be sampled with duplication, which is more likely if they have higher weights.  Some particles will skipped, which is more likely if they have lower weights.  Based on what <code>stochastic_universal_sample</code> returns, create a new list of particles, each with a weight of <b>1/P</b>.  The following pictures shows an example of how resampling 5 particles might work, where the size of each particle is proportional to its weight:
+													When all of the likelihoods are the same, this is equal to the number of particles.  If this number drops below 10% of number of particles, you should <b>resample</b> the particles.  I've provided a method <code>stochastic_universal_sample</code> to help you with this.  This method takes a list of likelihoods and returns a list of indices of what the new particles should be.  Some particles will be sampled with duplication, which is more likely if they have higher likelihoods.  Some particles will skipped, which is more likely if they have lower likelihoods.  Based on what <code>stochastic_universal_sample</code> returns, create a new list of particles, each with a likelihood of <b>1/P</b>.  The following pictures shows an example of how resampling 5 particles might work, where the size of each particle is proportional to its likelihood:
 												</p>
 												<img src = "resampling.svg" width="50%">
 												<p>
-													Note how the larger weight particle got repeated a few times, while some of the lower weight particles got completely skipped.
+													Note how the larger likelihood particle got repeated a few times, while some of the lower likelihood particles got completely skipped.
 												</p>
 											</li>
 										</ol>
 
 										<h4>Testing</h4>
 										<p>
-											This is an intermediate step to the final result, and we're not doing anything different to the sound yet, but you can count how often you resample to make sure you're on the right track.  Generally, with a higher temperature, resampling occurs more often, because the particles that fit better get larger weights relative to the others and begin to dominate.  Also, decreasing <b>pd</b> causes the particles to jump around more, so they also need to be resampled more often.  Specifically for the bees example, I got the following:
+											This is an intermediate step to the final result, and we're not doing anything different to the sound yet, but you can count how often you resample to make sure you're on the right track.  Generally, with a higher temperature, resampling occurs more often, because the particles that fit better get larger likelihoods relative to the others and begin to dominate.  Also, decreasing <b>pd</b> causes the particles to jump around more, so they also need to be resampled more often.  Specifically for the bees example, I got the following:
 										</p>
 										<p>
 											With win = 1024, p = 5, <b>temperature = 50</b>, and number of particles = 100, then <b>pd = 0.5</b> resamples a majority of the time, and <b>pd = 0.95</b> resamples around half of the time.
@@ -329,7 +329,7 @@
 
 										<hr><h3><a name = "finalfit">5. Aggregate Top Activations / Do Final Fit (10 Points)</a></h3>
 										<p>
-											Now we're going to have all of the particles cast votes based on their weight to choose a final set of corpus windows to use.  This will be a lot more robust than simply choosing the best fit particle like we did in <a href = "#transition">step 3</a>.
+											Now we're going to have all of the particles cast votes based on their likelihood to choose a final set of corpus windows to use.  This will be a lot more robust than simply choosing the best fit particle like we did in <a href = "#transition">step 3</a>.
 										</p>
 										<h4>Your Task</h4>
 										<p>
@@ -343,15 +343,15 @@
 											</li>
 											<li>
 												<p>
-													For each corpus index in each particle, add the weight of the particle to that corpus index in <code>votes</code>.  The effect will be that corpus windows that are fitting well across multiple particles will get a lot of high weight votes.
+													For each corpus index in each particle, add the likelihood of the particle to that corpus index in <code>votes</code>.  The effect will be that corpus windows that are fitting well across multiple particles will get a lot of high likelihood votes.
 												</p>
 											</li>
 											<li>
 												<p>
-													Pick the corpus indices with top <b>p</b> weights, and use these as the final <b>p</b> windows for the mix at this time.  Specifically, do exactly what you did in <a href = "#klweighted">step 2</a> to use KL NMF to come up with your mixing weights for these corpus moments.
+													Pick the corpus indices with top <b>p</b> likelihoods, and use these as the final <b>p</b> windows for the mix at this time.  Specifically, do exactly what you did in <a href = "#kllikelihooded">step 2</a> to use KL NMF to come up with your mixing likelihoods for these corpus moments.
 												</p>
 												<p>
-													To find the corpus indices with the top weight, <code><a href = "https://numpy.org/doc/2.2/reference/generated/numpy.argsort.html">np.argsort</a></code> (or better yet, <a href = "https://numpy.org/doc/stable/reference/generated/numpy.argpartition.html">np.argpartition</a>) will come in handy.
+													To find the corpus indices with the top likelihood, <code><a href = "https://numpy.org/doc/2.2/reference/generated/numpy.argsort.html">np.argsort</a></code> (or better yet, <a href = "https://numpy.org/doc/stable/reference/generated/numpy.argpartition.html">np.argpartition</a>) will come in handy.
 												</p>
 											</li>
 										</ol>
