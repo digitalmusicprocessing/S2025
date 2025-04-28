@@ -163,13 +163,9 @@ Convolutional Neural Networks, Data Augmentation
 
 
 LECTURE
-Differentiable Digital Signal Processing
+Differentiable Digital Signal Processing<p><u>A User's Guide:</u> CREPE for fundamental frequency estimation</p>
 
-<ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li></ul>
-LECTURE
-<u>A User's Guide:</u> CREPE for fundamental frequency estimation
-
-<ul><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li></ul>
+<ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li></ul>
 LECTURE
 <u>A User's Guide:</u> Demucs for track demixing
 
@@ -182,3 +178,7 @@ LECTURE
 <u>A User's Guide:</u> Stable Audio for track synthesis with a large language model
 
 <ul><li><a href = "https://arxiv.org/pdf/2407.14358">2024 Paper on stable audio</a></li></ul>
+LECTURE
+Ethics Discussion on Generative Audio in 2025
+
+
