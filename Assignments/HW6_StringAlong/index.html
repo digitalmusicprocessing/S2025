@@ -167,21 +167,7 @@
 
 										<h4><a name = "starter">Starter Code</a></h4>
 										<p>
-											The starter notebook for this can be obtained at <a href = "https://github.com/digitalmusicprocessing/HW6_StringAlong">https://github.com/digitalmusicprocessing/HW6_StringAlong</a>.  You'll want to load this into <a href = "https://colab.research.google.com/">Google Colab</a>.  Be sure to change your runtime to <b>GPU</b>:
-										</p>
-
-										<img src = "runtime.png" width="40%">
-
-										<p>
-											This is crucial for the training to run at a reasonable pace.  It also means that you'll have to move your model and all of the tensors over the GPU before using them.  Here are a few examples of how to do this:
-										</p>
-
-										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											device = 'cuda'
-											X = X.to(device)
-											model = model.to(device)
-											Y = Y.to(X) # This will put Y on the same device as X
-										</script>
+											The starter notebook for this can be obtained at <a href = "https://github.com/digitalmusicprocessing/HW6_StringAlong">https://github.com/digitalmusicprocessing/HW6_StringAlong</a>.  You'll want to load this into <a href = "https://colab.research.google.com/">Google Colab</a>
 										
 
 										<h4><a name = "paper">DDSP Paper</a></h4>
@@ -579,9 +565,30 @@
 									</ol>
 
 
+									<h4>Training with GPU</h4>
+									<p>
+										Once you have your training code down and it seems like the loss is steadily decreasing, you should change your runtime to <b>GPU</b>:
+									</p>
 
+									<img src = "runtime.png" width="40%">
 
-									<h4>Tips</h4>
+									<p>
+										This is crucial for the training to run at a reasonable pace.  It also means that you'll have to move your model and all of the tensors over the GPU before using them.  Here are a few examples of how to do this:
+									</p>
+
+									<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+										device = 'cuda'
+										X = X.to(device)
+										model = model.to(device)
+										Y = Y.to(X) # This will put Y on the same device as X
+									</script>
+
+									<p>
+										But you should only do this once it seems like it's working, because colab severely limits GPU usage!  Last time we only got about two hours per day on average.
+									</p>
+
+									
+									<h4>Other Tips</h4>
 									<ul>
 										<li>
 											Each epoch should take about a minute at most.  If it takes significantly longer, you may need to fine tune some of your code in part 2
