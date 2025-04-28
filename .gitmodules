@@ -37,3 +37,6 @@
 [submodule "ClassExercises/Week13/Week13_SIREN/Week13_SIREN"]
 	path = ClassExercises/Week13/Week13_SIREN/Week13_SIREN
 	url = https://github.com/digitalmusicprocessing/Week13_SIREN.git
+[submodule "Assignments/HW6_StringAlong/HW6_StringAlong"]
+	path = Assignments/HW6_StringAlong/HW6_StringAlong
+	url = https://github.com/digitalmusicprocessing/HW6_StringAlong.git

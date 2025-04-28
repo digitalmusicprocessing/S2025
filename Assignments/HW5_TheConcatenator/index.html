@@ -273,7 +273,7 @@
 										</p>
 										<h4>Your Task</h4>
 										<p>
-											Create an array <code>w</code> of "likelihoods" that is parallel to the particles.  Each element holds the "likelihood" of that particle.  Assuming there are <b>P</b> particles, start each likelihood off as <b>1/P</b>.  Then, for each target window in your loop, implement likelihood updates with the following steps:
+											Create an array <b>&ell;</b> of "likelihoods" that is parallel to the particles.  Each element holds the "likelihood" of that particle.  Assuming there are <b>P</b> particles, start each likelihood off as <b>1/P</b>.  Then, for each target window in your loop, implement likelihood updates with the following steps:
 										</p>
 										<ol>
 											<li>
@@ -301,7 +301,7 @@
 												
 												<div style="width:100px;">
 													<h3>
-														\[ n_{\text{eff}} = \frac{1}{\sum_{i} w_i^2} \]
+														\[ n_{\text{eff}} = \frac{1}{\sum_{i} \ell_i^2} \]
 													</h3>
 												</div>
 
