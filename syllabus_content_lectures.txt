@@ -163,13 +163,13 @@ Convolutional Neural Networks, Data Augmentation
 
 
 LECTURE
-Differentiable Digital Signal Processing<p><u>A User's Guide:</u> CREPE for fundamental frequency estimation</p>
+Differentiable Digital Signal Processing
 
-<ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li></ul>
+<ul><li><a href = "https://magenta.tensorflow.org/ddsp">Google Magenta DDSP Blog Post</a></li></ul>
 LECTURE
-<u>A User's Guide:</u> Demucs for track demixing
+<u>A User's Guide:</u> CREPE for fundamental frequency estimation, Demucs for track demixing
 
-<ul><li><a href = "https://github.com/facebookresearch/demucs/tree/v2">Facebook research demucs link</a></li></ul>
+<ul><li><a href = "https://www.justinsalamon.com/uploads/4/3/9/4/4394963/kim_crepe_icassp_2018.pdf">Jong Wook Kimg 2018: CREPE: A Convolutional Representation for Pitch Estimation</li><li><a href = "https://github.com/facebookresearch/demucs/tree/v2">Facebook research demucs link</a></li></ul>
 LECTURE
 <u>A User's Guide:</u> Rave for audio to audio style transfer
 

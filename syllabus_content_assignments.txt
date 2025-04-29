@@ -124,12 +124,12 @@ HW5 Tasks 1-3 Due
 <a href = "../Modules/Module22/Video1">Module 22: Multiclass Classification, Convolutional Neural Networks, And Overfitting</a> Due Before Class
 
 2025-04-25
+<a href = "Assignments/HW6_StringAlong/index.html">HW6: String Along</a> Out
+
+2025-04-28
 HW5 Tasks 4-6 Due
 
-2025-04-28
-<HR><a href = "Assignments/HW6_StringAlong/index.html">HW6: String Along</a> Out
-
-2025-04-28
+2025-04-30
 HW6 Tasks 1, 2a, 2b Due
 
-2025-05-05
+2025-05-07
