@@ -41,125 +41,138 @@
 							<!-- Content -->
 								<section>
 									<header class="main">
-										<h2>Week 10: Chroma Features And Chromagrams</h2>
+										<h1>Week 15: Stable Audio Class Examples</h1>
 										<h3><a href = "http://www.ctralie.com">Chris Tralie</a></h3>
 									</header>
 
 									<div id="page-content">
-										<h2>Overview</h2>
-										<p>
-											We saw a couple of weeks ago in <a href = "../../Week8/Week8_MFCC">this exercise</a> that it is possible to achieve a timbral feature by means of matrix multiplication.  In particular, we created a matrix that encompassed a "triangular filterbank," where each row was a triangle centered at a different frequency, and the center frequencies from row to row were spaced out exponentially to match human pitch perception.  The rows are plotted individually below:
-										</p>
+									<h2>Background</h2>
 
-										<img src = "TriangularFilterbank.png">
-
-										<p>
-											And we can look at it in matrix form as follows
-										</p>
-
-										<img src = "TriFilterbankFull.png">
-
-										<p>
-											When we multiply this matrix by a spectrogram on the right we obtain a mel spectrogram.
-										</p>
-										<p>
-											Today, we are going to create another kind of filterbank, known as a <b>chromogram</b>, which can also be written as a matrix multiplication with a spectrogram.  Our goal here is the opposite to what it was with the mel spectrogram; we actually want to pick up on pitches only and to throw the timbral information away.  Therefore, each row in the filterbank will correspond to one of 12 different notes, and we will create a bump centered on the center frequency corresponding to each octave of that note.  Recall that the equation for the frequency of a pitch <b>p</b> is 
-										</p>
-
-										<h3>
-											\[ f = 440*2^{p/12} \]
-										</h3>
-
-										<p>
-											We will refer to the <b>note number</b> relative to A, which is 0.  So row 0 holds A, row 1 holds A#, row 2 holds B, etc.  The image below shows this:
-										</p>
-
-										<img src = "ChromaMatrix.svg" width=900>
-
-										<p>
-											Let's zoom in on the first row:
-										</p>
-
-										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											K = int(win/2)+1
-											freqs = np.arange(K)*sr/win
-											plt.plot(freqs, M[0, :])
-											plt.xlim([0, 4000])
-										</script>
-
-										
-
-										<img src = "Row0.svg">
-
-										<p>
-											Observe how there is a peak over 440hz, as well as several octaves below and above, <b>so it doesn't matter what octave we play the note at; they all factor in just the same</b>.  If we plot the x-axis on a log scale, we see that they are equally spaced perceptually
-										</p>
-
-										<img src = "Row0Log.svg">
-
-										<p>
-											If we run the code below
-										</p>
+									<p>
+										During the last week of class, we played with <a href = "https://huggingface.co/stabilityai/stable-audio-open-1.0">stable audio open</a>.  In addition to the <a href = "https://stability-ai.github.io/stable-audio-open-demo/">official examples</a>, here are some ideas we had and their results, using the following parameters:
+									</p>
 
 
-										<script type="syntaxhighlighter" class="brush: py"><![CDATA[
-											%load_ext autoreload
-											%autoreload 2
-											import numpy as np
-											import matplotlib.pyplot as plt
-											import librosa
-											import IPython.display as ipd
-											from chroma import *
+									<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+										output = generate_diffusion_cond(
+											model,
+											steps=100,
+											cfg_scale=7,
+											conditioning=conditioning,
+											sample_size=sample_size,
+											sigma_min=0.3,
+											sigma_max=500,
+											sampler_type="dpmpp-3m-sde",
+											device=device
+										)
+									</script>
 
-											sr = 44100
-											win = int(sr/4)
-											M = get_chroma_matrix(sr, win)
-											x, sr = librosa.load("piano-chrom.wav", sr=sr)
-											S = np.abs(librosa.stft(x, win_length = win, n_fft = win))
-											chroma = M.dot(S) # Matrix multiplication
-											
-											plt.figure(figsize=(14, 4))
-											plt.subplot(131)
-											plt.imshow(M, interpolation='nearest', aspect='auto', cmap='magma_r')
-											plt.title("Chroma Matrix")
-											plt.xlabel("Frequency Bin")
-											plt.ylabel("Note Number")
-											plt.subplot(132)
-											S[S < 1e-5] = 1e-5
-											plt.imshow(np.log10(S), interpolation='none', aspect='auto', cmap='magma_r')
-											plt.title("Spectrogram")
-											plt.xlabel("Time Window")
-											plt.ylabel("Frequency Bin")
-											plt.subplot(133)
-											plt.imshow(chroma, interpolation='none', aspect='auto', cmap='magma_r')
-											plt.title("Chromagram")
-											plt.xlabel("Time Window")
-											plt.ylabel("Note Number")
-											plt.tight_layout()
-										</script>
+									<h4>[Prompt reused from <a href = "https://stability-ai.github.io/stable-audio-open-demo/">official examples</a>] A dance music club banger, with a heavy kick, subtle supporting percussion like tabla and bongos, prominent pop synth lines, and a repetitive hook</h4>
+									<audio controls>
+									<source src="0.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+									<h4>Same as above, but with 500 iterations instead of 100</h4>
+									<audio controls>
+										<source src="0_500Iters.mp3" type="audio/mpeg">
+										Your browser does not support the audio element.
+										</audio> 
 
-										<p>
-											We get the following plot:
-										</p>
 
-										<img src = "ChromaMult.svg" width=900>
+									<h4>A danceable electronic track in the genre of dubstep</h4>
+									
+									<audio controls>
+									<source src="14.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
 
-										<h2>Code</h2>
-										<p>
-											<a href = "https://github.com/Ursinus-CS472A-S2021/Week10_Chroma/archive/refs/heads/main.zip">Click here</a> to download the starter code for today.  You should edit the <code>get_chroma_matrix</code> method to fill in all 12 rows of the chroma matrix.  At row index <b>r</b>, place a bump around octaves between 3 below and 5 above the frequency <b>440*2<SUP>r/12</SUP></b>.  For a particular center frequency <b>f<SUB>c</SUB></b>, each bump should be in the form of a Gaussian bump
-										</p>
+									<h4>A danceable dubstep track with a big buildup to a drop</h4>
+									
+									<audio controls>
+									<source src="14.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
 
-										<h3>
-											\[ B(f) = e^{-(f-f_c)^2/\sigma^2} \]
-										</h3>
+									
+									<h4>Taylor Swift - Love Story</h4>
+								
+									<audio controls>
+									<source src="2.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
 
-										<p>
-											To keep things at a "constant quality factor" (also known as "constant Q"), sigma should be proportional to the frequency
-										</p>
+									<h4>An upbeat rock tune about cats with electronic guitar and cat sounds in the background</h4>
 
-										<h3>
-											\[ \sigma = 0.02*f_c \]
-										</h3>
+									<audio controls>
+									<source src="3.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+									<h4>A cat meowing singing a pop tune</h4>
+
+									<audio controls>
+									<source src="10.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+
+									<h4>An upbeat power ballad with a cat singing meowing</h4>
+
+									<audio controls>
+									<source src="11.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+
+									<h4>A 2000s era dirty south trap beat</h4>
+									<audio controls>
+									<source src="4.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+									<h4>West coast hip hop beat with the g-funk west coast whistle sound</h4>
+									<audio controls>
+									<source src="5.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+									<h4>Eerie world music tune with tibetan throat singing in the background</h4>
+									<audio controls>
+									<source src="6.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+									<h4>Tibetan throat singing</h4>
+									<audio controls>
+									<source src="7.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+									<h4>Tibetan throat singing forming a beat with a flute tune on top</h4>
+									<audio controls>
+									<source src="8.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+									<h4>Tibetan throat singing beat</h4>
+									<audio controls>
+									<source src="9.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+
+									<h4>Motown funk vamping snappy beat</h4>
+									<audio controls>
+									<source src="12.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+
+									<h4>Twangy country music with a female lead singer</h4>
+									<audio controls>
+									<source src="13.mp3" type="audio/mpeg">
+									Your browser does not support the audio element.
+									</audio> 
+									
 
                                     </div>
 						</div>
