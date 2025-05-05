@@ -225,6 +225,10 @@
 													pitch = torchcrepe.predict(torch.from_numpy(x).view((1, x.size)),sr,hop_length,
 													50,2000,'full',batch_size=2048,device=device).flatten()
 												</script>
+
+												<p>
+													<b>NOTE:</b>  You will have to switch into GPU mode briefly with <code>device='cuda'</code>, following <a href = "#gpu">these instructions</a>.  But at the end of this task, switch back to cpu mode so that you conserve your colab GPU hours
+												</p>
 											</li>
 											<li>
 												Crop the <code>pitch</code> and <code>loudness</code> arrays down to have the minimum number of samples between the two.  Crop the audio down so that it has this number of samples times the <code>hop_length</code>
