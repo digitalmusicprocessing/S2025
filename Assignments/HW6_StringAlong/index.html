@@ -273,7 +273,7 @@
 										<img src = "ddsp_mlp.png" width="70%">
 
 										<p>
-											First, create an <code><a href = "https://www.youtube.com/watch?v=dtMesafhSYI">MLP</a></code> class for a "multilayer perceptron" that inherits from <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"><code>nn.module</code></a>.  As shown in Figure 10 of the DDSP paper, this consists of the following sequence, repeated three times:
+											First, create an <code><a href = "https://www.youtube.com/watch?v=dtMesafhSYI">MLP</a></code> class for a "multilayer perceptron" that inherits from <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"><code>nn.Module</code></a>.  As shown in Figure 10 of the DDSP paper, this consists of the following sequence, repeated three times:
 											<ol>
 												<li>
 													<a href = "https://pytorch.org/docs/stable/generated/torch.nn.Linear.html#torch.nn.Linear">nn.Linear</a>
@@ -304,7 +304,7 @@
 										
 
 										<p>
-											Create a class <code>DDSPDecoder</code> that inherits from <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"><code>nn.module</code></a>, and which has the following parameters to the constructor:
+											Create a class <code>DDSPDecoder</code> that inherits from <a href = "https://pytorch.org/docs/stable/generated/torch.nn.Module.html"><code>nn.Module</code></a>, and which has the following parameters to the constructor:
 										</p>
 										<ul>
 											<li>
@@ -460,7 +460,7 @@
 											def get_num_parameters(self):
 												total = 0
 												for p in self.parameters():
-													total += np.prod(p.shape)
+													total += p.numel()
 												return total
 										</script>
 										<p>
@@ -748,13 +748,11 @@
 												</li>
 												<li><a href = "../../Assignments/HW4_RhythmAnalysis">HW4: Tempo Estimation And Beat Tracking</a></li>
 												<li><a href = "../../Assignments/HW5_TheConcatenator">HW5: The Concatenator</a>
-												<!--
 												<ul>
 													<li>
 														<a href = "../../Assignments/HW5_TheConcatenator/statements.html">Musical Statements</a>
 													</li>
 												</ul>
-												-->
 												</li>
 												
 												<li><a href = "../../Assignments/HW6_StringAlong">HW6: String Along</a>
