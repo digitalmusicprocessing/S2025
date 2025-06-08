@@ -529,6 +529,30 @@
 									</p>
 
 
+									<h4>Example</h4>
+									<p>
+										As an example, suppose you loaded in the pitch and loudness for Adele, and zeroed out all but the first 3 harmonics for the additive synth and completely zeroed out the subtractive synth (since it's just noise at this point), and used a unit impulse response.  The code might look something like this (some details may vary based on your parameter choices, etc)
+									</p>
+									<script type="syntaxhighlighter" class="brush: py"><![CDATA[
+										FAdele, LAdele = get_example("adele.wav", device, sr, hop_length, data, pitch_shift=12)
+										A, C, S, reverb = decoder(FAdele.to(device), LAdele.to(device))
+										S = S*0 # Get rid of subtractive synthesis for the moment (it's just noise)
+										C[0, :, 3:] = 0 # Zero out all but the first 3 harmonics
+										reverb[0] = 1 # Make sure the reverb is a unit impulse response
+										reverb[1:] = 0
+										Y = synthesize(A.to(device), C.to(device), FAdele.to(device), S.to(device), hop_length, sr, reverb)
+										ipd.Audio(Y.detach().cpu().flatten(), rate=sr)
+									</script>
+									<p>
+										Then the result may sound something like this, though results may vary because of the random nature of the harmonic amplitudes, since the network hasn't been trained yet (it should eventually sound like a violin with all harmonics once the network has been trained)
+									</p>
+									<audio controls>
+										<source src="Results/AdeleStep4.m4a" type="audio/mp3">
+										Your browser does not support the audio element.
+									</audio> 
+									<p></p>
+
+
 									<h2><a name = "train">Part 5: Training Loop (10 Points)</a></h2>
 									<p>
 										We are finally ready to train!  First, take a quick moment to review the training loop in torch at <a href = "../../../Modules/Module20/Video5">this link</a>.  Then, proceed as follows:
